@@ -1,0 +1,8 @@
+Vision document version 1.1:
+- Update table of contents
+- Update name and description of Product Features
+- Additionally, separate the functions for playlists and songs such as upload, edit, and delete into two distinct sections.
+- Add some features like 'Edit song', 'Play song', 'View songs and playlists', 'Edit Account' and 'Log out'
+- Remove some features like 'User profile', 'Update password'
+Revised Project Plan:
+Because TAs give us 'Well done' graded so the Project Plan document remain unchange
