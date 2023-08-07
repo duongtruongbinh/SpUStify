@@ -1,31 +1,25 @@
-from django.http import response
-from django.shortcuts import render
-from django.contrib.auth import authenticate, login
-from django.contrib.auth.forms import AuthenticationForm
-from django.contrib.auth.decorators import login_required
+
+from django.contrib.auth import login as auth_login
+from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework.authentication import SessionAuthentication, TokenAuthentication
-from rest_framework.serializers import Serializer
 from rest_framework.views import APIView
-from rest_framework import generics, permissions
-from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.authtoken.serializers import AuthTokenSerializer
+from rest_framework.exceptions import PermissionDenied
 from knox.models import AuthToken
 from knox.views import LoginView as KnoxLoginView
 from django.contrib.auth.models import User
 from .models import *
 from .serializers import *
-from api import serializers
 from .utils import *
-from .decorators import allowed_users
-
+from .permissions import IsAdminGroup, IsArtistGroup, IsUserGroup
+from django.db import IntegrityError
 
 
 @api_view(['GET'])
 def getRoutes(request):
-
     routes = [
         {
             'Endpoint': '/home/songs/',
@@ -99,43 +93,22 @@ class RegisterAPI(generics.GenericAPIView):
         return Response(response)
 
 class LoginAPI(KnoxLoginView):
+    serializer_class = AuthTokenSerializer
     permission_classes = [AllowAny]
 
-    def post(self, request, format=None):
+    def post(self, request):
         serializer = AuthTokenSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data['user']
-        login(request, user)
-        return super(LoginAPI, self).post(request, format=None)
+        auth_login(request, user)
+        return super(LoginAPI, self).post(request)
 
 class HomePageAPI(APIView):
     authentication_classes = [SessionAuthentication, TokenAuthentication]
-    # permission_classes = [IsAuthenticated]
-    
-    # permission_classes_by_action = {
-    #     'search': [AllowAny],  # Allow any user to access the 'search' endpoint
-    #     'leaderboard': [IsAuthenticated],
-    #     'favourite': [IsAuthenticated],
-    #     'history': [IsAuthenticated],
-    #     'recommend': [IsAuthenticated],
-    # }
-    
-    # def initial(self, request, *args, **kwargs):
-    #     # Get the action from the request query parameters
-    #     self.action = request.query_params.get('action', 'search')
-    #     super().initial(request, *args, **kwargs)
 
-    # def get_permissions(self):
-    #     try:
-    #         # Return the permission_classes for the current action
-    #         return [permission() for permission in self.permission_classes_by_action[self.action]]
-    #     except KeyError:
-    #         # If the action is not specified in permission_classes_by_action, use the default permissions
-    #         return [permission() for permission in self.permission_classes]
-    
     @permission_classes([AllowAny])
-    def search(self, request):
-        query = request.query_params.get('query', '')
+    def search(self):
+        query = self.request.query_params.get('query', '')
 
         # Filter songs and artists based on the search query
         songs = Song.objects.filter(
@@ -248,63 +221,89 @@ class HomePageAPI(APIView):
             elif feature == "recommend":
                 return self.getRecommend(user_id)
         else:
-            return self.search(request)
-    # def get(self, request):
-    #     user_id = self.request.user.id
-    #     if self.action == 'search':
-    #         return self.search(request)
-    #     elif self.action == 'leaderboard':
-    #         return self.getLeaderboard()
-    #     elif self.action == 'favourite':
-    #         return self.getFavourite(user_id)
-    #     elif self.action == 'history':
-    #         return self.getHistory(user_id)
-    #     elif self.action == 'recommend':
-    #         return self.getRecommend(user_id)
-    #     else:
-    #         return Response({'detail': 'Invalid action.'}, status=400)
-
+            return self.search()
     
 class AccountsPageAPI(APIView):
     authentication_classes = [SessionAuthentication, TokenAuthentication]
-
-    @allowed_users(allowed_roles=['Admin'])
-    def getAccountsList(self, request):
+    permission_classes = [IsAuthenticated, IsAdminGroup]
+    
+    def getAccountsList(self):
         accounts = User.objects.all().order_by('id')
         serializer = UserSerializer(accounts, many=True)
         return Response(serializer.data)
 
-    @allowed_users(allowed_roles=['Admin'])
-    def deleteAccount(self, request, pk):
+    def deleteAccount(self, pk):
         account = User.objects.get(id=pk)
         account.delete()
         return Response('Account was deleted!')
     
     def get(self, request):
-        return self.getAccountsList(request)
+        # if not self.request.user.groups.filter(name='Admin').exists():
+        #     raise PermissionDenied(detail='You do not have permission to access this resource.')
+        return self.getAccountsList()
+    
     
 class ProfilePageAPI(APIView):
-    def getProfileDetail(self, request):
-        if request.user.is_authenticated:
-            user_id = request.user.id 
-            profile = Profile.objects.filter(user_id=user_id).first()
-            serializer = ProfileSerializer(profile)
-            return Response(serializer.data)
+    authentication_classes = [SessionAuthentication, TokenAuthentication]
+    permission_classes = [IsAuthenticated, IsUserGroup]
+    serializer_class = ProfileSerializer
+    
+    def getProfileDetail(self):
+        account = self.request.user
+        profile = Profile.objects.filter(account=account).first()
+        serializer = ProfileSerializer(profile)
+        return Response(serializer.data)
+    
+    def createProfile(self):
+        data = self.request.data.copy()
+        account = self.request.user
+        serializer = ProfileSerializer(data=data)
+        try:
+            serializer.is_valid(raise_exception=True)
+            serializer.save(account=account)
+        except IntegrityError:
+            # Handling duplicate key error
+            return Response({'error': 'A profile already exists for this user.'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    
+    def editProfile(self):
+        account = self.request.user
+        profile = Profile.objects.filter(account=account).first()
+
+        if not profile:
+            return Response({'error': 'Profile not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+        data = self.request.data
+
+        serializer = ProfileSerializer(profile, data=data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
         else:
-            return Response({'detail': 'User is not authenticated.'}, status=401)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
     def get(self, request):
-        return self.getProfileDetail(request)
+        return self.getProfileDetail()
+    
+    def post(self, request):
+        return self.createProfile()
+    
+    def put(self, request):
+        return self.editProfile()
     
 class ArtistsPageAPI(APIView):
-    def getArtistsList(self, request):
-        query = request.query_params.get('query', '')
+    authentication_classes = [SessionAuthentication, TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    serializer_class = ArtistSerializer
+    
+    def getArtistsList(self):
+        query = self.request.query_params.get('query', '')
         # Filter songs based on the search query
         artists = Artist.objects.filter(Q(name__icontains=query))
         serializer = ArtistSerializer(artists, many = True)
         return Response(serializer.data)
 
-    def getArtistDetail(self, request, pk):
+    def getArtistDetail(self, pk):
         artist = Artist.objects.get(id=pk)
         artist_serializer = ArtistSerializer(artist, many = False)
         related_songs = MainArtist.objects.filter(artist=pk)
@@ -319,43 +318,73 @@ class ArtistsPageAPI(APIView):
     
         return Response(response)
     
-    def createArtist(self, request):
-        serializer = ArtistSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
+    def createArtist(self):
+        data = self.request.data.copy()
+        account = self.request.user
+        serializer = ArtistSerializer(data=data)
+        try:
+            serializer.is_valid(raise_exception=True)
+            serializer.save(account=account)
+        except IntegrityError:
+            # Handling duplicate key error
+            return Response({'error': 'A profile already exists for this user.'}, status=status.HTTP_400_BAD_REQUEST)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-    def deleteArtist(self, request, pk):
+    def editArtist(self):
+        # Lấy thông tin tài khoản người dùng
+        account = self.request.user
+        profile = Artist.objects.filter(account=account).first()
+
+        if not profile:
+            return Response({'error': 'Profile not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+        data = self.request.data
+        serializer = ArtistSerializer(profile, data=data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+    def deleteArtist(self, pk):
         artist = Artist.objects.get(id=pk)
         artist.delete()
         return Response('Artist was deleted!')
 
     def get(self, request, pk=None):
-        if pk:
-            return self.getArtistDetail(request, pk)
-        else:
-            return self.getArtistsList(request)
+        if not self.request.user.groups.filter(name__in=['Admin', 'User']).exists():
+            raise PermissionDenied(detail='You do not have permission to access this resource.')
+        return self.getArtistDetail(pk) if pk else self.getArtistsList()
     
     def post(self, request):
-        return self.createArtist(request)
-
+        if not self.request.user.groups.filter(name__in=['Admin', 'Artist']).exists():
+            raise PermissionDenied(detail='You do not have permission to access this resource.')
+        return self.createArtist()
+    
+    def put(self, request):
+        if not self.request.user.groups.filter(name__in=['Admin', 'Artist']).exists():
+            raise PermissionDenied(detail='You do not have permission to access this resource.')
+        return self.editArtist()
+    
     def delete(self, request, pk=None):
-        return self.deleteArtist(request, pk)
+        # if not self.request.user.groups.filter(name='Admin').exists() and not self.request.user.groups.filter(name='Artist').exists():
+        if not self.request.user.groups.filter(name__in=['Admin', 'Artist']).exists():
+            raise PermissionDenied(detail='You do not have permission to access this resource.')
+        return self.deleteArtist(pk)
         
 class SongsPageAPI(APIView):
-    def getSongsList(self, request):
-        query = request.query_params.get('query', '')
+    serializer_class = FeaturesSongSerializer
+    authentication_classes = [SessionAuthentication, TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    
+    def getSongsList(self):
+        query = self.request.query_params.get('query', '')
         # Filter songs based on the search query
         songs = Song.objects.filter(Q(name__icontains=query))
-        if not songs.exists():
-            # If no exact match found, try to find songs with similar names
-            similar_songs = Song.objects.filter(name__icontains=query)
-            if similar_songs.exists():
-                songs = similar_songs
         serializer = SongSerializer(songs, many=True)
         return Response(serializer.data)
 
-    def getSongDetail(self, request, pk):
+    def getSongDetail(self, pk):
         song = get_object_or_404(Song, id=pk)
         serializer = SongSerializer(song, many=False)
         
@@ -372,70 +401,46 @@ class SongsPageAPI(APIView):
         
         return Response(response)
 
-    def createSong(self, request):
-        # Lấy thông tin tài khoản người dùng
-        account = request.user
+    def createSong(self):
+        data = self.request.data.copy()
+        account = self.request.user
 
-        # Lấy dữ liệu từ request
-        name = request.data.get('name', '')
-        likes = request.data.get('likes', 0)
-        listens = request.data.get('listens', 0)
-        song_file = request.FILES.get('song_file')
-        lyric_file = request.FILES.get('lyric_file')
-        avatar = request.FILES.get('avatar')
-        background_image = request.FILES.get('background_image')
-        created_date = request.data.get('created_date')
-
-        # Tạo instance của SongSerializer với các trường dữ liệu
-        serializer = SongSerializer(data={
-            'name': name,
-            'likes': likes,
-            'listens': listens,
-            'song_file': song_file,
-            'lyric_file': lyric_file,
-            'avatar': avatar,
-            'background_image': background_image,
-            'created_date': created_date,
-            'account': account.id,  # Lưu ID của tài khoản
-            # Các trường khác của model Song mà bạn muốn lấy từ dữ liệu
-        })
-
+        serializer = FeaturesSongSerializer(data=data)
         serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-        # serializer = SongSerializer(data=request.data, context={'request': request})
-        # serializer.is_valid(raise_exception=True)
-        # serializer.save()
-        # return Response(serializer.data, status=status.HTTP_201_CREATED)
+        serializer.save()
+
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
         
-    def deleteSong(self, request, pk):
+    def deleteSong(self, pk):
         song = Song.objects.get(id=pk)
         song.delete()
         return Response('Song was deleted!')
     
     def get(self, request, pk=None):
         if pk:
-            return self.getSongDetail(request, pk)
+            return self.getSongDetail(pk)
         else:
-            return self.getSongsList(request)
+            return self.getSongsList()
     
     def post(self, request):
-        return self.createSong(request)
+        if not self.request.user.groups.filter(name__in=['Admin', 'Artist']).exists():
+            raise PermissionDenied(detail='You do not have permission to access this resource.')
+        return self.createSong()
     
     def delete(self, request, pk=None):
-        return self.deleteSong(request, pk)
-    
+        if not self.request.user.groups.filter(name__in=['Admin', 'Artist']).exists():
+            raise PermissionDenied(detail='You do not have permission to access this resource.')
+        return self.deleteSong(pk)
+        
 class PlaylistsPageAPI(APIView):
-    def getPlaylistsList(self, request):
-        query = request.query_params.get('query', '')
+    authentication_classes = [SessionAuthentication, TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    
+    def getPlaylistsList(self):
+        query = self.request.query_params.get('query', '')
         # Filter songs based on the search query
         playlists = Playlist.objects.filter(Q(status='pub') & Q(name__icontains=query))
-        if not playlists.exists():
-            # If no exact match found, try to find songs with similar names
-            similar_playlists = Playlist.objects.filter(name__icontains=query)
-            if similar_playlists.exists():
-                playlists = similar_playlists
         serializer = PlaylistSerializer(playlists, many=True)
         return Response(serializer.data)
 
@@ -444,39 +449,39 @@ class PlaylistsPageAPI(APIView):
         serializer = PlaylistSerializer(playlist, many = False)
         return Response(serializer.data)
 
-    def createPlaylist(self, request):
+    def createPlaylist(self):
         data = {
-            'name': request.data.get('name', ''),
-            'status': request.data.get('status', 'pvt'),
-            'account': request.user.pk,
-            'avatar': request.FILES.get('avatar'),
-            'background_image': request.FILES.get('background_image')
+            'name': self.request.data.get('name', ''),
+            'status': self.request.data.get('status', 'pvt'),
+            'account': self.request.user.pk,
+            'avatar': self.request.FILES.get('avatar'),
+            'background_image': self.request.FILES.get('background_image')
         }
         serializer = PlaylistSerializer(data=data)
         serializer.is_valid(raise_exception=True)
         playlist = serializer.save()
 
         # Xử lý trường songs nếu có
-        songs_data = request.data.get('songs', [])
+        songs_data = self.request.data.get('songs', [])
         playlist.songs.set(songs_data)  # Gán danh sách bài hát cho danh sách phát
 
         return Response(serializer.data, status=status.HTTP_201_CREATED)
         
-    def deletePlaylist(self, request, pk):
+    def deletePlaylist(self, pk):
         playlist = Playlist.objects.get(id=pk)
         playlist.delete()
         return Response('Playlist was deleted!')
 
     def get(self, request, pk=None):
         if pk:
-            return self.getPlaylistDetail(request, pk)
+            return self.getPlaylistDetail(pk)
         else:
-            return self.getPlaylistsList(request)
+            return self.getPlaylistsList()
     
     def post(self, request):
-        return self.createPlaylist(request)
+        return self.createPlaylist()
     
     def delete(self, request, pk=None):
-        return self.deletePlaylist(request, pk)
+        return self.deletePlaylist(pk)
   
     

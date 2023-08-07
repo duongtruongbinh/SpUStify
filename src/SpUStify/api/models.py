@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.db.models import Count, Sum
 
 class Profile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
+    account = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
     full_name = models.CharField(max_length=50, verbose_name='Full Name')
     dob = models.DateField(verbose_name='Date Of Birth')
     email = models.EmailField(max_length=254, verbose_name='Email')
@@ -16,6 +16,7 @@ class Profile(models.Model):
 
 
 class Artist(models.Model):
+    # account = models.OneToOneField(User, on_delete=models.CASCADE, related_name='artist')
     name = models.CharField(max_length=50, verbose_name='Artist Name')
     avatar = models.ImageField(upload_to='avatars/', null=True, blank=True)
     background_image = models.ImageField(upload_to='backgrounds/', null=True, blank=True)
@@ -25,16 +26,15 @@ class Artist(models.Model):
 
 
 class Song(models.Model):
-    name = models.CharField(max_length=50, verbose_name='Song Name')
+    name = models.CharField(max_length=50, verbose_name='Song Name', unique = True)
     likes = models.PositiveIntegerField(default=0, verbose_name='Number Of Likes')
     listens = models.PositiveIntegerField(default=0, verbose_name='Number Of Listens')
-    song_file = models.FileField(upload_to='audio/', default='')
-    lyric_file = models.FileField(upload_to='lyric/', default='')
+    song_file = models.FileField(upload_to='audios/', null=True, blank=True)
+    lyric_file = models.FileField(upload_to='lyrics/', null=True, blank=True)
     avatar = models.ImageField(upload_to='avatars/', null=True, blank=True)
     background_image = models.ImageField(upload_to='backgrounds/', null=True, blank=True)
     created_date = models.DateTimeField(auto_now_add=True)
-    account = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Songs of account")
-
+    main_artist = models.ForeignKey(Artist, on_delete=models.CASCADE)
     def save(self, *args, **kwargs):
         self.likes = UserPlayedSong.objects.filter(played_song__song=self).filter(liked=True).count()
         self.listens = UserPlayedSong.objects.filter(played_song__song=self).aggregate(total_listens=Sum('listens'))['total_listens'] or 0
@@ -50,7 +50,7 @@ class Playlist(models.Model):
         ('pub', 'Public'),
     )
 
-    name = models.CharField(max_length=50, verbose_name='Playlist Name')
+    name = models.CharField(max_length=50, verbose_name='Playlist Name', unique = True)
     status = models.CharField(max_length=3, choices=STATUS_CHOICES)
     created_date = models.DateTimeField(auto_now_add=True)
     songs = models.ManyToManyField(Song, verbose_name="List of songs")
@@ -71,10 +71,10 @@ class MainArtist(models.Model):
 
 class CollabArtist(models.Model):
     song = models.ForeignKey(Song, on_delete=models.CASCADE)
-    artist = models.ManyToManyField(Artist)
+    artist = models.ForeignKey(Artist, on_delete=models.CASCADE, default=None)
     
     def __str__(self) -> str:
-        return f'{self.song.name} - {", ".join(str(artist) for artist in self.artist.all())}'
+        return f'{self.song.name} - {self.artist.name}'
 
 class PlayedSong(models.Model):
     song = models.ForeignKey(Song, on_delete=models.CASCADE)

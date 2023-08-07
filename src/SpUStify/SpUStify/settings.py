@@ -54,6 +54,8 @@ REST_FRAMEWORK = {
     ]
 }
 
+FILE_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024
+
 CORS_ORIGIN_ALLOW_ALL = True
 
 MIDDLEWARE = [
@@ -99,7 +101,7 @@ WSGI_APPLICATION = 'SpUStify.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'music',
+        'NAME': 'SPUSTIFY',
         'USER': 'postgres',
         'PASSWORD': 'Thanh.0504',
         'HOST': 'localhost',

@@ -12,14 +12,6 @@ class UserSerializer(ModelSerializer):
 
 # Register Serializer
 class RegisterSerializer(ModelSerializer):
-    # class Meta:
-    #     model = User
-    #     fields = ('id', 'username', 'email', 'password')
-    #     extra_kwargs = {'password': {'write_only': True}}
-
-    # def create(self, validated_data):
-    #     user = User.objects.create_user(validated_data['username'], validated_data['email'], validated_data['password'])
-    #     return user
     is_artist = serializers.BooleanField(default=False)
 
     class Meta:
@@ -40,27 +32,64 @@ class RegisterSerializer(ModelSerializer):
         group.user_set.add(user)
 
         return user
+    
 
 class ProfileSerializer(ModelSerializer):
     class Meta:
         model = Profile
-        fields = '__all__'
+        fields = ('full_name', 'dob', 'email', 'phone', 'avatar', 'background_image')
 
 class ArtistSerializer(ModelSerializer):
     class Meta:
         model = Artist
-        fields = '__all__'
+        fields = ('name', 'avatar', 'background_image')
 
 class SongSerializer(ModelSerializer):
     artists = SerializerMethodField()
 
     def get_artists(self, song):
-        artists = Artist.objects.filter(Q(mainartist__song=song) | Q(collabartist__song=song)).distinct()
+        artists = Artist.objects.filter(Q(id=song.main_artist.id) | Q(collabartist__song=song)).distinct()
         return [artist.name for artist in artists]
 
     class Meta:
         model = Song
-        fields = ('name', 'artists')
+        fields = ('id', 'name', 'artists')
+
+        
+class MainArtistSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MainArtist
+        fields = ('artist',)
+
+class CollabArtistSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CollabArtist
+        fields = ('artist',)
+
+class FeaturesSongSerializer(serializers.ModelSerializer):
+    main_artist = serializers.CharField()
+    collab_artists = serializers.ListField(child=serializers.CharField(), required = False)
+
+    class Meta:
+        model = Song
+        fields = ('name', 'song_file', 'lyric_file', 'avatar', 'background_image', 'main_artist', 'collab_artists')
+
+    def create(self, validated_data):
+        main_artist_data = validated_data.pop('main_artist', None)
+        collab_artists_data = validated_data.pop('collab_artists', [])
+
+        # Create or get the main_artist object
+        main_artist, _ = Artist.objects.get_or_create(name=main_artist_data)
+
+        # Create the song object with main_artist as a ForeignKey
+        song = Song.objects.create(main_artist=main_artist, **validated_data)
+
+        # Create collab artists and associate them with the song
+        for collab_artist_name in collab_artists_data:
+            collab_artist, _ = Artist.objects.get_or_create(name=collab_artist_name)
+            CollabArtist.objects.create(song=song, artist=collab_artist)
+
+        return song
 
 
 class PlaylistSerializer(ModelSerializer):
