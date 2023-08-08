@@ -10,19 +10,19 @@ class Profile(models.Model):
     phone = models.CharField(max_length=10, verbose_name='Phone Number (+84)')
     avatar = models.ImageField(upload_to='avatars/', null=True, blank=True)
     background_image = models.ImageField(upload_to='backgrounds/', null=True, blank=True)
+    is_artist = models.BooleanField(default=False)
     
     def __str__(self) -> str:
         return self.full_name
 
-
 class Artist(models.Model):
     # account = models.OneToOneField(User, on_delete=models.CASCADE, related_name='artist')
-    name = models.CharField(max_length=50, verbose_name='Artist Name')
-    avatar = models.ImageField(upload_to='avatars/', null=True, blank=True)
-    background_image = models.ImageField(upload_to='backgrounds/', null=True, blank=True)
-    
+    artist_name = models.CharField(max_length=50, verbose_name='Artist Name')
+    # avatar = models.ImageField(upload_to='avatars/', null=True, blank=True)
+    # background_image = models.ImageField(upload_to='backgrounds/', null=True, blank=True)
+    profile = models.OneToOneField(Profile, on_delete=models.SET_NULL, related_name='profile', null=True, blank=True)
     def __str__(self) -> str:
-        return self.name
+        return self.artist_name
 
 
 class Song(models.Model):
@@ -35,6 +35,7 @@ class Song(models.Model):
     background_image = models.ImageField(upload_to='backgrounds/', null=True, blank=True)
     created_date = models.DateTimeField(auto_now_add=True)
     main_artist = models.ForeignKey(Artist, on_delete=models.CASCADE)
+    
     def save(self, *args, **kwargs):
         self.likes = UserPlayedSong.objects.filter(played_song__song=self).filter(liked=True).count()
         self.listens = UserPlayedSong.objects.filter(played_song__song=self).aggregate(total_listens=Sum('listens'))['total_listens'] or 0
@@ -74,7 +75,7 @@ class CollabArtist(models.Model):
     artist = models.ForeignKey(Artist, on_delete=models.CASCADE, default=None)
     
     def __str__(self) -> str:
-        return f'{self.song.name} - {self.artist.name}'
+        return f'{self.song.name} - {self.artist.artist_name}'
 
 class PlayedSong(models.Model):
     song = models.ForeignKey(Song, on_delete=models.CASCADE)
