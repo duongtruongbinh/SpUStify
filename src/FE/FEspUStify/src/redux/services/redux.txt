@@ -1,0 +1,20 @@
+Redux: duy trì toàn bộ trạng thái của ứng dụng trong một store duy nhất.
+1. State is Read-Only: mọi thay đổi phải thông qua các Actions
+2.Actions: mô tả việc thay đổi trạng thái
+    - type: loại Actions
+    - Dữ liệu cầnn thiết cho việc thay đổi trạng thái
+2.Reducer: các hàm nhận vào trạng thái hiện tại và một actions
+            Trả về một trạng thái mới dựa trên Actions
+            Thực hiện thay đổi trạng thái của toàn store
+3.Store: Nơi lưu trữ trạng thái của ứng dụng
+        Truy cập trạng thái thông qua store
+        Cập nhật trạng thái bằng cách gửi actions tới store
+4.Dispatching Actions: để thay đổi trạng thái, gửi 1 actions tới store bằng
+cách dụng phương thức dispatch - store chuyển actions đến reducers để xử
+lý và cập nhật trạng thái
+5. Subscription: đăng kí listener: theo dõi sự thay đổi trạng thái trong store
+Khi trạng thái thay đổi, redux thông báo cho các listener này để cập nhật
+giao diện và thực hiện ncasc tác vụ khác
+6. Selector: Lấy dữ liệu từ redux store
+    
+
