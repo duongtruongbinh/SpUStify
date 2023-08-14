@@ -2,7 +2,7 @@
 from django.contrib.auth import login as auth_login
 from rest_framework import generics, status
 from rest_framework.response import Response
-from rest_framework.authentication import SessionAuthentication, TokenAuthentication
+from rest_framework.authentication import SessionAuthentication, TokenAuthentication, BasicAuthentication
 from rest_framework.views import APIView
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated, AllowAny
@@ -22,7 +22,7 @@ from django.db import IntegrityError
 def get_routes(request):
     routes = [
         {
-            'Endpoint': '/home/songs/',
+            'Endpoint': '/songs/',
             'method': 'GET',
             'body': None,
             'description': 'Returns an list of songs'
@@ -134,7 +134,7 @@ class HomePageAPI(APIView):
             'List of playlists': playlist_serializer.data,
         }
 
-        return Response(response_data, status=status.HTTP_200_OK)
+        return Response(response_data)
     
     @permission_classes([IsAuthenticated])
     def get_leaderboard(self):
@@ -148,7 +148,7 @@ class HomePageAPI(APIView):
             'Leaderboard by likes': likes_serializer.data,
             'Leaderboard by listens': listens_serializer.data,
         }
-        return Response(response_data, status=status.HTTP_200_OK)
+        return Response(response_data )
     
     @permission_classes([IsAuthenticated])
     def get_favourites(self, user_id):
@@ -162,7 +162,7 @@ class HomePageAPI(APIView):
             'Favourite song': user_played_songs_serializer.data,
             'Favourite playlist': user_played_playlists_serializer.data,
         }
-        return Response(response_data, status=status.HTTP_200_OK)
+        return Response(response_data )
     
     @permission_classes([IsAuthenticated])
     def get_history(self, user_id):
@@ -176,7 +176,7 @@ class HomePageAPI(APIView):
             'History of songs': played_songs_serializer.data,
             'History of playlists': played_playlists_serializer.data,
         }
-        return Response(response_data, status=status.HTTP_200_OK)
+        return Response(response_data )
     
     @permission_classes([IsAuthenticated])
     def get_recommendations(self, user_id):
@@ -208,7 +208,7 @@ class HomePageAPI(APIView):
             'Recommended songs': recommended_songs_serializer.data,
             'Recommended playlists': recommended_playlists_serializer.data,
         }
-        return Response(response, status=status.HTTP_200_OK)
+        return Response(response )
     
     def get(self, request, feature=None):
         user_id = request.user.id
@@ -231,7 +231,7 @@ class AccountsPageAPI(APIView):
     def get_accounts_list(self):
         accounts = User.objects.all().order_by('id')
         serializer = UserSerializer(accounts, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.data)
 
     def delete_account(self, pk):
         account = User.objects.filter(pk=pk).first()
@@ -253,7 +253,7 @@ class ProfilePageAPI(APIView):
     def get_user_profile(self):
         profile = Profile.objects.filter(account=self.request.user).first()
         serializer = ProfileSerializer(profile)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.data, )
     
     def create_profile(self):
         data = self.request.data.copy()
@@ -265,21 +265,21 @@ class ProfilePageAPI(APIView):
             serializer.save(account=account)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         except IntegrityError:
-            return Response({'error': 'A profile already exists for this user.'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'error': 'A profile already exists for this user.'})
         
     def edit_profile(self):
         account = self.request.user
         profile = Profile.objects.filter(account=account).first()
 
         if not profile:
-            return Response({'error': 'Profile not found.'}, status=status.HTTP_404_NOT_FOUND)
+            return Response({'error': 'Profile not found.'})
 
         data = self.request.data
         serializer = ProfileSerializer(profile, data=data, partial=True)
         
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.data )
     
     def get(self, request):
         return self.get_user_profile()
@@ -334,7 +334,7 @@ class DetailArtistAPI(APIView):
             return Response({'error': 'Artist not found.'}, status=status.HTTP_404_NOT_FOUND)
         
         if not artist.profile:
-            return Response({'error': 'Does not have any information about this artist.'}, status=status.HTTP_404_NOT_FOUND)
+            return Response({'error': 'Does not have any information about this artist.'})
         
         profile = artist.profile
         
@@ -348,7 +348,7 @@ class DetailArtistAPI(APIView):
             'Related Songs': related_songs_serializer.data,
         }
     
-        return Response(response, status=status.HTTP_200_OK)
+        return Response(response )
     
     def edit_artist(self, artist_id):
         try:
@@ -357,7 +357,7 @@ class DetailArtistAPI(APIView):
             return Response({'error': 'Artist not found.'}, status=status.HTTP_404_NOT_FOUND)
         
         if not artist.profile:
-            return Response({'error': 'Profile of artist is not found.'}, status=status.HTTP_404_NOT_FOUND)
+            return Response({'error': 'Profile of artist is not found.'})
         
         data = self.request.data
         profile = artist.profile
@@ -365,13 +365,13 @@ class DetailArtistAPI(APIView):
         
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.data, )
         
     def delete_artist(self, artist_id):
         try:
             artist = Artist.objects.get(id=artist_id)
         except Artist.DoesNotExist:
-            return Response({'error': 'Artist not found.'}, status=status.HTTP_404_NOT_FOUND)
+            return Response({'error': 'Artist not found.'})
         
         artist.delete()
         return Response('Artist was deleted!')
@@ -387,14 +387,14 @@ class DetailArtistAPI(APIView):
     
 class SongsPageAPI(APIView):
     serializer_class = FeaturesSongSerializer
-    authentication_classes = [SessionAuthentication, TokenAuthentication]
-    permission_classes = [IsAuthenticated]
+    #authentication_classes = [SessionAuthentication, BasicAuthentication, TokenAuthentication]
+    #permission_classes = [IsAuthenticated]
     
     def get_songs_list(self):
         query = self.request.query_params.get('query', '')
         songs = Song.objects.filter(Q(name__icontains=query))
         serializer = SongSerializer(songs, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.data, )
 
     def create_song(self):
         data = self.request.data.copy()
@@ -403,7 +403,7 @@ class SongsPageAPI(APIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.data)
     
     def get(self, request):
         return self.get_songs_list()
@@ -430,7 +430,7 @@ class DetailSongPageAPI(APIView):
             'Related Songs': related_serializer.data,
         }
         
-        return Response(response, status=status.HTTP_200_OK)
+        return Response(response )
     
     def edit_song(self, song_id):
         song = get_object_or_404(Song, id=song_id)
@@ -438,12 +438,12 @@ class DetailSongPageAPI(APIView):
         
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        return Response({'message': 'Song details updated successfully.'}, status=status.HTTP_200_OK)
+        return Response({'message': 'Song details updated successfully.'}, )
         
     def delete_song(self, song_id):
         song = get_object_or_404(Song, id=song_id)
         song.delete()
-        return Response('Song was deleted!', status=status.HTTP_204_NO_CONTENT)
+        return Response('Song was deleted!')
     
     def get(self, request, song_id=None):
         return self.get_detail_song(song_id)
@@ -453,7 +453,7 @@ class DetailSongPageAPI(APIView):
     
     def delete(self, request, song_id=None):
         if not self.request.user.groups.filter(name__in=['Admin', 'Artist']).exists():
-            return Response({'error': 'You do not have permission to access this resource.'}, status=status.HTTP_403_FORBIDDEN)
+            return Response({'error': 'You do not have permission to access this resource.'})
         
         return self.delete_song(song_id)
 
@@ -465,7 +465,7 @@ class AddSongToPlaylistAPI(APIView):
     def add_song_to_playlist(self, song_id):
         serializer = AddSongToPlaylistSerializer(data=self.request.data)
         if not serializer.is_valid():
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response(serializer.errors)
         
         playlist_id = serializer.validated_data['playlist_id'].id
 
@@ -473,7 +473,7 @@ class AddSongToPlaylistAPI(APIView):
         song = get_object_or_404(Song, id=song_id)
         playlist.songs.add(song)
 
-        return Response({'message': 'Song added to playlist successfully.'}, status=status.HTTP_200_OK)
+        return Response({'message': 'Song added to playlist successfully.'}, )
             
 
     def post(self, request, song_id=None):
@@ -500,8 +500,8 @@ class PlaySongAPI(APIView):
 
         song_url = song.song_file.url if song.song_file else None
         if not song_url:
-            return Response({'song_url': "File is not exist." , 'message': 'Song played successfully'}, status=status.HTTP_200_OK )
-        return Response({'song_url': song_url , 'message': 'Song played successfully'}, status=status.HTTP_200_OK )
+            return Response({'song_url': "File is not exist." , 'message': 'Song played successfully'},  )
+        return Response({'song_url': song_url , 'message': 'Song played successfully'},  )
 
     def post(self, request, song_id=None):
         return self.play_song(song_id)
@@ -539,7 +539,7 @@ class PlaylistsPageAPI(APIView):
         query = self.request.query_params.get('query', '')
         playlists = Playlist.objects.filter(Q(status='pub') & Q(name__icontains=query))
         serializer = PlaylistSerializer(playlists, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.data )
 
     def create_playlist(self):
         data = self.request.data.copy()
@@ -549,7 +549,7 @@ class PlaylistsPageAPI(APIView):
         serializer.is_valid(raise_exception=True)
         serializer.save(account=account)
 
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.data)
     
     def get(self, request):
         return self.get_playlists_list()
@@ -580,7 +580,7 @@ class DetailPlaylistAPI(APIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.data )
 
     def delete_playlist(self, playlist_id):
         playlist = get_object_or_404(Playlist, id=playlist_id)
