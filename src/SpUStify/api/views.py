@@ -130,8 +130,8 @@ class HomePageAPI(APIView):
         playlist_serializer = PlaylistSerializer(filtered_playlists, many=True)
         
         response_data = {
-            'List of songs': song_serializer.data,
-            'List of playlists': playlist_serializer.data,
+            'List_of_songs': song_serializer.data,
+            'List_of_playlists': playlist_serializer.data,
         }
 
         return Response(response_data)
@@ -145,8 +145,8 @@ class HomePageAPI(APIView):
         likes_serializer = SongSerializer(songs_by_likes, many=True)
         
         response_data = {
-            'Leaderboard by likes': likes_serializer.data,
-            'Leaderboard by listens': listens_serializer.data,
+            'Leaderboard_by_likes': likes_serializer.data,
+            'Leaderboard_by_listens': listens_serializer.data,
         }
         return Response(response_data )
     
@@ -159,8 +159,8 @@ class HomePageAPI(APIView):
         user_played_playlists_serializer = UserPlayedPlaylistSerializer(user_played_playlists, many=True)
         
         response_data = {
-            'Favourite song': user_played_songs_serializer.data,
-            'Favourite playlist': user_played_playlists_serializer.data,
+            'Favourite_song': user_played_songs_serializer.data,
+            'Favourite_playlist': user_played_playlists_serializer.data,
         }
         return Response(response_data )
     
@@ -173,8 +173,8 @@ class HomePageAPI(APIView):
         played_playlists_serializer = PlayedPlaylistSerializer(played_playlists, many=True)
         
         response_data = {
-            'History of songs': played_songs_serializer.data,
-            'History of playlists': played_playlists_serializer.data,
+            'History_of_songs': played_songs_serializer.data,
+            'History_of_playlists': played_playlists_serializer.data,
         }
         return Response(response_data )
     
@@ -205,8 +205,8 @@ class HomePageAPI(APIView):
         recommended_playlists_serializer = PlaylistSerializer(recommended_playlists, many=True)
         
         response = {
-            'Recommended songs': recommended_songs_serializer.data,
-            'Recommended playlists': recommended_playlists_serializer.data,
+            'Recommended_songs': recommended_songs_serializer.data,
+            'Recommended_playlists': recommended_playlists_serializer.data,
         }
         return Response(response )
     
@@ -345,7 +345,7 @@ class DetailArtistAPI(APIView):
         
         response = {
             'Artist': artist_serializer.data,
-            'Related Songs': related_songs_serializer.data,
+            'Related_Songs': related_songs_serializer.data,
         }
     
         return Response(response )
@@ -427,7 +427,7 @@ class DetailSongPageAPI(APIView):
         
         response = {
             'Song': serializer.data,
-            'Related Songs': related_serializer.data,
+            'Related_Songs': related_serializer.data,
         }
         
         return Response(response )
