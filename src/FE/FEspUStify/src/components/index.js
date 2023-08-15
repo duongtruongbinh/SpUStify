@@ -11,11 +11,16 @@ import MusicPlayer from './MusicPlayer';
 import Loader from './Loader';
 import Error from './Error';
 import PlaylistCard from './PlaylistCard';
+import ButtonNext from './ButtonNext';
+import ButtonPrev from './ButtonPrev';
 export {
-  TopPlay,
+ 
   Sidebar,
-  SongCard,
   Searchbar,
+  BannerCard,
+  SongCard,
+  TopPlay,
+  
   ArtistCard,
   DetailsHeader,
   SongBar,
@@ -23,6 +28,8 @@ export {
   MusicPlayer,
   Loader,
   Error,
-  BannerCard,
-  PlaylistCard
+  
+  PlaylistCard,
+  ButtonNext,
+  ButtonPrev
 };

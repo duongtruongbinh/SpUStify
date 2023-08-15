@@ -52,8 +52,8 @@ const SongCard = ({ song, isPlaying, activeSong, index, data }) => {
   
 </div>
 
-<div className=" mt-4 ml-2 absolute inline-flex p-[10px 30px 1px 1px] flex-col justify-end items-start ">
-<p className='  font-bold z-100 text-lg text-gray-100 truncate'>
+<div className="  mt-4 ml-2 absolute inline-flex p-[10px 30px 1px 1px] flex-col justify-end items-start ">
+<p className='max-w-[150px] font-bold z-100 text-lg text-gray-100 truncate'>
           <Link to={`/songs/${song?.id}`}>
             {song.name}
           </Link>
@@ -63,7 +63,8 @@ const SongCard = ({ song, isPlaying, activeSong, index, data }) => {
             ? `/artists/${song?.song_artists[0]?.adamid}`
             : '/top-artists'}
           >
-            {song.song_artists[0]}
+            {/* {song.song_artists[0]} */}
+            abc
           </Link>
         </p>
 </div>

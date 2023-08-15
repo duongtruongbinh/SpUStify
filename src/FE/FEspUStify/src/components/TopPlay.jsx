@@ -4,10 +4,13 @@ import { useSelector, useDispatch } from 'react-redux';
 
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { FreeMode } from 'swiper';
-
+import Loader from './Loader';
+import Error from './Error';
 import PlayPause from './PlayPause';
 import { playPause, setActiveSong } from '../redux/features/playerSlice';
-import { useGetTopChartsQuery } from '../redux/services/CoreApi';
+import { useGetTopChartsQuery  } from '../redux/services/CoreApi';
+
+import Na from '../assets/bg1.jpeg';
 
 import 'swiper/css';
 import 'swiper/css/free-mode';
@@ -19,19 +22,21 @@ const TopChartCard = ({ song, index, isPlaying, activeSong, handlePauseClick, ha
     </h3>
     <div className='flex-1 flex flex-row justify-between items-center'>
       <img 
-        src={song?.images?.coverart} 
-        alt={song?.title} 
+        src={Na}
+        //{song?.images?.coverart} 
+        alt={song?.name} 
         className='w-20 h-20 rounded-2xl'
       />
       <div className='flex-1 flex flex-col justify-center mx-3'>
-        <Link to={`/songs/${song.key}`}>
+        <Link to={`/songs/${song.id}`}>
           <p className='text-gray-100 text-sm'>
-            {song?.title}
+            {song?.name}
           </p>
         </Link>
-        <Link to={`/artists/${song?.artists[0].adamid}`}>
+        <Link to={`/artists/${song?.song_artists[0].adamid}`}>
           <p className='text-gray-400 text-xs mt-1'>
-            {song?.subtitle}
+           {/* {song?.subtitle} */}
+           {song.name}
           </p>
         </Link>
       </div>
@@ -50,20 +55,26 @@ const TopPlay = () => {
 
   const dispatch = useDispatch();
   const { activeSong, isPlaying } = useSelector((state) => state.player);
-  const  {data } = useGetTopChartsQuery();
+  const  {data, isFetching, error} = useGetTopChartsQuery();
+  if (isFetching) return <Loader title='Loading songs...' />;
+
+  if (error) return <Error />;
   console.log(data)
-  const likes = data['Leaderboard by likes'];
-  console.log(likes)
+  
+  const likes = data['Leaderboard_by_likes'];
+  const listens = data["Leaderboard_by_listens"];
+  const dataLikes = Array.isArray(likes) ? likes : [likes];
+  const dataListens = Array.isArray(listens) ? listens : [listens];
 
-  const divRef = useRef(null);
+  // const divRef = useRef(null);
 
-  useEffect(() => {
-    divRef.current.scrollIntoView({ behavior: 'smooth' });
-  });
+  // useEffect(() => {
+  //   divRef.current.scrollIntoView({ behavior: 'smooth' });
+  // },[]);
 
   //const leaderboardByLikes = data["Leaderboard by likes"];
 // trả về một phần của mảng
-  const topPlays = data['Leaderboard by likes']?.slice(0, 5);
+  const topPlays = dataLikes?.slice(0, 5);
  
 
   const handlePauseClick = () => {
@@ -74,9 +85,9 @@ const TopPlay = () => {
     dispatch(setActiveSong({ song, data, index }));
     dispatch(playPause(true));
   };
-
+ // ref={divRef}
   return (
-    <div ref={divRef} className='xl:ml-6 ml-0 xl:mb-0 mb-6 flex-1 xl:max-w-[300px] max-w-full flex flex-col'>
+    <div  className='xl:ml-6 ml-0 xl:mb-0 mb-6 flex-1 xl:max-w-[300px] max-w-full flex flex-col'>
       <div className='w-full flex flex-col'>
         <div className='flex flex-row justify-between items-center'>
           <h2 className='text-gray-100 text-xl'>Top Charts</h2>
@@ -119,13 +130,14 @@ const TopPlay = () => {
         >
           {topPlays?.map((song, index) => (
             <SwiperSlide
-              key={song?.id}
+              key={index}
               style={{ width: '25%', height: 'auto' }}
               className='shadow-lg rounded-full animate-slideright'
             >
               <Link to={`/artists/${song?.song_artists[0]}`}>
                 <img 
-                  src={song?.avatar} 
+                  src={Na}
+                  //{song?.avatar} 
                   alt='name'
                   className='rounded-full w-full object-cover'
                 />
