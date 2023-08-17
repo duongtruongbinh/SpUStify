@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.db.models import Count, Sum
 
+
 class Profile(models.Model):
     account = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
     full_name = models.CharField(max_length=50, verbose_name='Full Name')
@@ -10,17 +11,13 @@ class Profile(models.Model):
     phone = models.CharField(max_length=10, verbose_name='Phone Number (+84)')
     avatar = models.ImageField(upload_to='avatars/', null=True, blank=True)
     background_image = models.ImageField(upload_to='backgrounds/', null=True, blank=True)
-    is_artist = models.BooleanField(default=False)
     
     def __str__(self) -> str:
         return self.full_name
 
 class Artist(models.Model):
-    # account = models.OneToOneField(User, on_delete=models.CASCADE, related_name='artist')
     artist_name = models.CharField(max_length=50, verbose_name='Artist Name')
-    # avatar = models.ImageField(upload_to='avatars/', null=True, blank=True)
-    # background_image = models.ImageField(upload_to='backgrounds/', null=True, blank=True)
-    profile = models.OneToOneField(Profile, on_delete=models.SET_NULL, related_name='profile', null=True, blank=True)
+    profile = models.OneToOneField(Profile, on_delete=models.CASCADE, related_name='profile')
     def __str__(self) -> str:
         return self.artist_name
 
@@ -61,21 +58,6 @@ class Playlist(models.Model):
 
     def __str__(self) -> str:
         return self.name
-
-
-class MainArtist(models.Model):
-    song = models.ForeignKey(Song, on_delete=models.CASCADE)
-    artist = models.ForeignKey(Artist, on_delete=models.CASCADE)
-
-    def __str__(self) -> str:
-        return f'{self.song.name} - {self.artist}'
-
-class CollabArtist(models.Model):
-    song = models.ForeignKey(Song, on_delete=models.CASCADE)
-    artist = models.ForeignKey(Artist, on_delete=models.CASCADE, default=None)
-    
-    def __str__(self) -> str:
-        return f'{self.song.name} - {self.artist.artist_name}'
 
 class PlayedSong(models.Model):
     song = models.ForeignKey(Song, on_delete=models.CASCADE)
