@@ -11,8 +11,6 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
 from pathlib import Path
-from google.oauth2 import service_account
-from datetime import timedelta
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -46,10 +44,12 @@ INSTALLED_APPS = [
     'api.apps.ApiConfig',
 ]
 
+
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        # 'rest_framework.authentication.BasicAuthentication',
-        # 'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
         'knox.auth.TokenAuthentication',
     ]
 }
@@ -101,7 +101,7 @@ WSGI_APPLICATION = 'SpUStify.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'SPUSTIFY',
+        'NAME': 'SpUStify',
         'USER': 'postgres',
         'PASSWORD': 'Thanh.0504',
         'HOST': 'localhost',
