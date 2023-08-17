@@ -46,12 +46,17 @@ INSTALLED_APPS = [
 
 
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.BasicAuthentication',
-        'rest_framework.authentication.SessionAuthentication',
+    # 'DEFAULT_AUTHENTICATION_CLASSES':
+    # 'rest_framework.authentication.BasicAuthentication',
+
+
+    'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
         'knox.auth.TokenAuthentication',
-    ]
+    )
+
+
 }
 
 FILE_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024
@@ -103,7 +108,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'SpUStify',
         'USER': 'postgres',
-        'PASSWORD': 'Thanh.0504',
+        'PASSWORD': '123456789',
         'HOST': 'localhost',
         'PORT': '5432',
     }
