@@ -61,8 +61,8 @@ const TopPlay = () => {
   if (error) return <Error />;
   console.log(data)
   
-  const likes = data['Leaderboard_by_likes'];
-  const listens = data["Leaderboard_by_listens"];
+  const likes = data['likes_leaderboard'];
+  const listens = data["listens_leaderboard"];
   const dataLikes = Array.isArray(likes) ? likes : [likes];
   const dataListens = Array.isArray(listens) ? listens : [listens];
 

@@ -2,19 +2,21 @@ import { Button } from "@material-tailwind/react";
 import { useSelector } from 'react-redux';
 
 import { Error, Loader, SongCard } from '../components';
-import { useRegisterUser} from '../redux/services/CoreApi';
+import { useLoginMutation} from '../redux/services/CoreApi';
 const SignIn = () => {
-    const { data, isLoading, error } = useRegisterUser();
-    if (isLoading) return <Loader title='Sending' />;
-    if (error) return <Error />;
-    const handleLogin = async () => {
+  const [login, { isLoading, error, data }] = useLoginMutation();
+    const handleLogin =  () => {
         const userData = {
-          username: 'trinhh123',
+          username: 'trinh',
           password: '123456789',
           
         };
-      
-        const  { data, error } = await useRegisterUser(userData).unwrap(); // Gọi API đăng ký và unwrap kết quả
+        login(userData);
+        
+         // Gọi API đăng ký và unwrap kết quả
+        
+        if (isLoading) return <Loader title='Sending' />;
+        if (error) return <Error />;
         if (data) {
             // Xử lý dữ liệu
             console.log(data);
@@ -25,7 +27,7 @@ const SignIn = () => {
       };
     return (
         <>
-        <Button onClick={handleRegister}>Sign Up</Button>
+        <Button onClick={handleLogin}>Sign Up</Button>
         </>
     )
 };

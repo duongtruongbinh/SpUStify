@@ -4,9 +4,10 @@ import ArtistDetails from './ArtistDetails';
 import SongDetails from './SongDetails';
 import Search from './Search';
 import TopCharts from './TopCharts';
-import AroundYou from './AroundYou';
+import FavouriteSong from './FavouriteSong'
 import SignIn from './SignIn';
 import SignUp from './SignUp';
+
 
 export {
   HomePage,
@@ -15,7 +16,7 @@ export {
   ArtistDetails,
   SongDetails,
   TopCharts,
-  AroundYou,
+  FavouriteSong,
   SignIn,
   SignUp
 };
