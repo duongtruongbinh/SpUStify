@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import Na from '../assets/Liu-Grace.jpeg';
 
 import PlayPause from './PlayPause';
 
@@ -9,23 +10,24 @@ const SongBar = ({ song, index, artistId, isPlaying, activeSong, handlePauseClic
     <div className="flex-1 flex flex-row justify-between items-center">
       <img
         className="w-20 h-20 rounded-2xl"
-        src={artistId ? song?.attributes?.artwork?.url.replace('{w}', '125').replace('{h}', '125') : song?.images?.coverart}
-        alt={song?.title}
+        //src={artistId ? song?.attributes?.artwork?.url.replace('{w}', '125').replace('{h}', '125') : song?.avatar?.coverart}
+        src = "../../SpUStify/avatars/happy.jpeg"
+        alt={song?.name}
       />
       <div className="flex-1 flex flex-col justify-center mx-3">
         {!artistId ? (
-          <Link to={`/songs/${song.key}`}>
+          <Link to={`/songs/${song.id}`}>
             <p className="text-xl font-bold text-gray-100">
-              {song?.title}
+              {song?.name}
             </p>
           </Link>
         ) : (
           <p className="text-xl font-bold text-gray-100">
-            {song?.attributes?.name}
+            {song?.name}
           </p>
         )}
         <p className="text-base text-gray-300 mt-1">
-          {artistId ? song?.attributes?.albumName : song?.subtitle}
+          abulm nhưng không có
         </p>
       </div>
     </div>

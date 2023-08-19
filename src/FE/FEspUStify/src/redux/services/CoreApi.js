@@ -26,7 +26,7 @@ export const CoreApi = createApi({
     getTopCharts: builder.query({ query: () => 'home/leaderboard/' }), // Adjust endpoint path
     getSongs: builder.query({ query: (genre) => 'songs/' }), // Adjust endpoint path
     getSongRecommend: builder.query({ query: () => 'home/recommend/' }),
-    getSongDetails: builder.query({ query: ({ songid }) => `home/songs/${songid}` }), // Adjust endpoint path
+    getSongDetails: builder.query({ query: ({ songid }) => `songs/${songid}` }), // Adjust endpoint path
     getPlaylists: builder.query({ query: () => 'playlists/' }), // Adjust endpoint path
     getArtistDetails: builder.query({ query: ({ artistId }) => `v2/artists/details?artist_id=${artistId}` }), // Adjust endpoint path
     getFavouriteSongs: builder.query({ query: () => 'home/favourite/' }),

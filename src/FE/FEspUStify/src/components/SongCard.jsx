@@ -54,17 +54,20 @@ const SongCard = ({ song, isPlaying, activeSong, index, data }) => {
 
 <div className="  mt-4 ml-2 absolute inline-flex p-[10px 30px 1px 1px] flex-col justify-end items-start ">
 <p className='max-w-[150px] font-bold z-100 text-lg text-gray-100 truncate'>
+  {/* QUA PAGE SONG DETAILS */}
           <Link to={`/songs/${song?.id}`}>
+            
             {song.name}
           </Link>
         </p>
         <p className=' text-xs truncate text-gray-300 '>
-          <Link to={song.song_artists
-            ? `/artists/${song?.song_artists[0]?.adamid}`
+          {/* QUA PAGE ARTIST DETAIL */}
+          <Link to={song.main_artist
+            ? `/artists/${song?.main_artist.id}`
             : '/top-artists'}
           >
-            {/* {song.song_artists[0]} */}
-            abc
+            {song?.main_artist.artist_name}
+            
           </Link>
         </p>
 </div>

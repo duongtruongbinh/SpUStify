@@ -128,7 +128,7 @@ const TopCharts = () => {
              />
            <div className='flex flex-row items-center hover:bg-gray-400/50 py-2 p-4 rounded-2xl cursor-pointer mb-2'> 
 
-           {
+   {
   likedSongsId.includes(song.name) && <Liked className='mb-2 text-center'  handleLike={ () => handleLike(song.id,song.name)}  />
 }
 {
