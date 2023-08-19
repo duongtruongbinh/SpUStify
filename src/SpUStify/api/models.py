@@ -9,8 +9,8 @@ class Profile(models.Model):
     dob = models.DateField(verbose_name='Date Of Birth')
     email = models.EmailField(max_length=254, verbose_name='Email')
     phone = models.CharField(max_length=10, verbose_name='Phone Number (+84)')
-    avatar = models.ImageField(upload_to='avatars/', null=True, blank=True)
-    background_image = models.ImageField(upload_to='backgrounds/', null=True, blank=True)
+    avatar = models.ImageField(upload_to='avatars', null=True, blank=True)
+    background_image = models.ImageField(upload_to='backgrounds', null=True, blank=True)
     
     def __str__(self) -> str:
         return self.full_name
@@ -26,10 +26,10 @@ class Song(models.Model):
     name = models.CharField(max_length=50, verbose_name='Song Name', unique = True)
     likes = models.PositiveIntegerField(default=0, verbose_name='Number Of Likes')
     listens = models.PositiveIntegerField(default=0, verbose_name='Number Of Listens')
-    song_file = models.FileField(upload_to='audios/', null=True, blank=True)
-    lyric_file = models.FileField(upload_to='lyrics/', null=True, blank=True)
-    avatar = models.ImageField(upload_to='avatars/', null=True, blank=True)
-    background_image = models.ImageField(upload_to='backgrounds/', null=True, blank=True)
+    song_file = models.FileField(upload_to='audios', null=True, blank=True)
+    lyric_file = models.FileField(upload_to='lyrics', null=True, blank=True)
+    avatar = models.ImageField(upload_to='avatars', null=True, blank=True)
+    background_image = models.ImageField(upload_to='backgrounds', null=True, blank=True)
     created_date = models.DateTimeField(auto_now_add=True)
     main_artist = models.ForeignKey(Artist, on_delete=models.CASCADE)
     
@@ -52,8 +52,8 @@ class Playlist(models.Model):
     status = models.CharField(max_length=3, choices=STATUS_CHOICES)
     created_date = models.DateTimeField(auto_now_add=True)
     songs = models.ManyToManyField(Song, verbose_name="List of songs")
-    avatar = models.ImageField(upload_to='avatars/', null=True, blank=True)
-    background_image = models.ImageField(upload_to='backgrounds/', null=True, blank=True)
+    avatar = models.ImageField(upload_to='avatars', null=True, blank=True)
+    background_image = models.ImageField(upload_to='backgrounds', null=True, blank=True)
     account = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Playlists of account")
 
     def __str__(self) -> str:

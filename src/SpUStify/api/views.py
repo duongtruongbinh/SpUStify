@@ -659,3 +659,4 @@ class LikePlaylistAPI(APIView):
 
     def post(self, request, playlist_id=None):
         return self.like_song(request, playlist_id)
+

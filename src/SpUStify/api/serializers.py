@@ -55,15 +55,11 @@ class FeaturesArtistSerializer(ModelSerializer):
         fields = ['artist_name']
         
 class SongSerializer(ModelSerializer):
-    song_artists = SerializerMethodField()
-
-    def get_song_artists(self, song):
-        artists = Artist.objects.filter(Q(id=song.main_artist.id)).distinct()
-        return [artist.artist_name for artist in artists]
+    main_artist = ArtistSerializer(many=False)
 
     class Meta:
         model = Song
-        fields = ('id', 'avatar', 'name', 'song_artists')
+        fields = ('id', 'avatar', 'name', 'main_artist')
 
 class DetailSongSerializer(ModelSerializer):
     lyric_data = SerializerMethodField()
@@ -132,67 +128,37 @@ class CreatePlayedSongSerializer(serializers.ModelSerializer):
         fields = '__all__'
         
 class PlayedSongSerializer(ModelSerializer):
-    song_name = serializers.CharField(source='song.name', read_only=True)
-    artist_name = serializers.SerializerMethodField()
-
-    def get_artist_name(self, played_song):
-        artists = Artist.objects.filter(Q(id=played_song.song.main_artist.id)).distinct()
-        return [artist.artist_name for artist in artists]
+    song = SongSerializer(many=False)
 
     class Meta:
         model = PlayedSong
-        fields = ['song_name', 'artist_name']
-
+        fields = ['song']
 
 class UserPlayedSongSerializer(ModelSerializer):
-    song_name = serializers.CharField(source='played_song.song.name', read_only=True)
-    artist_name = serializers.SerializerMethodField()
+    played_song = SerializerMethodField()
 
-    def get_artist_name(self, user_played_song):
-        artists = Artist.objects.filter(Q(id=user_played_song.played_song.song.main_artist.id)).distinct()
-        return [artist.artist_name for artist in artists]
-    
+    def get_played_song(self, user_played_song):
+        played_song_data = SongSerializer(user_played_song.played_song.song).data
+        return played_song_data
+
     class Meta:
         model = UserPlayedSong
-        fields = ['song_name', 'artist_name']
-
+        fields = ['played_song']
 
 class PlayedPlaylistSerializer(serializers.ModelSerializer):
-    playlist_name = serializers.CharField(source='playlist.name', read_only=True)
-    songs = serializers.SerializerMethodField()
-
-    def get_songs(self, played_playlist):
-        song_data = []
-        for song in played_playlist.playlist.songs.all():
-            artists = Artist.objects.filter(Q(id = song.main_artist.id)).distinct()
-            artist_data = [artist.artist_name for artist in artists]
-            song_data.append({
-                'song_name': song.name,
-                'artist_names': artist_data
-            })
-        return song_data
+    playlist = PlaylistSerializer(many=False)
 
     class Meta:
         model = PlayedPlaylist
-        fields = ['playlist_name', 'songs']
-
-
+        fields = ['playlist']
 
 class UserPlayedPlaylistSerializer(ModelSerializer):
-    playlist_name = serializers.CharField(source='played_playlist.playlist.name', read_only=True)
-    songs = serializers.SerializerMethodField()
+    played_playlist = SerializerMethodField()
 
-    def get_songs(self, user_played_playlist):
-        song_data = []
-        for song in user_played_playlist.played_playlist.playlist.songs.all():
-            artists = Artist.objects.filter(Q(id = song.main_artist.id)).distinct()
-            artist_data = [artist.artist_name for artist in artists]
-            song_data.append({
-                'song_name': song.name,
-                'artist_names': artist_data
-            })
-        return song_data
+    def get_played_playlist(self, user_played_playlist):
+        played_playlist_data = PlaylistSerializer(user_played_playlist.played_playlist.playlist).data
+        return played_playlist_data
     
     class Meta:
         model = UserPlayedPlaylist
-        fields = ['playlist_name', 'songs']
+        fields = ['played_playlist']

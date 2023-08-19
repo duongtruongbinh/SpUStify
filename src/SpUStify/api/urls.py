@@ -52,4 +52,4 @@ urlpatterns = [
     path('playlists/<str:playlist_id>/like/', LikePlaylistAPI.as_view(), name='like_playlist'),
     path('your_playlists/', YourPlaylistsViewAPI.as_view(), name="get_your_playlists"),
     path('your_playlists/<str:playlist_id>', YourPlaylistsViewAPI.as_view(), name="get_your_playlist"),
-]
+] 
