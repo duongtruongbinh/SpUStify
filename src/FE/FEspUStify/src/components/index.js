@@ -13,6 +13,10 @@ import Error from './Error';
 import PlaylistCard from './PlaylistCard';
 import ButtonNext from './ButtonNext';
 import ButtonPrev from './ButtonPrev';
+import LeaderboardCard from './LeaderboardCard';
+import Like from './Like';
+import Liked from './Liked';
+import AddPlaylist from './AddPlaylist';
 export {
  
   Sidebar,
@@ -31,5 +35,9 @@ export {
   
   PlaylistCard,
   ButtonNext,
-  ButtonPrev
+  ButtonPrev,
+  LeaderboardCard,
+  Like,
+  Liked,
+  AddPlaylist
 };

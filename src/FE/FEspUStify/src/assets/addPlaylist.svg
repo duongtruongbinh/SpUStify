@@ -1,0 +1,6 @@
+<svg className="w-14 h-14" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 55 53" fill="none">
+  <path d="M4.52588 10.8699H31.6809V15.2178H4.52588V10.8699Z" fill="white" fillOpacity="0.9"/>
+  <path d="M4.52588 19.5659H31.6809V23.9139H4.52588V19.5659Z" fill="white" fillOpacity="0.9"/>
+  <path d="M22.6292 28.2617H4.52588V32.6097H22.6292V28.2617Z" fill="white" fillOpacity="0.9"/>
+  <path d="M36.2067 19.5659H40.7325V28.2619H49.7842V32.6098H40.7325V41.3058H36.2067V32.6098H27.155V28.2619H36.2067V19.5659Z" fill="white" fillOpacity="0.9"/>
+</svg>

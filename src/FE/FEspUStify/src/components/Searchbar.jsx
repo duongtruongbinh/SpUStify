@@ -12,7 +12,7 @@ const Searchbar = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
+//chuyển sang trang chứa kết quả search
     navigate(`/search/${searchTerm}`);
   };
  

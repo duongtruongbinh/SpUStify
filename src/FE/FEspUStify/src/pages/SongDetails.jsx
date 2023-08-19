@@ -4,14 +4,14 @@ import { useSelector, useDispatch } from 'react-redux';
 import { DetailsHeader, Error, Loader, RelatedSongs } from '../components';
 
 import { setActiveSong, playPause } from '../redux/features/playerSlice';
-import { useGetSongDetailsQuery, useGetSongRelatedQuery } from '../redux/services/CoreApi';
+import { useGetSongDetailsQuery, useGetSongsQuery  } from '../redux/services/CoreApi';
 
 const SongDetails = () => {
   const dispatch = useDispatch();
   const { songid, id: artistId } = useParams();
   const { activeSong, isPlaying } = useSelector((state) => state.player);
 
-  const { data, isFetching: isFetchinRelatedSongs, error } = useGetSongRelatedQuery({ songid });
+  const { data, isFetching: isFetchinRelatedSongs, error } = useGetSongsQuery({ songid });
   const { data: songData, isFetching: isFetchingSongDetails } = useGetSongDetailsQuery({ songid });
 
   if (isFetchingSongDetails && isFetchinRelatedSongs) return <Loader title="Searching song details" />;

@@ -1,57 +1,80 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ButtonNext, ButtonPrev,Error, Loader, SongCard, BannerCard, PlaylistCard } from '../components';
 import { genres } from '../assets/constants';
-import { selectGenreListId } from '../redux/features/playerSlice';
-import { useGetHomeQuery} from '../redux/services/CoreApi';
+import { selectGenreListId,setLikeSongId } from '../redux/features/playerSlice';
+import { useGetHomeQuery, useGetFavouriteSongsQuery} from '../redux/services/CoreApi';
 import { useGetTopChartsQuery } from '../redux/services/CoreApi';
 
-const HomePage = () => {
+const HomePage =  () => {
 
-  //const itemsPerPage = 4;
-  const [currentItem, setCurrentItem] = useState(4);
+
   const [startIndexSong, setStartIndexSong] = useState(0);
   const [endIndexSong, setEndIndexSong] = useState(4);
   const [startIndexPlaylist, setStartIndexPlaylist] = useState(0);
   const [endIndexPlaylist, setEndIndexPlaylist] = useState(4);
-
+  
   const dispatch = useDispatch();
   const { activeSong, isPlaying } = useSelector((state) => state.player);
-  const { data, isFetching, error } = useGetHomeQuery();
+ // debugger
+ const { data: currentData, isLoading: isFavouriteLoading, isError: isFavouriteError } = useGetFavouriteSongsQuery();
+  const { data: topChartsData, isFetching: isTopChartsFetching, error: topChartsError } =  useGetHomeQuery(); // Add this line
+
+
+  
+ useEffect(() => {
+  if (!isFavouriteLoading && !isFavouriteError && currentData) {
+    console.log(currentData)
+    const songLiked = currentData["favourite_songs"];
+    console.log(songLiked)
+    const dataLikeSong = Array.isArray(songLiked) ? songLiked : [songLiked];
+    dataLikeSong.forEach((song) => {
+      
+      dispatch(setLikeSongId(song.song_name));
+    });
+  }
+}, [currentData, isFavouriteLoading, isFavouriteError, dispatch]);
+
  
 
-  if (isFetching) return <Loader title='Loading songs...' />;
+if (isFavouriteLoading || isTopChartsFetching) {
+  return <Loader title='Loading data...' />;
+}
 
-  if (error) return <Error />;
+if (isFavouriteError || topChartsError) {
+  return <Error message='Error fetching data.' />;
+}
   
-  const ListPlaylist = data['List_of_playlists'];
+  const ListPlaylist =  topChartsData['playlists'];
 
-  const ListSong =  data['List_of_songs'];
+  const ListSong =   topChartsData['songs'];
   
   const dataSong = Array.isArray(ListSong) ? ListSong : [ListSong];
   const dataPlaylist = Array.isArray(ListPlaylist) ? ListPlaylist : [ListPlaylist];
   // const genreTitle = genres.find(({ value }) => value === genreListId)?.title;
 
   const handleNextPageSong = () => {
-    setStartIndexSong((start) => endIndexSong + 1 <  dataSong.leng? start + 1: start );
-    setEndIndexSong((end)=> endIndexSong + 1 < dataSong? end + 1: end);
+    
+    setStartIndexSong(startIndexSong + 1  );
+    setEndIndexSong( endIndexSong + 1 );
 
+console.log(startIndexSong)
   };
 
   const handlePreviousPageSong = () => {
-    setStartIndexSong((start) => startIndexSong - 1 > 0? start - 1: start);
-    setEndIndexSong((end)=> startIndexSong - 1 > 0?  end - 1: end);
+    setStartIndexSong( startIndexSong - 1 );
+    setEndIndexSong(endIndexSong - 1 );
 
   };
   const handleNextPagePlaylist = () => {
-    setStartIndexPlaylist((start) => endIndexPlaylist + 1 <  dataPlaylist.leng? start + 1: start);
-    setEndIndexPlaylist((end)=> endIndexPlaylist + 1 <  dataPlaylist.leng? end + 1: end);
+    setStartIndexPlaylist(startIndexPlaylist + 1 );
+    setEndIndexPlaylist( endIndexPlaylist + 1 );
 
   };
 
   const handlePreviousPagePlaylist = () => {
-    setStartIndexPlaylist((start) => startIndexPlaylist - 1 > 0? start - 1: start);
-    setEndIndexPlaylist((end)=> startIndexPlaylist -1 > 0 ? end - 1: end);
+    setStartIndexPlaylist(startIndexPlaylist - 1 );
+    setEndIndexPlaylist(endIndexPlaylist -1 );
 
   };
 
@@ -65,6 +88,7 @@ const HomePage = () => {
 
 
   const hasPreviousPageSong = startIndexSong > 0;
+ 
   const hasNextPageSong = endIndexSong < dataSong.length ;
   const hasPreviousPagePlaylist = startIndexPlaylist > 0;
   const hasNextPagePlaylist =  endIndexPlaylist < dataPlaylist.length;
@@ -97,17 +121,17 @@ const HomePage = () => {
 <h2 className='text-white '>Recommend Songs</h2>
 {/* <Link to=''>
 </Link> */}
-<div className='absolute ml-0'>
+
+<div className=' relative flex flex-wrap sm:justify-start justify-center gap-8'>
+
+
+<div className='z-10 self-center left-[-20px] absolute'>
   {
     hasPreviousPageSong && (
-<ButtonPrev  />
+<ButtonPrev onClick = {handlePreviousPageSong}  />
     )
   }
   </div>
-<div className='flex flex-wrap sm:justify-start justify-center gap-8'>
-
-
-{/* <BannerCard /> */}
 
 
 
@@ -117,28 +141,36 @@ const HomePage = () => {
     song={song}
     isPlaying={isPlaying}
     activeSong={activeSong}
-    data={data}
+    data={topChartsData}
     index={index}
   />
 )
 )}
-</div  >
-<div>
+
+<div className='absolute self-center right-[-30px]' >
 {
   hasNextPageSong && (
 <ButtonNext onClick = {handleNextPageSong}/>
   )
 }
 </div>
+</div  >
+
 
 
 
 
 <h2 className='text-white ml-0'>Recommend Playlists</h2>
-<div className='flex flex-wrap sm:justify-start justify-center gap-8'>
+<div className=' relative flex flex-wrap sm:justify-start justify-center gap-8'>
+<div className='z-10 absolute self-center left-[-20px]' >
+{
+  hasPreviousPagePlaylist && (
+<ButtonPrev onClick = {handlePreviousPagePlaylist}/>
+  )
+}
+</div>
 
 
-{/* <BannerCard /> */}
 
 
 {visibleDataPlaylist?.map((song, index) => (
@@ -147,11 +179,19 @@ const HomePage = () => {
     song={song}
     isPlaying={isPlaying}
     activeSong={activeSong}
-    data={data}
+    data={topChartsData}
     index={index}
   />
 )
 )}
+
+<div className='absolute self-center right-[-30px] ' >
+{
+  handleNextPagePlaylist && (
+<ButtonNext onClick = {handleNextPagePlaylist}/>
+  )
+}
+</div>
 </div>
 
 </div>
