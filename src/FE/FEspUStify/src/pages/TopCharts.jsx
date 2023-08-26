@@ -3,7 +3,7 @@ import { Dispatch } from 'react';
 import { useState, useEffect } from 'react';
 import React from 'react';
 import { Error, Loader, SongCard, LeaderboardCard, Like,Liked,AddPlaylist  } from '../components';
-import { useGetTopChartsQuery, useLikeSongMutation } from '../redux/services/CoreApi';
+import { useGetTopChartsQuery, useLikeSongMutation, usePlaySongMutation } from '../redux/services/CoreApi';
 
 
 import { playPause, setActiveSong, setLikeSongId, setRemoveSong } from '../redux/features/playerSlice';
@@ -16,36 +16,11 @@ const TopCharts = () => {
   console.log("huhu")
   console.log(likedSongsId)
 
-  const [setLikeSongName, { isLoading, response}] = useLikeSongMutation();
+  const [setLikeSongName, { isLoading}] = useLikeSongMutation();
   const { data, isFetching, error } =  useGetTopChartsQuery();
+  const [setPlaySong, {isLoading: isLoadingSong, response}] = usePlaySongMutation();
 
-  // const handleLike = async (songId, songName) => {
-  //   console.log(songId);
-    
-    // Tạo một Promise để đảm bảo thứ tự xử lý
-  //   return new Promise(async (resolve, reject) => {
-  //     try {
-  //       debugger
-  //       const request = await dispatch(setLikeSongName(songId));
-  //       debugger
-        
-  //       if (likedSongsId.includes(songName)) {
-
-  //         console.log(songName);
-  //         await dispatch(setRemoveSong(songName));
-  //       } else {
-  //         debugger
-  //         await dispatch(setLikeSongId(songName));
-          
-  //         debugger
-  //       }
-        
-  //        // Hoàn thành Promise khi tất cả hành động hoàn tất
-  //     } catch (error) {
-  //       reject(error); // Gửi lỗi nếu có bất kỳ lỗi nào xảy ra
-  //     }
-  //   });
-  // }
+  
 
   const handleLike = async (songId,songName) => {
     console.log(songId)
@@ -67,37 +42,37 @@ const TopCharts = () => {
    
   
   };
+  const handlePauseClick = () => {
+    dispatch(playPause(false));
+  };
 
+  const handlePlayClick = (song, data, index) => {
+    try {
+      const [{request}]=  dispatch(setPlaySong(song.id));
+    } catch(error){
+      console.log(error);
+    }
+    if(isLoading){
+      return <Loader  title='Loading DATA...' />
+    }
+    dispatch(setActiveSong({ song, data, index }));
+    dispatch(playPause(true));
+  };
 
-  if (isFetching || isLoading) return <Loader title='Loading DATA...' />;
+  if (isFetching || isLoading || isLoadingSong) return <Loader title='Loading DATA...' />;
 
   if (error ) return <Error />;
 
  
   const likes = data['likes_leaderboard'];
+  console.log("leader like ne")
+  console.log(likes)
   const listens = data["listens_leaderboard"];
   const dataLikes = Array.isArray(likes) ? likes : [likes];
   const dataListens = Array.isArray(listens) ? listens : [listens];
  
-  const handlePauseClick = () => {
-    dispatch(playPause(false));
-  };
-
-  const handlePlayClick = (song, index) => {
-    dispatch(setActiveSong({ song, data, index }));
-    dispatch(playPause(true));
-  };
+ 
   
-
-  
-
-
-
- 
- 
-
- 
-
   return (
     <div  className=' flex flex-col'>
       <div className='w-full flex flex-col'>
@@ -124,7 +99,7 @@ const TopCharts = () => {
                isPlaying={isPlaying}
                activeSong={activeSong}
                handlePauseClick={handlePauseClick}
-               handlePlayClick={() => handlePlayClick(song, index)}
+               handlePlayClick={() => handlePlayClick(song, likes, index)}
              />
            <div className='flex flex-row items-center hover:bg-gray-400/50 py-2 p-4 rounded-2xl cursor-pointer mb-2'> 
 

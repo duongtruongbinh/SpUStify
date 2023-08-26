@@ -11,7 +11,7 @@ const SongBar = ({ song, index, artistId, isPlaying, activeSong, handlePauseClic
       <img
         className="w-20 h-20 rounded-2xl"
         //src={artistId ? song?.attributes?.artwork?.url.replace('{w}', '125').replace('{h}', '125') : song?.avatar?.coverart}
-        src = "../../SpUStify/avatars/happy.jpeg"
+        src = {`http://127.0.0.1:8000${song.avatar }`}
         alt={song?.name}
       />
       <div className="flex-1 flex flex-col justify-center mx-3">

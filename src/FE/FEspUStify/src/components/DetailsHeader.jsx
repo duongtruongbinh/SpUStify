@@ -4,15 +4,14 @@ import Na from '../assets/Liu-Grace.jpeg';
 
 const DetailsHeader = ({ artistId, songData }) => (
   <div className="relative w-full flex flex-col">
-    <div className="w-full bg-gradient-to-l from-transparent to-violet-900 sm:h-48 h-28" />
+    <div className="w-full bg-gradient-to-l from-transparent to-violet-900 sm:h-48 h-28"
+     style={{ backgroundImage: `url(http://127.0.0.1:8000${songData.background_image})` }}
+    />
 
     <div className="absolute inset-0 flex items-center">
       <img
         alt="profile"
-        src={
-          Na
-            //songData?.images?.coverart
-        }
+        src = {`http://127.0.0.1:8000${songData.avatar }`}
         className="sm:w-48 w-28 sm:h-48 h-28 rounded-full object-cover border-2 shadow-xl shadow-black"
       />
 
@@ -22,13 +21,13 @@ const DetailsHeader = ({ artistId, songData }) => (
         </p>
         {!artistId && (
           <Link to={`/artists/${artistId}`}>
-            <p className="text-base text-gray-300 mt-2">{songData?.subtitle}</p>
+            <p className="text-base text-gray-300 mt-2">{songData?.name}</p>
           </Link>
         )}
 
-        <p className="text-base text-gray-300 mt-2">
-        abc
-        </p>
+        {/* <p className="text-base text-gray-300 mt-2">
+        {songData.main_aritst.artist_name}
+        </p> */}
       </div>
     </div>
 

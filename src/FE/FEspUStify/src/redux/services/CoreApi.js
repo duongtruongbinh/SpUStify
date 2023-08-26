@@ -32,6 +32,7 @@ export const CoreApi = createApi({
     getFavouriteSongs: builder.query({ query: () => 'home/favourite/' }),
     getSongsBySearch: builder.query({ query: (searchTerm) => `home/songs?search_type=SONGS_ARTISTS&query=${searchTerm}` }), // Adjust endpoint path
     getHome: builder.query({ query: () => 'home/' }),
+    playSong: builder.mutation({query : (songID)  => ({ url:  `songs/${songID}/play/`, method: 'POST'  })}),
     likeSong: builder.mutation({query : (songID)  => ({ url:  `songs/${songID}/like/`, method: 'POST'  })}),
     registerUser: builder.mutation({ query: (userData) => ({ url: 'register/', method: 'POST',  body: {
       username: userData.username,
@@ -57,6 +58,7 @@ export const {
   useGetFavouriteSongsQuery,
   useGetSongsBySearchQuery,
   useGetHomeQuery,
+  usePlaySongMutation,
   useLikeSongMutation,
   useRegisterUserMutation,
   useLoginMutation,
