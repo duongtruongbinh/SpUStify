@@ -6,6 +6,10 @@ import { selectGenreListId,setLikeSongId } from '../redux/features/playerSlice';
 import { useGetHomeQuery, useGetFavouriteSongsQuery, usePlaySongMutation} from '../redux/services/CoreApi';
 import { useGetTopChartsQuery } from '../redux/services/CoreApi';
 import { setActiveSong } from '../redux/features/playerSlice';
+
+import { playPause } from '../redux/features/playerSlice';
+
+
 const HomePage =  () => {
 
   
