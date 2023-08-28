@@ -1,5 +1,5 @@
 
-import { createApi, fetchBaseQuery} from '@reduxjs/toolkit/query/react';
+import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 
 export const CoreApi = createApi({
@@ -11,14 +11,14 @@ export const CoreApi = createApi({
     baseUrl: 'http://localhost:8000/api/', // Adjust the base URL for your local API
     prepareHeaders: (headers) => {
       // No need for the X-RapidAPI-Key header for local development
-      const token = btoa('trinh:123456789'); // Encode the username and password
+      const token = btoa('3107:3107'); // Encode the username and password
       headers.set('Authorization', `Basic ${token}`);
       return headers;
     },
-    
+
     credentials: "same-origin"
   }),
-  
+
   // query là get
   //mutation là post
   //các Actions
@@ -32,18 +32,25 @@ export const CoreApi = createApi({
     getFavouriteSongs: builder.query({ query: () => 'home/favourite/' }),
     getSongsBySearch: builder.query({ query: (searchTerm) => `home/songs?search_type=SONGS_ARTISTS&query=${searchTerm}` }), // Adjust endpoint path
     getHome: builder.query({ query: () => 'home/' }),
-    playSong: builder.mutation({query : (songID)  => ({ url:  `songs/${songID}/play/`, method: 'POST'  })}),
-    likeSong: builder.mutation({query : (songID)  => ({ url:  `songs/${songID}/like/`, method: 'POST'  })}),
-    registerUser: builder.mutation({ query: (userData) => ({ url: 'register/', method: 'POST',  body: {
-      username: userData.username,
-      password: userData.password, email: userData.email, isArtist: userData.email
-    },
-      })}),
-      login:builder.mutation({query: (userData) => ( {url: 'login/', method: 'POST', body: {  username: userData.username,  password: userData.password
-          }
+    playSong: builder.mutation({ query: (songID) => ({ url: `songs/${songID}/play/`, method: 'POST' }) }),
+    likeSong: builder.mutation({ query: (songID) => ({ url: `songs/${songID}/like/`, method: 'POST' }) }),
+    registerUser: builder.mutation({
+      query: (userData) => ({
+        url: 'register/', method: 'POST', body: {
+          username: userData.username,
+          password: userData.password, email: userData.email, isArtist: userData.email
+        },
+      })
+    }),
+    login: builder.mutation({
+      query: (userData) => ({
+        url: 'login/', method: 'POST', body: {
+          username: userData.username, password: userData.password
         }
-      )})
+      }
+      )
     })
+  })
 });
 
 
@@ -62,5 +69,5 @@ export const {
   useLikeSongMutation,
   useRegisterUserMutation,
   useLoginMutation,
-  
+
 } = CoreApi;

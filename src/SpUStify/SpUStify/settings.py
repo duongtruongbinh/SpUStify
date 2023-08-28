@@ -107,9 +107,9 @@ WSGI_APPLICATION = 'SpUStify.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'SpUStify',
+        'NAME': 'SPUSTIFY',
         'USER': 'postgres',
-        'PASSWORD': '123456789',
+        'PASSWORD': '3107',
         'HOST': 'localhost',
         'PORT': '5432',
     }
