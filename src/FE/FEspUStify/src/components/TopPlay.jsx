@@ -8,7 +8,7 @@ import Loader from './Loader';
 import Error from './Error';
 import PlayPause from './PlayPause';
 import { playPause, setActiveSong } from '../redux/features/playerSlice';
-import { useGetTopChartsQuery  } from '../redux/services/CoreApi';
+import { useGetTopChartsQuery, usePlaySongMutation  } from '../redux/services/CoreApi';
 
 import Na from '../assets/bg1.jpeg';
 
@@ -16,13 +16,15 @@ import 'swiper/css';
 import 'swiper/css/free-mode';
 
 const TopChartCard = ({ song, index, isPlaying, activeSong, handlePauseClick, handlePlayClick }) => (
+
+  
   <div className='w-full flex flex-row items-center hover:bg-gray-400/50 py-2 p-4 rounded-2xl cursor-pointer mb-2'>
     <h3 className='font-bold text-base text-gray-100 mr-3'>
       {index + 1}.
     </h3>
     <div className='flex-1 flex flex-row justify-between items-center'>
       <img 
-        src={Na}
+        src = {`http://127.0.0.1:8000${song.avatar }`}
         //{song?.images?.coverart} 
         alt={song?.name} 
         className='w-20 h-20 rounded-2xl'
@@ -33,10 +35,11 @@ const TopChartCard = ({ song, index, isPlaying, activeSong, handlePauseClick, ha
             {song?.name}
           </p>
         </Link>
-        <Link to={`/artists/${song?.song_artists[0].adamid}`}>
+        <Link to={`/artists/${song?.main_artist.id}`}>
           <p className='text-gray-400 text-xs mt-1'>
            {/* {song?.subtitle} */}
-           {song.name}
+           
+           {song?.main_artist.artist_name}
           </p>
         </Link>
       </div>
@@ -56,7 +59,36 @@ const TopPlay = () => {
   const dispatch = useDispatch();
   const { activeSong, isPlaying } = useSelector((state) => state.player);
   const  {data, isFetching, error} = useGetTopChartsQuery();
-  if (isFetching) return <Loader title='Loading songs...' />;
+  const [setPlaySong, {isLoading, response}] = usePlaySongMutation();
+
+
+
+  const handlePauseClick = () => {
+    dispatch(playPause(false));
+  };
+
+  const handlePlayClick = (song,data, index) => {
+    console.log("alo")
+    console.log(song)
+    try {
+      const [{request}]=  dispatch(setPlaySong(song.id));
+    } catch(error){
+      console.log(error);
+    }
+    if(isLoading){
+      return <Loader  title='Loading DATA...' />
+    }
+    dispatch(setActiveSong({ song, data, index }));
+    dispatch(playPause(true));
+  };
+ 
+
+
+
+
+
+
+  if (isFetching || isLoading) return <Loader title='Loading songs...' />;
 
   if (error) return <Error />;
   console.log(data)
@@ -77,14 +109,6 @@ const TopPlay = () => {
   const topPlays = dataLikes?.slice(0, 5);
  
 
-  const handlePauseClick = () => {
-    dispatch(playPause(false));
-  };
-
-  const handlePlayClick = (song, index) => {
-    dispatch(setActiveSong({ song, data, index }));
-    dispatch(playPause(true));
-  };
  // ref={divRef}
   return (
     <div  className='xl:ml-6 ml-0 xl:mb-0 mb-6 flex-1 xl:max-w-[300px] max-w-full flex flex-col'>
@@ -101,11 +125,12 @@ const TopPlay = () => {
             <TopChartCard
               key={song.id}
               song={song}
+             
               index={index}
               isPlaying={isPlaying}
               activeSong={activeSong}
               handlePauseClick={handlePauseClick}
-              handlePlayClick={() => handlePlayClick(song, index)}
+              handlePlayClick={() => handlePlayClick(song, topPlays,index)}
             />
           ))}
         </div>
@@ -129,17 +154,19 @@ const TopPlay = () => {
           className='mt-4'
         >
           {topPlays?.map((song, index) => (
+            
             <SwiperSlide
               key={index}
               style={{ width: '25%', height: 'auto' }}
               className='shadow-lg rounded-full animate-slideright'
             >
-              <Link to={`/artists/${song?.song_artists[0]}`}>
+              <Link to={`/artists/${song?.main_artist[0]}`}>
                 <img 
-                  src={Na}
+                   src = {`http://127.0.0.1:8000${song.avatar }`}
                   //{song?.avatar} 
                   alt='name'
-                  className='rounded-full w-full object-cover'
+                  className='rounded-full object-cover w-auto'
+                  style={{ width: "100px", height: "100px" }}
                 />
               </Link>
             </SwiperSlide>

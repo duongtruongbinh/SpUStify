@@ -3,12 +3,12 @@ import React, { useState, useEffect } from 'react';
 import { ButtonNext, ButtonPrev,Error, Loader, SongCard, BannerCard, PlaylistCard } from '../components';
 import { genres } from '../assets/constants';
 import { selectGenreListId,setLikeSongId } from '../redux/features/playerSlice';
-import { useGetHomeQuery, useGetFavouriteSongsQuery} from '../redux/services/CoreApi';
+import { useGetHomeQuery, useGetFavouriteSongsQuery, usePlaySongMutation} from '../redux/services/CoreApi';
 import { useGetTopChartsQuery } from '../redux/services/CoreApi';
-
+import { setActiveSong } from '../redux/features/playerSlice';
 const HomePage =  () => {
 
-
+  
   const [startIndexSong, setStartIndexSong] = useState(0);
   const [endIndexSong, setEndIndexSong] = useState(4);
   const [startIndexPlaylist, setStartIndexPlaylist] = useState(0);
@@ -20,6 +20,7 @@ const HomePage =  () => {
  const { data: currentData, isLoading: isFavouriteLoading, isError: isFavouriteError } = useGetFavouriteSongsQuery();
   const { data: topChartsData, isFetching: isTopChartsFetching, error: topChartsError } =  useGetHomeQuery(); // Add this line
 
+  const [setPlaySong, {isLoading: isLoadingSong, response}] = usePlaySongMutation();
 
   
  useEffect(() => {
@@ -35,9 +36,26 @@ const HomePage =  () => {
   }
 }, [currentData, isFavouriteLoading, isFavouriteError, dispatch]);
 
- 
+const handlePauseClick = () => {
+  dispatch(playPause(false));
+};
 
-if (isFavouriteLoading || isTopChartsFetching) {
+const handlePlayClick = (song, data, index) => {
+  try {
+    console.log("songcard")
+    console.log(song.id)
+    const [{request}]=  dispatch(setPlaySong(song.id));
+  } catch(error){
+    console.log(error);
+  }
+  if(isLoadingSong){
+    return <Loader  title='Loading DATA...' />
+  }
+  dispatch(setActiveSong({ song, data, index }));
+  dispatch(playPause(true));
+};
+
+if (isFavouriteLoading || isTopChartsFetching || isLoadingSong) {
   return <Loader title='Loading data...' />;
 }
 
@@ -143,6 +161,8 @@ console.log(startIndexSong)
     activeSong={activeSong}
     data={topChartsData}
     index={index}
+    handlePauseClick={handlePauseClick}
+    handlePlayClick={() => handlePlayClick(song, visibleDataSong, index)}
   />
 )
 )}

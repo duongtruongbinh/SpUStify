@@ -6,6 +6,7 @@ const Player = ({ activeSong, isPlaying, volume, seekTime, onEnded, onTimeUpdate
   // eslint-disable-next-line no-unused-expressions
   if (ref.current) {
     if (isPlaying) {
+      console.log("lấy thử nha")
       ref.current.play();
     } else {
       ref.current.pause();
@@ -22,7 +23,7 @@ const Player = ({ activeSong, isPlaying, volume, seekTime, onEnded, onTimeUpdate
 
   return (
     <audio
-      src={activeSong?.hub?.actions[1]?.uri}
+      src={`http://127.0.0.1:8000${activeSong?.song_file}`}
       ref={ref}
       loop={repeat}
       onEnded={onEnded}

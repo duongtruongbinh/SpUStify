@@ -16,7 +16,7 @@ const LeaderboardCard = ({ song, index, isPlaying, activeSong, handlePauseClick,
       <div className="flex items-center justify-between flex-1 ">
       <div className='flex   items-center  gap-6'>
         <img 
-          src={Na}
+          src = {`http://127.0.0.1:8000${song.avatar }`}
           //{song?.images?.coverart} 
           alt={song?.name} 
           className='w-20 h-20 rounded-2xl'
@@ -29,10 +29,10 @@ const LeaderboardCard = ({ song, index, isPlaying, activeSong, handlePauseClick,
           </Link>
           </div >
           <div  className="">
-          <Link to={`/artists/${song?.song_artists[0].adamid}`}>
+          <Link to={`/artists/${song?.main_artist.id}`}>
             <p className='text-gray-400 text-xs mt-1'>
              {/* {song?.subtitle} */}
-             {song.name}
+             {song.main_artist.artist_name}
             </p>
           </Link>
           </div>

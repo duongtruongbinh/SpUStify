@@ -26,7 +26,7 @@ const PlaylistCard = ({ song, isPlaying, activeSong, index, data }) => {
        
         <img 
           // src={song.images?.coverart} 
-          src = {Na}
+          src =  {`http://127.0.0.1:8000${song.avatar }`}
           alt='song_img' 
           className='object-cover w-full h-full overflow-hidden '/>
        </div> 

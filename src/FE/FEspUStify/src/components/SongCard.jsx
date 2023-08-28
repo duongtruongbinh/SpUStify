@@ -4,29 +4,43 @@ import { useDispatch } from "react-redux";
 import PlayPause from './PlayPause';
 import { playPause, setActiveSong } from "../redux/features/playerSlice";
 
+import Error from "./Error";
+import Loader from "./Loader";
+
+import { usePlaySongMutation } from "../redux/services/CoreApi";
+
+
+
 import Na from '../assets/bg1.jpeg';
-const SongCard = ({ song, isPlaying, activeSong, index, data }) => {
+const SongCard = ({ song, isPlaying, activeSong, index, data, handlePauseClick, handlePlayClick }) => {
 
-  const dispatch = useDispatch();
+ 
 
-  const handlePauseClick = () => {
-    dispatch(playPause(false));
-  };
 
-  const handlePlayClick = () => {
-    dispatch(setActiveSong({ song, data, index }));
-    dispatch(playPause(true));
-  };
+
+
+
+  
+
+
 
   return (
 
   
     <div className='flex flex-col w-[165px] h-[250px] animate-slideup rounded-md cursor-pointer shadow-xl  relative '>
       <div className='rounded-md  relative h-[175px] w-full group bg-cover bg-no-repeat bg-center'> 
-       
+      <div className={`absolute inset-0 justify-center items-center bg-black bg-opacity-50 group-hover:flex ${activeSong?.name === song.name ? 'flex bg-black bg-opacity-70' : 'hidden'}`}>
+          <PlayPause
+            isPlaying={isPlaying}
+            activeSong={activeSong}
+            song={song}
+            handlePause={handlePauseClick}
+            handlePlay={handlePlayClick}
+          />
+        </div>
         <img 
           // src={song.images?.coverart} 
-          src = {Na}
+          src = {`http://127.0.0.1:8000${song.avatar }`}
           alt='song_img' 
           className='object-cover w-full h-full overflow-hidden '/>
        </div> 
@@ -38,7 +52,7 @@ const SongCard = ({ song, isPlaying, activeSong, index, data }) => {
   <div
     className="absolute inset-0 bg-center bg-cover bg-no-repeat "
     style={{
-      backgroundImage: `url(${Na})`,
+      backgroundImage: `url(http://127.0.0.1:8000${song.avatar })`,
     }}
   />
   <div className="absolute inset-0 bg-black opacity-40 " />
@@ -54,17 +68,20 @@ const SongCard = ({ song, isPlaying, activeSong, index, data }) => {
 
 <div className="  mt-4 ml-2 absolute inline-flex p-[10px 30px 1px 1px] flex-col justify-end items-start ">
 <p className='max-w-[150px] font-bold z-100 text-lg text-gray-100 truncate'>
+  {/* QUA PAGE SONG DETAILS */}
           <Link to={`/songs/${song?.id}`}>
+            
             {song.name}
           </Link>
         </p>
         <p className=' text-xs truncate text-gray-300 '>
-          <Link to={song.song_artists
-            ? `/artists/${song?.song_artists[0]?.adamid}`
+          {/* QUA PAGE ARTIST DETAIL */}
+          <Link to={song.main_artist
+            ? `/artists/${song?.main_artist.id}`
             : '/top-artists'}
           >
-            {/* {song.song_artists[0]} */}
-            abc
+            {song?.main_artist.artist_name}
+            
           </Link>
         </p>
 </div>

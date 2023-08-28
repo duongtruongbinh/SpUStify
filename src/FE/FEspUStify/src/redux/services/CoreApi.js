@@ -26,12 +26,13 @@ export const CoreApi = createApi({
     getTopCharts: builder.query({ query: () => 'home/leaderboard/' }), // Adjust endpoint path
     getSongs: builder.query({ query: (genre) => 'songs/' }), // Adjust endpoint path
     getSongRecommend: builder.query({ query: () => 'home/recommend/' }),
-    getSongDetails: builder.query({ query: ({ songid }) => `home/songs/${songid}` }), // Adjust endpoint path
+    getSongDetails: builder.query({ query: ({ songid }) => `songs/${songid}` }), // Adjust endpoint path
     getPlaylists: builder.query({ query: () => 'playlists/' }), // Adjust endpoint path
     getArtistDetails: builder.query({ query: ({ artistId }) => `v2/artists/details?artist_id=${artistId}` }), // Adjust endpoint path
     getFavouriteSongs: builder.query({ query: () => 'home/favourite/' }),
     getSongsBySearch: builder.query({ query: (searchTerm) => `home/songs?search_type=SONGS_ARTISTS&query=${searchTerm}` }), // Adjust endpoint path
     getHome: builder.query({ query: () => 'home/' }),
+    playSong: builder.mutation({query : (songID)  => ({ url:  `songs/${songID}/play/`, method: 'POST'  })}),
     likeSong: builder.mutation({query : (songID)  => ({ url:  `songs/${songID}/like/`, method: 'POST'  })}),
     registerUser: builder.mutation({ query: (userData) => ({ url: 'register/', method: 'POST',  body: {
       username: userData.username,
@@ -57,6 +58,7 @@ export const {
   useGetFavouriteSongsQuery,
   useGetSongsBySearchQuery,
   useGetHomeQuery,
+  usePlaySongMutation,
   useLikeSongMutation,
   useRegisterUserMutation,
   useLoginMutation,
