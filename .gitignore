@@ -1,8 +1,5 @@
-src/SpUStify/api/media/backgrounds/csdl_2.jpg
-src/SpUStify/api/media/audios/y2meta.com_-_super_idol_chinese_man_but_in_chronological_order_128_kbps_fWrTYRX.mp3
-src/SpUStify/api/media/audios/y2meta.com_-_super_idol_chinese_man_but_in_chronological_order_128_kbps.mp3
-src/SpUStify/api/media/avatars/1003880_hbQOr4r.png
-src/SpUStify/api/media/avatars/1003880.png
-src/SpUStify/api/media/backgrounds/1003880.png
 src/SpUStify/SpUStify/settings.py
 src/FE/FEspUStify/src/redux/services/CoreApi.js
+src/SpUStify/api/__pycache__/serializers.cpython-310.pyc
+src/SpUStify/SpUStify/settings.py
+src/SpUStify/SpUStify/__pycache__/settings.cpython-310.pyc
