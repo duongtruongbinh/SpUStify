@@ -5,10 +5,13 @@ from django.db.models import Q
 from django.contrib.auth.models import Group
 
 # User Serializer
+
+
 class UserSerializer(ModelSerializer):
     class Meta:
         model = User
         fields = ('id', 'username', 'email')
+
 
 class DetailUserSerializer(ModelSerializer):
     class Meta:
@@ -16,6 +19,8 @@ class DetailUserSerializer(ModelSerializer):
         fields = '__all__'
 
 # Register Serializer
+
+
 class RegisterSerializer(ModelSerializer):
     is_artist = serializers.BooleanField(default=False)
 
@@ -31,35 +36,42 @@ class RegisterSerializer(ModelSerializer):
         group_name = 'Artist' if is_artist else 'User'
         group, _ = Group.objects.get_or_create(name=group_name)
 
-        user = User.objects.create_user(validated_data['username'], validated_data['email'], validated_data['password'])
-        
+        user = User.objects.create_user(
+            validated_data['username'], validated_data['email'], validated_data['password'])
+
         # Add the user to the selected group
         group.user_set.add(user)
 
         return user
-    
+
 
 class ProfileSerializer(ModelSerializer):
     class Meta:
         model = Profile
-        fields = ('avatar', 'background_image', 'full_name', 'dob', 'email', 'phone')
+        fields = ('avatar', 'background_image',
+                  'full_name', 'dob', 'email', 'phone')
+
 
 class ArtistSerializer(ModelSerializer):
     class Meta:
         model = Artist
         fields = ('id', 'artist_name')
 
+
 class FeaturesArtistSerializer(ModelSerializer):
     class Meta:
         model = Artist
         fields = ['artist_name']
-        
+
+
 class SongSerializer(ModelSerializer):
     main_artist = ArtistSerializer(many=False)
 
     class Meta:
         model = Song
-        fields = ('id', 'avatar', 'name', 'main_artist')
+        fields = ('id', 'avatar', 'name', 'main_artist',
+                  'song_file', 'lyric_file')
+
 
 class DetailSongSerializer(ModelSerializer):
     lyric_data = SerializerMethodField()
@@ -68,22 +80,27 @@ class DetailSongSerializer(ModelSerializer):
         if song.lyric_file:
             with song.lyric_file.open() as file:
                 lyric_data = file.read()
-            return lyric_data.decode('utf-8')  # Assuming lyric file is in utf-8 encoding
+            # Assuming lyric file is in utf-8 encoding
+            return lyric_data.decode('utf-8')
         return None
 
     class Meta:
         model = Song
         fields = ('avatar', 'background_image', 'name', 'lyric_data')
 
+
 class FeaturesSongSerializer(serializers.ModelSerializer):
     class Meta:
         model = Song
-        fields = ('avatar', 'background_image', 'name', 'song_file', 'lyric_file')
+        fields = ('avatar', 'background_image',
+                  'name', 'song_file', 'lyric_file')
+
 
 class PlaylistSerializer(ModelSerializer):
     class Meta:
         model = Playlist
         fields = ('id', 'avatar', 'name')
+
 
 class DetailPlaylistSerializer(ModelSerializer):
     songs = SongSerializer(many=True)
@@ -91,42 +108,52 @@ class DetailPlaylistSerializer(ModelSerializer):
 
     def get_status(self, playlist):
         return 'public' if playlist.status == 'pub' else 'private'
-    
+
     class Meta:
         model = Playlist
-        fields = ('id', 'avatar', 'background_image', 'name', 'status', 'songs')
-        
+        fields = ('id', 'avatar', 'background_image',
+                  'name', 'status', 'songs')
+
+
 class CreatePlaylistSerializer(ModelSerializer):
     class Meta:
         model = Playlist
         fields = ('avatar', 'background_image', 'name', 'status')
 
+
 class EditPlaylistSerializer(ModelSerializer):
     songs = SongSerializer(many=True)
+
     class Meta:
         model = Playlist
         fields = ('avatar', 'background_image', 'name', 'status', 'songs')
 
+
 class AddSongToPlaylistSerializer(ModelSerializer):
-    playlist_id = serializers.PrimaryKeyRelatedField(queryset=Playlist.objects.all(), write_only=True)
-    #song_id = serializers.PrimaryKeyRelatedField(queryset=Song.objects.all())
+    playlist_id = serializers.PrimaryKeyRelatedField(
+        queryset=Playlist.objects.all(), write_only=True)
+    # song_id = serializers.PrimaryKeyRelatedField(queryset=Song.objects.all())
 
     class Meta:
         model = Playlist
         fields = ['playlist_id']
+
 
 class CreateUserPlayedSongSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserPlayedSong
         fields = '__all__'
 
+
 class CreatePlayedSongSerializer(serializers.ModelSerializer):
-    user_played_songs = CreateUserPlayedSongSerializer(many=True, read_only=True)
-    
+    user_played_songs = CreateUserPlayedSongSerializer(
+        many=True, read_only=True)
+
     class Meta:
         model = PlayedSong
         fields = '__all__'
-        
+
+
 class PlayedSongSerializer(ModelSerializer):
     song = SongSerializer(many=False)
 
@@ -134,16 +161,19 @@ class PlayedSongSerializer(ModelSerializer):
         model = PlayedSong
         fields = ['song']
 
+
 class UserPlayedSongSerializer(ModelSerializer):
     played_song = SerializerMethodField()
 
     def get_played_song(self, user_played_song):
-        played_song_data = SongSerializer(user_played_song.played_song.song).data
+        played_song_data = SongSerializer(
+            user_played_song.played_song.song).data
         return played_song_data
 
     class Meta:
         model = UserPlayedSong
         fields = ['played_song']
+
 
 class PlayedPlaylistSerializer(serializers.ModelSerializer):
     playlist = PlaylistSerializer(many=False)
@@ -152,13 +182,15 @@ class PlayedPlaylistSerializer(serializers.ModelSerializer):
         model = PlayedPlaylist
         fields = ['playlist']
 
+
 class UserPlayedPlaylistSerializer(ModelSerializer):
     played_playlist = SerializerMethodField()
 
     def get_played_playlist(self, user_played_playlist):
-        played_playlist_data = PlaylistSerializer(user_played_playlist.played_playlist.playlist).data
+        played_playlist_data = PlaylistSerializer(
+            user_played_playlist.played_playlist.playlist).data
         return played_playlist_data
-    
+
     class Meta:
         model = UserPlayedPlaylist
         fields = ['played_playlist']
