@@ -55,11 +55,11 @@ const App = () => {
               <Route path="/signup" element={<SignUp />} />
             </Routes>
           </div>
-          {/* <div className="xl:sticky relative top-0 h-fit">
+          <div className="xl:sticky relative top-0 h-fit">
             {currentRoute != "/top-charts" && currentRoute != "/signin" && (
               <TopPlay />
             )}
-          </div> */}
+          </div>
         </div>
       </div>
 
