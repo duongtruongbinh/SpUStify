@@ -157,7 +157,7 @@ const TopPlay = () => {
             
             <SwiperSlide
               key={index}
-              style={{ width: '25%', height: 'auto' }}
+              style={{ width: '50%', height: 'auto' }}
               className='shadow-lg rounded-full animate-slideright'
             >
               <Link to={`/artists/${song?.main_artist[0]}`}>
