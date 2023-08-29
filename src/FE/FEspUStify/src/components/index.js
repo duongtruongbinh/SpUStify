@@ -17,15 +17,14 @@ import LeaderboardCard from './LeaderboardCard';
 import Like from './Like';
 import Liked from './Liked';
 import AddPlaylist from './AddPlaylist';
-import TopChartCard from './TopChartCard';
 export {
- 
+
   Sidebar,
   Searchbar,
   BannerCard,
   SongCard,
   TopPlay,
-  
+
   ArtistCard,
   DetailsHeader,
   SongBar,
@@ -33,14 +32,12 @@ export {
   MusicPlayer,
   Loader,
   Error,
-  
+
   PlaylistCard,
   ButtonNext,
   ButtonPrev,
   LeaderboardCard,
   Like,
   Liked,
-  AddPlaylist,
-  TopChartCard
-
+  AddPlaylist
 };
