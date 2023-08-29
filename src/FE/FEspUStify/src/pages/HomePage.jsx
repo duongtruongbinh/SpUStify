@@ -121,23 +121,9 @@ console.log(startIndexSong)
       <div className='w-full flex justify-between items-center sm:flex-row flex-col mt-2 mb-10'>
         <h2 className='text-xl mt-2 text-gray-100 text-left'>
           Welcome to SpUStify
-          {/* {genreTitle} */}
+          
         </h2>
-        {/* <select
-          //  onChange={(e) => dispatch(selectGenreListId(e.target.value))}
-          // value={genreListId || 'pop'}
-          className='bg-white/10 backdrop-blur-sm text-gray-100 p-2 text-xs rounded-2xl outline-none sm:mt-0 mt-5'
-        >
-          {genres.map((genre) =>
-            <option 
-              key={genre.value} 
-              value={genre.value}
-            >
-              {genre.title}
-            </option>
-          )}
-
-        </select> */}
+   
       </div>
 <div className="flex flex-col items-center gap-9" >
 <h2 className='text-white '>Recommend Songs</h2>

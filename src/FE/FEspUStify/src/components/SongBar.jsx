@@ -9,7 +9,7 @@ const SongBar = ({ song, index, artistId, isPlaying, activeSong, handlePauseClic
     <h3 className="font-bold text-base text-gray-100 mr-3">{index + 1}.</h3>
     <div className="flex-1 flex flex-row justify-between items-center">
       <img
-        className="w-20 h-20 rounded-2xl"
+        className="w-20 h-20 rounded-2xl object-cover"
         //src={artistId ? song?.attributes?.artwork?.url.replace('{w}', '125').replace('{h}', '125') : song?.avatar?.coverart}
         src = {`http://127.0.0.1:8000${song.avatar }`}
         alt={song?.name}
