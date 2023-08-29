@@ -11,20 +11,6 @@ const App = () => {
   
   const { activeSong } = useSelector((state) => state.player);
 
-
-  
- 
- 
-    
-   
-  
-
-
-  
-  
- 
-
-
   const location = useLocation();
   const currentRoute = location.pathname;
  
@@ -60,7 +46,7 @@ const App = () => {
           </div>
           <div className="xl:sticky relative top-0 h-fit">
             {
-              currentRoute != '/top-charts' &&  currentRoute != '/signin'   && ( <TopPlay />)
+              currentRoute != '/top-charts' &&  currentRoute != '/signin' && currentRoute != '/songs/27'   && ( <TopPlay />)
             }
            
             

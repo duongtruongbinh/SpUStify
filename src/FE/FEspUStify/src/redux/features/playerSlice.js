@@ -10,7 +10,7 @@ const initialState = {
   likedSongsId: [],
   
 };
-debugger
+
 const playerSlice = createSlice({
   name: 'player',
   initialState,
@@ -39,7 +39,7 @@ const playerSlice = createSlice({
 
     prevSong: (state, action) => {
      
-        state.activeSong = state.currentSongs[action.payload];
+      state.activeSong = state.currentSongs[action.payload];
       
 
       state.currentIndex = action.payload.index;
@@ -59,7 +59,7 @@ const playerSlice = createSlice({
       state.likedSongsId = [...state.likedSongsId, action.payload];
           },
     setRemoveSong: (state, action) => {
-      state.likedSongsId = state.likedSongsId.filter(song => song.id !== action.payload);
+      state.likedSongsId = state.likedSongsId.filter(song => song !== action.payload);
     },
    
 
