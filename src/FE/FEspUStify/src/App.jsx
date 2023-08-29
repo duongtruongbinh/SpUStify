@@ -24,6 +24,7 @@ import {
   Search,
   SongDetails,
   TopCharts,
+  CreatePlaylist,
 } from "./pages";
 import { useGetFavouriteSongsQuery } from "./redux/services/CoreApi";
 
@@ -32,6 +33,7 @@ const App = () => {
 
   const location = useLocation();
   const currentRoute = location.pathname;
+  const noTopPlay = ["/top-charts", "/signin", "/playlist/create"];
 
   return (
     <div className="relative flex">
@@ -53,12 +55,11 @@ const App = () => {
               <Route path="/search/:searchTerm" element={<Search />} />
               <Route path="/signin" element={<SignIn />} />
               <Route path="/signup" element={<SignUp />} />
+              <Route path="/playlist/create" element={<CreatePlaylist />} />
             </Routes>
           </div>
           <div className="xl:sticky relative top-0 h-fit">
-            {currentRoute != "/top-charts" && currentRoute != "/signin" && (
-              <TopPlay />
-            )}
+            {!noTopPlay.includes(currentRoute) && <TopPlay />}
           </div>
         </div>
       </div>

@@ -1,6 +1,6 @@
 const CreatePlaylist = () => {
   return (
-    <div className="bg-[#2F303A] w-[70%] h-[80%] rounded-2xl">
+    <div className="bg-[#2F303A] w-[70%] h-[80%] rounded-2xl mt-16 ml-44">
       <p className="flex items-center justify-center p-16 text-[#FFFFFF] text-2xl">
         Create playlist
       </p>
