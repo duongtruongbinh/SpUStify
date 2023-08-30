@@ -13,9 +13,7 @@ const CreatePlaylist = () => {
           </label>
         </div>
         <div className="flex flex-col space-y-2">
-          <label for="img" className="text-[#FAF6F6]">
-            Playlist name
-          </label>
+          <div className="text-[#FAF6F6]">Playlist name</div>
           <input
             type="text"
             name="uploadfile"
