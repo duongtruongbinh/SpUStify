@@ -25,7 +25,8 @@ import {
   SongDetails,
   TopCharts,
   CreatePlaylist,
-  UploadSong
+  UploadSong,
+  UploadSongSuccessfull
 } from "./pages";
 import { useGetFavouriteSongsQuery } from "./redux/services/CoreApi";
 
@@ -61,12 +62,14 @@ const App = () => {
                 <Route path="/signup" element={<SignUp />} />
                 
                 <Route path = "/upload-song" element = {<UploadSong />} />
+                <Route path = "/upload-song-succesfull" element = {<UploadSongSuccessfull/>} />
+              <Route path = "/create-playlist" element=  {< CreatePlaylist />} />
               </Routes>
            
           </div>
           <div className="xl:sticky relative top-0 h-fit">
             {
-              currentRoute != '/top-charts' &&  currentRoute != '/signin' && currentRoute != '/upload-song' && !isSongDetailPage && ( <TopPlay />)
+              currentRoute != '/top-charts' &&  currentRoute != '/signin' && currentRoute != '/upload-song' && currentRoute != '/favourite-song' && !isSongDetailPage && ( <TopPlay />)
             }
            
             
