@@ -4,10 +4,13 @@ import Na from '../assets/Liu-Grace.jpeg';
 
 import PlayPause from './PlayPause';
 import { useSelector, useDispatch } from 'react-redux';
+import {AiFillEdit} from 'react-icons/ai';
+
 
 const DetailsHeader = ({ artistId, songData, handlePauseClick, handlePlayClick }) => {
-  const { activeSong, isPlaying } = useSelector((state) => state.player);
+  const { activeSong, isPlaying, isArtist } = useSelector((state) => state.player);
   const dispatch = useDispatch();
+
   return (
   <div className="relative w-full flex flex-col">
     <div className="w-full bg-gradient-to-l from-transparent to-violet-900 sm:h-48 h-28"
@@ -32,7 +35,9 @@ const DetailsHeader = ({ artistId, songData, handlePauseClick, handlePlayClick }
         {songData.main_artist.artist_name}
         </p>
           </Link>
+
         )}
+         
 
        
       </div>

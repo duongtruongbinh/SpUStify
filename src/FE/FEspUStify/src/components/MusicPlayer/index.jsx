@@ -35,17 +35,26 @@ const MusicPlayer = () => {
   const handleNextSong = () => {
     dispatch(playPause(false));
 
-    if (!shuffle) {
-      dispatch(nextSong((currentIndex + 1) % currentSongs.length));
-    } else {
-      dispatch(nextSong(Math.floor(Math.random() * currentSongs.length)));
-    }
+    if (!shuffle ) {
+      if(currentIndex > currentSongs.length){
+        dispatch(nextSong((0) ));
+      } else if ( currentIndex === currentSongs.length ){
+        dispatch(nextSong((0) ));
+      }
+        else {
+        dispatch(nextSong((currentIndex + 1) ));
+      }
+     
+    } 
   };
 
   const handlePrevSong = () => {
     if (currentIndex === 0) {
-      dispatch(prevSong(currentSongs.length - 1));
-    } else if (shuffle) {
+      dispatch(prevSong(currentSongs.length -  1));
+    } else if (currentIndex === currentSongs.length){
+      dispatch(prevSong(0));
+    }
+    else if (shuffle) {
       dispatch(prevSong(Math.floor(Math.random() * currentSongs.length)));
     } else {
       dispatch(prevSong(currentIndex - 1));

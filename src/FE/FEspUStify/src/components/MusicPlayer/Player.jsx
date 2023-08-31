@@ -7,7 +7,7 @@ const Player = ({ activeSong, isPlaying, volume, seekTime, onEnded, onTimeUpdate
   if (ref.current) {
     if (isPlaying) {
       console.log("lấy thử nha")
-      console.log(activeSong.song_file)
+      console.log(activeSong)
       ref.current.play();
     } else {
       ref.current.pause();

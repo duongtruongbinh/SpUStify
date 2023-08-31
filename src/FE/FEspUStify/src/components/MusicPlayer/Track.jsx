@@ -11,7 +11,7 @@ const Track = ({ isPlaying, isActive, activeSong }) => (
         {activeSong?.name ? activeSong?.name : 'No active Song'}
       </p>
       <p className="truncate text-gray-300">
-        {activeSong? activeSong.main_artist.artist_name : 'No active Song'}
+        {activeSong.main_artist? activeSong.main_artist.artist_name : 'No active Song'}
       </p>
     </div>
   </div>

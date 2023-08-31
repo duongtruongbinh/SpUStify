@@ -2,24 +2,58 @@ import { useState } from "react";
 import { NavLink } from "react-router-dom";
 import { HiOutlineMenu } from "react-icons/hi";
 import { RiCloseLine } from "react-icons/ri";
+import { useSelector, useDispatch } from 'react-redux';
+
 
 import { logo } from "../assets";
 import { links } from "../assets/constants";
 
-const NavLinks = ({ handleClick }) => (
+const NavLinks = ({ handleClick}) =>{
+
+const { isArtist } = useSelector((state) => state.player);
+
+
+return (
+
   <div className="mt-10">
-    {links.map((item) => (
-      <NavLink
-        key={item.name}
-        to={item.to}
-        className="flex flex-row justify-start items-center my-8 text-xs font-medium text-gray-500 hover:text-gray-400"
-        onClick={() => handleClick && handleClick()}>
-        <item.icon className="w-4 h-6 mr-2" />
-        {item.name}
-      </NavLink>
-    ))}
+    {links.map((item) => {
+
+if (isArtist === true && item.name === 'Upload Song' ) {
+  return (
+<NavLink
+  key={item.name}
+  to={item.to}
+  className="flex flex-row justify-start items-center my-8 text-xs font-medium text-gray-500 hover:text-gray-400"
+  onClick={() => handleClick && handleClick()}
+>
+  <item.icon className="w-4 h-6 mr-2" />
+  {item.name}
+</NavLink> 
+  )
+
+}     else if(item.name !== 'Upload Song') {
+  
+  return (
+<NavLink
+      key={item.name}
+      to={item.to}
+      className="flex flex-row justify-start items-center my-8 text-xs font-medium text-gray-500 hover:text-gray-400"
+      onClick={() => handleClick && handleClick()}
+    >
+      <item.icon className="w-4 h-6 mr-2" />
+      {item.name}
+    </NavLink>
+  )
+
+} 
+    
+}
+)
+}
+    
   </div>
 );
+}
 
 const Sidebar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);

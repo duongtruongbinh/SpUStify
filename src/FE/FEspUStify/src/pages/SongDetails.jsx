@@ -6,6 +6,8 @@ import { DetailsHeader, Error, Loader, RelatedSongs, TopChartCard } from '../com
 import { setActiveSong, playPause } from '../redux/features/playerSlice';
 import { useGetSongDetailsQuery, useGetSongRecommendQuery  } from '../redux/services/CoreApi';
 
+
+
 const SongDetails = () => {
   const dispatch = useDispatch();
 
@@ -13,7 +15,7 @@ const SongDetails = () => {
   const { songid} = useParams();
   
   
-  const { activeSong, isPlaying } = useSelector((state) => state.player);
+  const { activeSong, isPlaying, currentSongs } = useSelector((state) => state.player);
 
   const { data: songData, isFetching: isFetchingSongDetails } = useGetSongDetailsQuery({ songid });
 
@@ -25,15 +27,17 @@ const SongDetails = () => {
  
   const related_song = Array.isArray(related) ? related : [related];
   
-
+  
   const handlePauseClick = () => {
     dispatch(playPause(false));
   };
 
-  const handlePlayClick = (song, related ,i) => {
-    dispatch(setActiveSong({ song, related, i }));
+  const handlePlayClick = (song, data ,index) => {
+    dispatch(setActiveSong({ song, data, index}));
     dispatch(playPause(true));
   };
+  console.log("curernt songs")
+  console.log(currentSongs)
 
   return (
     <div className="flex flex-col">
@@ -41,7 +45,7 @@ const SongDetails = () => {
         artistId={related_song[0].main_artist.id}
         songData={song}
         handlePauseClick={handlePauseClick}
-        handlePlayClick={() => handlePlayClick(song, related,song.index)}
+        handlePlayClick={() => handlePlayClick(song, related_song,related_song.length + 1)}
       />
 <div className='grid grid-cols-2 gap-8  '>
       <div className="mb-10 mr-4  ">
@@ -59,16 +63,16 @@ const SongDetails = () => {
         </div>
       </div>
       <div className='mt-4 flex flex-col gap-1 mr-10'>
-          {related?.map((song, index) => (
+          {related_song?.map((song, index) => (
             <TopChartCard
-              key={song.id}
+              key={index}
               song={song}
              
               index={index}
               isPlaying={isPlaying}
               activeSong={activeSong}
               handlePauseClick={handlePauseClick}
-              handlePlayClick={() => handlePlayClick(song, related,index)}
+              handlePlayClick={() => handlePlayClick(song, related_song,index)}
             />
           ))}
         </div>

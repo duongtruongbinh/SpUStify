@@ -1,16 +1,51 @@
-import { useSelector } from 'react-redux';
-import { useParams } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
+import { useParams, useLocation } from 'react-router-dom';
 
 import { Error, Loader, SongCard } from '../components';
-import { useGetSongsBySearchQuery } from '../redux/services/CoreApi';
+import { useGetSongsBySearchQuery, useGetAllBySearchQuery, usePlaySongMutation } from '../redux/services/CoreApi';
+
+import { setActiveSong, playPause } from '../redux/features/playerSlice';
+
+import React, { useState, useEffect } from 'react';
 
 const Search = () => {
 
+  const location = useLocation();
+  const currentRoute = location.pathname;
+  const dispatch = useDispatch();
+
+
   const { searchTerm } = useParams();
   const { activeSong, isPlaying } = useSelector((state) => state.player);
-  const { data, isFetching, error } = useGetSongsBySearchQuery(searchTerm);
+ 
+  // const { dataAll, isLoading, error: isError} = useGetAllBySearchQuery(searchTerm);
 
-  const songs = data?.tracks?.hits.map((song) => song.track);
+
+  const { data, isFetching, error } = useGetSongsBySearchQuery(searchTerm);
+  const [setPlaySong, { isLoading: isLoadingSong, response }] = usePlaySongMutation();
+
+
+  console.log("search result")
+  console.log(data)
+  const songs = Array.isArray(data) ? data : [data];
+
+  const handlePauseClick = () => {
+    dispatch(playPause(false));
+  };
+  const handlePlayClick = (song, data, index) => {
+    try {
+      console.log("songcard")
+      console.log(song.id)
+      const [{ request }] = dispatch(setPlaySong(song.id));
+    } catch (error) {
+      console.log(error);
+    }
+    if (isLoadingSong) {
+      return <Loader title='Loading DATA...' />
+    }
+    dispatch(setActiveSong({ song, data, index }));
+    dispatch(playPause(true));
+  };
 
   if (isFetching) return <Loader title='Loading top charts' />;
 
@@ -25,12 +60,14 @@ const Search = () => {
       <div className='flex flex-wrap sm:justify-start justify-center gap-8'>
         {songs?.map((song, index) => (
           <SongCard
-            key={song.key}
+            key={index}
             song={song}
             isPlaying={isPlaying}
             activeSong={activeSong}
             data={data}
             index={index}
+            handlePauseClick={handlePauseClick}
+            handlePlayClick={() => handlePlayClick(song, songs, index)}
           />
         ))}
       </div>

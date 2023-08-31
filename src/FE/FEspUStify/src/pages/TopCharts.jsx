@@ -24,10 +24,10 @@ const TopCharts = () => {
 
   const handleLike = async (songId,songName) => {
     console.log(songId)
-    debugger
+    
     try {
       const [{request}]=  dispatch(setLikeSongName(songId));
-      debugger
+     
     }catch(error){
       console.log(error);
     }

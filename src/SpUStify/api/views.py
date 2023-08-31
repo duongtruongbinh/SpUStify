@@ -6,6 +6,7 @@ from rest_framework.authentication import SessionAuthentication, TokenAuthentica
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.authtoken.serializers import AuthTokenSerializer
+from rest_framework.parsers import MultiPartParser
 from knox.models import AuthToken
 from knox.views import LoginView as KnoxLoginView
 from django.contrib.auth.models import User
@@ -363,6 +364,8 @@ class CreateSongAPI(APIView):
     authentication_classes = [BasicAuthentication]
     permission_classes = [IsAuthenticated, ] # IsAdminGroup, IsArtistGroup]
     serializer_class = FeaturesSongSerializer
+    parser_classes = [MultiPartParser]
+    
     
     def create_song(self, request):
         data = request.data.copy()
@@ -385,6 +388,8 @@ class EditSongAPI(APIView):
     authentication_classes = [BasicAuthentication]
     permission_classes = [IsAuthenticated,] # IsAdminGroup, IsArtistGroup]
     serializer_class = FeaturesSongSerializer
+    parser_classes = [MultiPartParser]
+    
     
     def edit_song(self, request, song_id):
         profile = Profile.objects.get(account=request.user)
@@ -560,6 +565,7 @@ class CreatePlaylistAPI(APIView):
     authentication_classes = [BasicAuthentication]
     permission_classes = [IsAuthenticated]
     serializer_class = CreatePlaylistSerializer
+    parser_classes = [MultiPartParser]
     
     def create_playlist(self, request):
         data = request.data.copy()

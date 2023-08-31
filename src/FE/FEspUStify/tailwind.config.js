@@ -5,6 +5,10 @@ module.exports = {
     extend: { // những thứ mà mình custom nó ra thì bỏ ở đâ
       colors: {
         black: '#191624',
+        near_black: '#202027',
+        grey_bg: '#2F303A',
+        cancel_grey: '#636669',
+        submit_blue: '#5291CC'
       },
       animation: {
         slideup: 'slideup 1s ease-in-out',

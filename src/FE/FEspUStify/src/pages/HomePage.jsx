@@ -19,14 +19,15 @@ const HomePage =  () => {
   const [endIndexPlaylist, setEndIndexPlaylist] = useState(4);
   
   const dispatch = useDispatch();
-  const { activeSong, isPlaying } = useSelector((state) => state.player);
- // debugger
+  const { activeSong, isPlaying, currentSongs } = useSelector((state) => state.player);
+
  const { data: currentData, isLoading: isFavouriteLoading, isError: isFavouriteError } = useGetFavouriteSongsQuery();
   const { data: topChartsData, isFetching: isTopChartsFetching, error: topChartsError } =  useGetHomeQuery(); // Add this line
 
   const [setPlaySong, {isLoading: isLoadingSong, response}] = usePlaySongMutation();
 
-  
+ console.log("curernt songs")
+ console.log(currentSongs)
  useEffect(() => {
   if (!isFavouriteLoading && !isFavouriteError && currentData) {
     console.log(currentData)
@@ -152,7 +153,7 @@ console.log(startIndexSong)
     data={topChartsData}
     index={index}
     handlePauseClick={handlePauseClick}
-    handlePlayClick={() => handlePlayClick(song, visibleDataSong, index)}
+    handlePlayClick={() => handlePlayClick(song, dataSong, index)}
   />
 )
 )}

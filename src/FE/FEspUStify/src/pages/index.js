@@ -7,7 +7,7 @@ import TopCharts from './TopCharts';
 import FavouriteSong from './FavouriteSong'
 import SignIn from './SignIn';
 import SignUp from './SignUp';
-
+import UploadSong from './UploadSong';
 
 export {
   HomePage,
@@ -18,5 +18,6 @@ export {
   TopCharts,
   FavouriteSong,
   SignIn,
-  SignUp
+  SignUp,
+  UploadSong
 };

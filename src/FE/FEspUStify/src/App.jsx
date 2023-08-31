@@ -1,8 +1,8 @@
 import { useSelector, useDispatch } from 'react-redux';
-import {useLocation, BrowserRouter as Router, Route,Routes} from 'react-router-dom';
+import {useParams,useLocation, BrowserRouter as Router, Route,Routes} from 'react-router-dom';
 import { setLikeSongId } from './redux/features/playerSlice';
 import { Searchbar, Sidebar, MusicPlayer, TopPlay, Loader, Error } from './components';
-import { SignIn, SignUp,ArtistDetails, TopArtists, FavouriteSong, HomePage, Search, SongDetails, TopCharts } from './pages';
+import { SignIn, SignUp,ArtistDetails, TopArtists, FavouriteSong, HomePage, Search, SongDetails, TopCharts, UploadSong } from './pages';
 import { useGetFavouriteSongsQuery } from './redux/services/CoreApi';
 
 
@@ -13,6 +13,9 @@ const App = () => {
 
   const location = useLocation();
   const currentRoute = location.pathname;
+  
+  const isSongDetailPage = currentRoute.startsWith('/songs/') && /^\d+$/.test(location.pathname.split('/')[2]);
+
  
   return (
     <div className="relative flex">
@@ -41,12 +44,14 @@ const App = () => {
                 <Route path="/search/:searchTerm" element={<Search />} />
                 <Route path="/signin" element={<SignIn />} />
                 <Route path="/signup" element={<SignUp />} />
+                
+                <Route path = "/upload-song" element = {<UploadSong />} />
               </Routes>
            
           </div>
           <div className="xl:sticky relative top-0 h-fit">
             {
-              currentRoute != '/top-charts' &&  currentRoute != '/signin' && currentRoute != '/songs/27'   && ( <TopPlay />)
+              currentRoute != '/top-charts' &&  currentRoute != '/signin' && currentRoute != '/upload-song' && !isSongDetailPage && ( <TopPlay />)
             }
            
             

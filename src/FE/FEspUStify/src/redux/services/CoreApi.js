@@ -7,6 +7,7 @@ export const CoreApi = createApi({
   reducerPath: 'DatabaseApi',
   //baseQuery: là 1 hàm để thực hiện các cuộc gọi api cơ bản
   // hàm để call api từ BE
+  
   baseQuery: fetchBaseQuery({
     baseUrl: 'http://localhost:8000/api/', // Adjust the base URL for your local API
     prepareHeaders: (headers) => {
@@ -22,6 +23,7 @@ export const CoreApi = createApi({
   // query là get
   //mutation là post
   //các Actions
+ 
   endpoints: (builder) => ({
     getTopCharts: builder.query({ query: () => 'home/leaderboard/' }), // Adjust endpoint path
     getSongs: builder.query({ query: (genre) => 'songs/' }), // Adjust endpoint path
@@ -30,10 +32,22 @@ export const CoreApi = createApi({
     getPlaylists: builder.query({ query: () => 'playlists/' }), // Adjust endpoint path
     getArtistDetails: builder.query({ query: ({ artistId }) => `v2/artists/details?artist_id=${artistId}` }), // Adjust endpoint path
     getFavouriteSongs: builder.query({ query: () => 'home/favourite/' }),
-    getSongsBySearch: builder.query({ query: (searchTerm) => `home/songs?search_type=SONGS_ARTISTS&query=${searchTerm}` }), // Adjust endpoint path
+   
     getHome: builder.query({ query: () => 'home/' }),
+    
+    getSongsBySearch: builder.query({ query: (searchTerm) => `songs/?query=${searchTerm}` }), 
+    getAllBySearch: builder.query({ query: (searchTerm) => `home/?query=${searchTerm}` }), 
     playSong: builder.mutation({ query: (songID) => ({ url: `songs/${songID}/play/`, method: 'POST' }) }),
     likeSong: builder.mutation({ query: (songID) => ({ url: `songs/${songID}/like/`, method: 'POST' }) }),
+    createSong: builder.mutation({query: (FormData) => ({
+      url: 'songs/create', method: 'POST', body: 
+        FormData
+    
+      ,
+     
+
+    }) }),
+
     registerUser: builder.mutation({
       query: (userData) => ({
         url: 'register/', method: 'POST', body: {
@@ -63,10 +77,12 @@ export const {
   useGetPlaylistsQuery,
   useGetArtistDetailsQuery,
   useGetFavouriteSongsQuery,
-  useGetSongsBySearchQuery,
   useGetHomeQuery,
+  useGetSongsBySearchQuery,
+  useGetAllBySearchQuery,
   usePlaySongMutation,
   useLikeSongMutation,
+  useCreateSongMutation,
   useRegisterUserMutation,
   useLoginMutation,
 

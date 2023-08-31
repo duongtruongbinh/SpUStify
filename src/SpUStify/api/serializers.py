@@ -86,7 +86,7 @@ class DetailSongSerializer(ModelSerializer):
 
     class Meta:
         model = Song
-        fields = ('avatar', 'background_image', 'name', 'lyric_data')
+        fields = ('avatar', 'background_image', 'name', 'lyric_data', 'song_file')
 
 
 class FeaturesSongSerializer(serializers.ModelSerializer):
