@@ -62,6 +62,7 @@ const TopPlay = () => {
   const dispatch = useDispatch();
   const { activeSong, isPlaying } = useSelector((state) => state.player);
   const { data, isFetching, error } = useGetTopChartsQuery();
+  console.log(data);
   const [setPlaySong, { isLoading, response }] = usePlaySongMutation();
 
   const handlePauseClick = () => {

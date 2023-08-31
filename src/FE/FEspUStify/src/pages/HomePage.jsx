@@ -43,7 +43,6 @@ const HomePage = () => {
     isFetching: isTopChartsFetching,
     error: topChartsError,
   } = useGetHomeQuery(); // Add this line
-
   const [setPlaySong, { isLoading: isLoadingSong, response }] =
     usePlaySongMutation();
 

@@ -10,7 +10,7 @@ const initialState = {
   likedSongsId: [],
 
 };
-debugger
+
 const playerSlice = createSlice({
   name: 'player',
   initialState,

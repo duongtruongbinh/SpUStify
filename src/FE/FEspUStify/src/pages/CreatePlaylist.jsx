@@ -33,7 +33,7 @@ const CreatePlaylist = () => {
     data.append("avatar", uploadedImagePost);
     data.append("background_image", uploadedBackgroundPost);
     data.append("name", playlistName);
-    data.append("status", "");
+    data.append("status", "Public");
 
     const token = btoa("h3:Acccuah3"); // Encode the username and password
 

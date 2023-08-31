@@ -1,7 +1,12 @@
 import { MdOutlinePlaylistAdd } from "react-icons/md";
 import { useState, useRef, useEffect } from "react";
+import { useGetPlaylistsQuery } from "../redux/services/CoreApi";
 
 const Popup = (props) => {
+  const playlistList = props.data;
+
+  const handleAddSong = () => {};
+
   return (
     <>
       <div className="justify-center items-center flex overflow-auto fixed inset-0 z-50">
@@ -20,11 +25,15 @@ const Popup = (props) => {
               </button>
             </div>
             {/*body*/}
-            <div className="relative p-6">
-              {
-                // Playlist details
-              }
-              <div>Haha</div>
+            <div className="relative p-6 space-y-2">
+              {playlistList?.map(({ id, avatar, name }) => (
+                <div
+                  key={id}
+                  onClick={handleAddSong}
+                  className="text-center rounded-sm outline hover:text-white hover:bg-slate-500">
+                  {name}
+                </div>
+              ))}
             </div>
           </div>
         </div>
@@ -35,6 +44,8 @@ const Popup = (props) => {
 
 const AddPlaylist = ({ user, song }) => {
   const [showModal, setShowModal] = useState(false);
+  const { data, isFetching, error } = useGetPlaylistsQuery();
+
   return (
     <>
       <MdOutlinePlaylistAdd
@@ -45,6 +56,7 @@ const AddPlaylist = ({ user, song }) => {
 
       {showModal ? (
         <Popup
+          data={data}
           onClick={() => {
             setShowModal(false);
           }}
