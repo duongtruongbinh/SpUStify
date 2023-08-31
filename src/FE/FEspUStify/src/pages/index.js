@@ -9,7 +9,7 @@ import SignIn from './SignIn';
 import SignUp from './SignUp';
 import UploadSong from './UploadSong';
 import CreatePlaylist from './CreatePlaylist';
-
+import UploadSongSuccessfull from './UploadSuccessfull';
 export {
   HomePage,
   Search,
@@ -21,5 +21,6 @@ export {
   SignIn,
   SignUp,
   UploadSong,
-  CreatePlaylist
+  CreatePlaylist,
+  UploadSongSuccessfull
 };

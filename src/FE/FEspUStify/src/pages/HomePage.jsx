@@ -196,19 +196,6 @@ const HomePage = () => {
             />
           ))}
 
-{ visibleDataSong?.map((song, index) => (
-  <SongCard 
-    key={song.id}
-    song={song}
-    isPlaying={isPlaying}
-    activeSong={activeSong}
-    data={topChartsData}
-    index={index}
-    handlePauseClick={handlePauseClick}
-    handlePlayClick={() => handlePlayClick(song, dataSong, index)}
-  />
-)
-)}
 
 <div className='absolute self-center right-[-30px]' >
 {
@@ -223,39 +210,7 @@ const HomePage = () => {
 
 
 
-<h2 className='text-white ml-0'>Recommend Playlists</h2>
-<div className=' relative flex flex-wrap sm:justify-start justify-center gap-8'>
-<div className='z-10 absolute self-center left-[-20px]' >
-{
-  hasPreviousPagePlaylist && (
-<ButtonPrev onClick = {handlePreviousPagePlaylist}/>
-  )
-}
-</div>
 
-
-
-
-{visibleDataPlaylist?.map((song, index) => (
-  <PlaylistCard
-    key={song.id}
-    song={song}
-    isPlaying={isPlaying}
-    activeSong={activeSong}
-    data={topChartsData}
-    index={index}
-  />
-)
-)}
-
-<div className='absolute self-center right-[-30px] ' >
-{
-  handleNextPagePlaylist && (
-<ButtonNext onClick = {handleNextPagePlaylist}/>
-  )
-}
-</div>
-</div>
 
 </div>
 

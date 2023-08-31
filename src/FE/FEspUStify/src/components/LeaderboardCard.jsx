@@ -13,8 +13,8 @@ const LeaderboardCard = ({ song, index, isPlaying, activeSong, handlePauseClick,
       <h3 className='font-bold text-base text-gray-100 mr-3'>
         {index + 1}.
       </h3>
-      <div className="flex items-center justify-between flex-1 ">
-      <div className='flex   items-center  gap-6'>
+      <div className="flex items-center  w-full ">
+      <div className='flex  w-1/3  items-center  gap-6 '>
         <img 
           src = {`http://127.0.0.1:8000${song.avatar }`}
           //{song?.images?.coverart} 
@@ -28,7 +28,7 @@ const LeaderboardCard = ({ song, index, isPlaying, activeSong, handlePauseClick,
             </p>
           </Link>
           </div >
-          <div  className="">
+          <div  className="w-1/3">
           <Link to={`/artists/${song?.main_artist.id}`}>
             <p className='text-gray-400 text-xs mt-1'>
              {/* {song?.subtitle} */}
@@ -39,7 +39,7 @@ const LeaderboardCard = ({ song, index, isPlaying, activeSong, handlePauseClick,
          
         
 
-      <div className=" flex flex-row gap-4 "> 
+      <div className=" w-1/3 flex  flex-end justify-end"> 
       <PlayPause
         isPlaying={isPlaying}
         activeSong={activeSong}

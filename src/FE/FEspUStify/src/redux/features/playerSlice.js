@@ -12,7 +12,7 @@ const initialState = {
 };
 
 
-debugger
+
 const playerSlice = createSlice({
   name: 'player',
   initialState,
@@ -66,7 +66,7 @@ const playerSlice = createSlice({
       state.likedSongsId = [...state.likedSongsId, action.payload];
     },
     setRemoveSong: (state, action) => {
-      state.likedSongsId = state.likedSongsId.filter(song => song.id !== action.payload);
+      state.likedSongsId = state.likedSongsId.filter(song => song !== action.payload);
     },
 
 

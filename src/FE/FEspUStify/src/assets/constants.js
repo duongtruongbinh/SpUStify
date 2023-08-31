@@ -1,5 +1,5 @@
 import { HiOutlineHashtag, HiOutlineHome, HiOutlinePhotograph, HiOutlineUserGroup, HiUpload } from 'react-icons/hi';
-
+import {MdOutlinePlaylistAdd} from 'react-icons/md';
 
 export const genres = [
   { title: 'Pop', value: 'POP' },
@@ -23,5 +23,6 @@ export const links = [
   { name: 'Favourite Song', to: '/favourite-song', icon: HiOutlinePhotograph },
   { name: 'Top Artists', to: '/top-artists', icon: HiOutlineUserGroup },
   { name: 'Leaderboard', to: '/top-charts', icon: HiOutlineHashtag },
-  { name: 'Upload Song', to: '/upload-song', icon: HiUpload } 
+  { name: 'Upload Song', to: '/upload-song', icon: HiUpload } ,
+  {name: 'Create Playlist', to: '/create-playlist',icon: MdOutlinePlaylistAdd}
 ];
