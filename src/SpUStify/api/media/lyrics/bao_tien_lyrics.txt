@@ -1,0 +1,5 @@
+The Use Case Model has been revised to be more generalized.
+- Delete View songs and playlists, View list of accounts, View detail use case
+- Group User search and Artist search into Search
+- Add actors: Client, Member
+- Add Pre-conditions at Member's use case
