@@ -27,7 +27,7 @@ const DetailsHeader = ({ artistId, songData, handlePauseClick, handlePlayClick }
         className="sm:w-48 w-28 sm:h-48 h-28 rounded-full object-cover border-2 shadow-xl shadow-black"
       />
 
-      <div className="ml-5">
+      <div className="ml-5 flex flex-row items-center gap-6">
         <p className="font-bold sm:text-3xl text-xl text-gray-100">
           {songData?.name}
         </p>
@@ -38,7 +38,13 @@ const DetailsHeader = ({ artistId, songData, handlePauseClick, handlePlayClick }
 
         )}
          
-
+         <PlayPause
+      isPlaying={isPlaying}
+      activeSong={activeSong}
+      song={songData}
+      handlePause={handlePauseClick}
+      handlePlay={handlePlayClick}
+    />
         {/* <p className="text-base text-gray-300 mt-2">
         {songData.main_aritst.artist_name}
         </p> */}
