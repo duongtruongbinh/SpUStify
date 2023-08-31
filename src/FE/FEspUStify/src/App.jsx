@@ -25,6 +25,7 @@ import {
   SongDetails,
   TopCharts,
   CreatePlaylist,
+  UploadSong
 } from "./pages";
 import { useGetFavouriteSongsQuery } from "./redux/services/CoreApi";
 
