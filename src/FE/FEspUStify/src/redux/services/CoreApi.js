@@ -49,6 +49,14 @@ export const CoreApi = createApi({
         }
       }
       )
+    }),
+    createPlaylist: builder.mutation({
+      query: (FormData) => ({
+        url: 'playlist/create', method: 'POST', body: {
+          FormData
+        },
+      }
+      )
     })
   })
 });
@@ -69,5 +77,5 @@ export const {
   useLikeSongMutation,
   useRegisterUserMutation,
   useLoginMutation,
-
+  useCreatePlaylistMutation,
 } = CoreApi;

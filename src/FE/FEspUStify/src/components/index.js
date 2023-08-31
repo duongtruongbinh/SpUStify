@@ -39,5 +39,5 @@ export {
   LeaderboardCard,
   Like,
   Liked,
-  AddPlaylist
+  AddPlaylist,
 };
