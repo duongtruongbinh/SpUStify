@@ -8,6 +8,7 @@ import FavouriteSong from './FavouriteSong'
 import SignIn from './SignIn';
 import SignUp from './SignUp';
 import UploadSong from './UploadSong';
+import CreatePlaylist from './CreatePlaylist';
 
 export {
   HomePage,
@@ -19,5 +20,6 @@ export {
   FavouriteSong,
   SignIn,
   SignUp,
-  UploadSong
+  UploadSong,
+  CreatePlaylist
 };

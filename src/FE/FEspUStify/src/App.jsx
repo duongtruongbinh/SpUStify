@@ -1,14 +1,34 @@
-import { useSelector, useDispatch } from 'react-redux';
-import {useParams,useLocation, BrowserRouter as Router, Route,Routes} from 'react-router-dom';
-import { setLikeSongId } from './redux/features/playerSlice';
-import { Searchbar, Sidebar, MusicPlayer, TopPlay, Loader, Error } from './components';
-import { SignIn, SignUp,ArtistDetails, TopArtists, FavouriteSong, HomePage, Search, SongDetails, TopCharts, UploadSong } from './pages';
-import { useGetFavouriteSongsQuery } from './redux/services/CoreApi';
-
-
+import { useSelector, useDispatch } from "react-redux";
+import {
+  useLocation,
+  BrowserRouter as Router,
+  Route,
+  Routes,
+} from "react-router-dom";
+import { setLikeSongId } from "./redux/features/playerSlice";
+import {
+  Searchbar,
+  Sidebar,
+  MusicPlayer,
+  TopPlay,
+  Loader,
+  Error,
+} from "./components";
+import {
+  SignIn,
+  SignUp,
+  ArtistDetails,
+  TopArtists,
+  FavouriteSong,
+  HomePage,
+  Search,
+  SongDetails,
+  TopCharts,
+  CreatePlaylist,
+} from "./pages";
+import { useGetFavouriteSongsQuery } from "./redux/services/CoreApi";
 
 const App = () => {
-  
   const { activeSong } = useSelector((state) => state.player);
 
   const location = useLocation();
@@ -19,18 +39,12 @@ const App = () => {
  
   return (
     <div className="relative flex">
-      {
-         currentRoute != '/signin' &&(  <Sidebar />)
-      }
-     
-      
-      <div className="flex-1 flex flex-col">
-      {
-         currentRoute != '/signin' &&(  <Searchbar />)
-      }
-        
+      {currentRoute != "/signin" && <Sidebar />}
 
-        <div className="px-6 h-[calc(100vh-72px)] overflow-y-scroll hide-scrollbar flex xl:flex-row flex-col-reverse">
+      <div className="flex-1 flex flex-col">
+        {currentRoute != "/signin" && <Searchbar />}
+
+        <div className="px-6 h-[calc(100vh-72px)] overflow-y-scroll hide-scrollbar flex xl:flex-row flex-col-reverse bg-[#18181A]">
           <div className="flex-1 h-fit pb-40">
            
               <Routes>
@@ -60,7 +74,7 @@ const App = () => {
       </div>
 
       {activeSong?.name && (
-        <div className="absolute h-28 bottom-0 left-0 right-0 flex animate-slideup bg-white/5 backdrop-blur-lg rounded-t-3xl z-10">
+        <div className="absolute h-28 bottom-0 left-0 right-0 flex animate-slideup bg-[#1F1F22] z-10">
           <MusicPlayer />
         </div>
       )}

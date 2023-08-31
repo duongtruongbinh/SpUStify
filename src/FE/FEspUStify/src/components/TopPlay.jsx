@@ -1,63 +1,94 @@
-import { useEffect, useRef } from 'react';
-import { Link } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
+import { useEffect, useRef } from "react";
+import { Link } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
 
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { FreeMode } from 'swiper';
-import Loader from './Loader';
-import Error from './Error';
-import TopChartCard from './TopChartCard';
-import PlayPause from './PlayPause';
-import { playPause, setActiveSong } from '../redux/features/playerSlice';
-import { useGetTopChartsQuery, usePlaySongMutation  } from '../redux/services/CoreApi';
+import { Swiper, SwiperSlide } from "swiper/react";
+import { FreeMode } from "swiper";
+import Loader from "./Loader";
+import Error from "./Error";
+import PlayPause from "./PlayPause";
+import { playPause, setActiveSong } from "../redux/features/playerSlice";
+import {
+  useGetTopChartsQuery,
+  usePlaySongMutation,
+} from "../redux/services/CoreApi";
 
-import Na from '../assets/bg1.jpeg';
+import Na from "../assets/bg1.jpeg";
 
-import 'swiper/css';
-import 'swiper/css/free-mode';
+import "swiper/css";
+import "swiper/css/free-mode";
 
+const TopChartCard = ({
+  song,
+  index,
+  isPlaying,
+  activeSong,
+  handlePauseClick,
+  handlePlayClick,
+}) => (
+  <div className="w-full flex flex-row items-center hover:bg-gray-400/50 py-2 p-4 rounded-2xl cursor-pointer mb-2">
+    <h3 className="font-bold text-base text-gray-100 mr-3">{index + 1}.</h3>
+    <div className="flex-1 flex flex-row justify-between items-center">
+      <img
+        src={`http://127.0.0.1:8000${song.avatar}`}
+        //{song?.images?.coverart}
+        alt={song?.name}
+        className="w-20 h-20 rounded-2xl"
+      />
+      <div className="flex-1 flex flex-col justify-center mx-3">
+        <Link to={`/songs/${song.id}`}>
+          <p className="text-gray-100 text-sm">{song?.name}</p>
+        </Link>
+        <Link to={`/artists/${song?.main_artist.id}`}>
+          <p className="text-gray-400 text-xs mt-1">
+            {/* {song?.subtitle} */}
 
+            {song?.main_artist.artist_name}
+          </p>
+        </Link>
+      </div>
+    </div>
+    <PlayPause
+      isPlaying={isPlaying}
+      activeSong={activeSong}
+      song={song}
+      handlePause={handlePauseClick}
+      handlePlay={handlePlayClick}
+    />
+  </div>
+);
 
 const TopPlay = () => {
-
   const dispatch = useDispatch();
   const { activeSong, isPlaying } = useSelector((state) => state.player);
-  const  {data, isFetching, error} = useGetTopChartsQuery();
-  const [setPlaySong, {isLoading, response}] = usePlaySongMutation();
-
-
+  const { data, isFetching, error } = useGetTopChartsQuery();
+  const [setPlaySong, { isLoading, response }] = usePlaySongMutation();
 
   const handlePauseClick = () => {
     dispatch(playPause(false));
   };
 
-  const handlePlayClick = (song,data, index) => {
-    console.log("alo")
-    console.log(song)
+  const handlePlayClick = (song, data, index) => {
+    console.log("alo");
+    console.log(song);
     try {
-      const [{request}]=  dispatch(setPlaySong(song.id));
-    } catch(error){
+      const [{ request }] = dispatch(setPlaySong(song.id));
+    } catch (error) {
       console.log(error);
     }
-    if(isLoading){
-      return <Loader  title='Loading DATA...' />
+    if (isLoading) {
+      return <Loader title="Loading DATA..." />;
     }
     dispatch(setActiveSong({ song, data, index }));
     dispatch(playPause(true));
   };
- 
 
-
-
-
-
-
-  if (isFetching || isLoading) return <Loader title='Loading songs...' />;
+  if (isFetching || isLoading) return <Loader title="Loading songs..." />;
 
   if (error) return <Error />;
-  console.log(data)
-  
-  const likes = data['likes_leaderboard'];
+  console.log(data);
+
+  const likes = data["likes_leaderboard"];
   const listens = data["listens_leaderboard"];
   const dataLikes = Array.isArray(likes) ? likes : [likes];
   const dataListens = Array.isArray(listens) ? listens : [listens];
@@ -69,77 +100,71 @@ const TopPlay = () => {
   // },[]);
 
   //const leaderboardByLikes = data["Leaderboard by likes"];
-// trả về một phần của mảng
+  // trả về một phần của mảng
   const topPlays = dataLikes?.slice(0, 5);
- 
 
- // ref={divRef}
+  // ref={divRef}
   return (
-    <div  className='xl:ml-6 ml-0 xl:mb-0 mb-6 flex-1 xl:max-w-[300px] max-w-full flex flex-col'>
-      <div className='w-full flex flex-col'>
-        <div className='flex flex-row justify-between items-center'>
-          <h2 className='text-gray-100 text-xl'>Top Charts</h2>
-          <Link to='/top-charts'>
-            <p className='text-gray-300 text-xs cursor-pointer'>See more</p>
+    <div className="xl:ml-6 ml-0 xl:mb-0 mb-6 flex-1 xl:max-w-[300px] max-w-full flex flex-col">
+      <div className="w-full flex flex-col">
+        <div className="flex flex-row justify-between items-center">
+          <h2 className="text-gray-100 text-xl">Top Charts</h2>
+          <Link to="/top-charts">
+            <p className="text-gray-300 text-xs cursor-pointer">See more</p>
           </Link>
         </div>
 
-        <div className='mt-4 flex flex-col gap-1'>
+        <div className="mt-4 flex flex-col gap-1">
           {topPlays?.map((song, index) => (
             <TopChartCard
               key={song.id}
               song={song}
-             
               index={index}
               isPlaying={isPlaying}
               activeSong={activeSong}
               handlePauseClick={handlePauseClick}
-              handlePlayClick={() => handlePlayClick(song, topPlays,index)}
+              handlePlayClick={() => handlePlayClick(song, topPlays, index)}
             />
           ))}
         </div>
       </div>
 
-      <div className='w-full flex flex-col mt-8 mb-10'>
-        <div className='flex flex-row justify-between items-center'>
-          <h2 className='text-gray-100 text-xl'>Top Artists</h2>
-          <Link to='/top-artists'>
-            <p className='text-gray-300 text-xs cursor-pointer'>See more</p>
+      <div className="w-full flex flex-col mt-8 mb-10">
+        <div className="flex flex-row justify-between items-center">
+          <h2 className="text-gray-100 text-xl">Top Artists</h2>
+          <Link to="/top-artists">
+            <p className="text-gray-300 text-xs cursor-pointer">See more</p>
           </Link>
         </div>
 
         <Swiper
-          slidesPerView='auto'
+          slidesPerView="auto"
           spaceBetween={15}
           freeMode
           centeredSlides
           centeredSlidesBounds
           modules={[FreeMode]}
-          className='mt-4'
-        >
+          className="mt-4">
           {topPlays?.map((song, index) => (
-            
             <SwiperSlide
               key={index}
-              style={{ width: '50%', height: 'auto' }}
-              className='shadow-lg rounded-full animate-slideright'
-            >
+              style={{ width: "50%", height: "auto" }}
+              className="shadow-lg rounded-full animate-slideright">
               <Link to={`/artists/${song?.main_artist[0]}`}>
-                <img 
-                   src = {`http://127.0.0.1:8000${song.avatar }`}
-                  //{song?.avatar} 
-                  alt='name'
-                  className='rounded-full object-cover w-auto'
+                <img
+                  src={`http://127.0.0.1:8000${song.avatar}`}
+                  //{song?.avatar}
+                  alt="name"
+                  className="rounded-full object-cover w-auto"
                   style={{ width: "100px", height: "100px" }}
                 />
               </Link>
             </SwiperSlide>
           ))}
         </Swiper>
-
       </div>
     </div>
-  )
+  );
 };
 
 export default TopPlay;
