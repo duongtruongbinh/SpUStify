@@ -3,3 +3,5 @@ src/FE/FEspUStify/src/redux/services/CoreApi.js
 src/SpUStify/api/__pycache__/serializers.cpython-310.pyc
 src/SpUStify/SpUStify/settings.py
 src/SpUStify/SpUStify/__pycache__/settings.cpython-310.pyc
+# all file python cache
+*.pyc

@@ -12,7 +12,7 @@ export const CoreApi = createApi({
     baseUrl: 'http://localhost:8000/api/', // Adjust the base URL for your local API
     prepareHeaders: (headers) => {
       // No need for the X-RapidAPI-Key header for local development
-      const token = btoa('h3:Acccuah3'); // Encode the username and password
+      const token = btoa('Admin:Acccuaadmin'); // Encode the username and password
       headers.set('Authorization', `Basic ${token}`);
       return headers;
     },
