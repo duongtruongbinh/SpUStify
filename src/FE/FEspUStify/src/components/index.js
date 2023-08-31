@@ -17,6 +17,7 @@ import LeaderboardCard from './LeaderboardCard';
 import Like from './Like';
 import Liked from './Liked';
 import AddPlaylist from './AddPlaylist';
+import TopChartCard from './TopChartCard';
 export {
 
   Sidebar,
@@ -39,5 +40,6 @@ export {
   LeaderboardCard,
   Like,
   Liked,
-  AddPlaylist
+  AddPlaylist,
+  TopChartCard
 };

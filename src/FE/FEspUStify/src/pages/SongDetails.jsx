@@ -1,7 +1,7 @@
 import React from "react";
 import { useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { DetailsHeader, Error, Loader, RelatedSongs } from "../components";
+import { DetailsHeader, Error, Loader, RelatedSongs ,TopChartCard} from "../components";
 
 import { setActiveSong, playPause } from "../redux/features/playerSlice";
 import {
@@ -39,8 +39,7 @@ const SongDetails = () => {
     dispatch(setActiveSong({ song, data, index}));
     dispatch(playPause(true));
   };
-  console.log("curernt songs")
-  console.log(currentSongs)
+ 
 
   return (
     <div className="flex flex-col">
@@ -50,8 +49,8 @@ const SongDetails = () => {
         handlePauseClick={handlePauseClick}
         handlePlayClick={() => handlePlayClick(song, related_song,related_song.length + 1)}
       />
-
-      <div className="mb-10">
+<div className="flex flex-row">
+<div className="mb-10 w-1/2 ">
         <h2 className="text-gray-100 text-3xl font-bold">Lyrics:</h2>
 
         <div className="mt-5">
@@ -64,7 +63,7 @@ const SongDetails = () => {
           )}
         </div>
       </div>
-      <div className='mt-4 flex flex-col gap-1 mr-10'>
+      <div className='mt-4 w-1/2 flex flex-col gap-1 mr-10'>
           {related_song?.map((song, index) => (
             <TopChartCard
               key={index}
@@ -78,15 +77,9 @@ const SongDetails = () => {
             />
           ))}
         </div>
-      <RelatedSongs
+</div>
     
-        data={related_song}
-        artistId={related_song[0].main_artist.id}
-        isPlaying={isPlaying}
-        activeSong={activeSong}
-        handlePauseClick={handlePauseClick}
-        handlePlayClick={handlePlayClick}
-      />
+ 
     </div>
   );
 };
