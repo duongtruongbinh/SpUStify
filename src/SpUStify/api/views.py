@@ -134,10 +134,10 @@ class HomeFeaturesAPI(APIView):
     permission_classes = [AllowAny]
 
     def get_leaderboard(self, request):
-        songs_by_listens = Song.objects.order_by('-listens')[:2]
+        songs_by_listens = Song.objects.order_by('-listens')[:10]
         listens_serializer = SongSerializer(songs_by_listens, many=True)
 
-        songs_by_likes = Song.objects.order_by('-likes')[:2]
+        songs_by_likes = Song.objects.order_by('-likes')[:10]
         likes_serializer = SongSerializer(songs_by_likes, many=True)
 
         response = {
