@@ -503,6 +503,9 @@ class PlaySongAPI(APIView):
             if not created:
                 user_played_song.listens += 1
                 user_played_song.save()
+        else:
+            song.listens += 1
+        song.save()
 
         song_url = song.song_file.url if song.song_file else None
         if not song_url:
@@ -531,6 +534,7 @@ class LikeSongAPI(APIView):
         if not created:
             user_played_song.liked = True if user_played_song.liked == False else False
             user_played_song.save()
+        song.save()
 
         return Response({'message': 'Song liked successfully'})
 

@@ -12,7 +12,7 @@ const Popup = (props) => {
       <div className="justify-center items-center flex overflow-auto fixed inset-0 z-50">
         <div className="relative w-auto mx-auto">
           {/*content*/}
-          <div className=" w-96 h-48 rounded-lg shadow-lg overflow-auto relative flex flex-col bg-white">
+          <div className="hide-scrollbar w-96 h-48 rounded-lg shadow-lg overflow-auto relative flex flex-col bg-white">
             {/*header*/}
             <div className="flex items-start justify-between p-5 border-b border-solid border-slate-200 rounded-t">
               <h3 className="text-xl font-semibold">Add song to a playlist</h3>
