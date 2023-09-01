@@ -14,16 +14,6 @@ import { usePlaySongMutation } from "../redux/services/CoreApi";
 import Na from '../assets/bg1.jpeg';
 const SongCard = ({ song, isPlaying, activeSong, index, data, handlePauseClick, handlePlayClick }) => {
 
- 
-
-
-
-
-
-  
-
-
-
   return (
 
   

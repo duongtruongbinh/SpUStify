@@ -210,7 +210,7 @@ export const CoreApi = createApi({
       query: (userData) => ({
         url: 'register/', method: 'POST', body: {
           username: userData.username,
-          password: userData.password, email: userData.email, isArtist: userData.email
+          password: userData.password, email: userData.email, isArtist: userData.isArtist
         },
       })
     }),
