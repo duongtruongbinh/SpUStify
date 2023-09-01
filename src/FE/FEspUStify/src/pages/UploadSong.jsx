@@ -37,6 +37,8 @@ const UploadSong = () => {
     const [isUploaded, setIsUploaded] = useState(false);
 
 
+    const [isFormValid,setIsFormValid] = useState(true);
+
     const [setCreateSong, { isLoading }] = useCreateSongMutation();
 
     const handleSubmit = async (event) => {
@@ -44,22 +46,23 @@ const UploadSong = () => {
 
         //  event.preventDefault();
         event.preventDefault();
-        const isFormValid = true;
+
         if (songName === '') {
             setSongNameError('Song name is required');
-            isFormValid = false;
+            setIsFormValid(false);
         } else {
             setSongNameError('');
         }
         if (songFilePost === '') {
             setFileError('File song is required');
-            isFormValid = false;
+            setIsFormValid(false);
         } else {
             setFileError('');
         }
         if (songLyricPost === '') {
             setLyricError('Lyric of the song is required');
-            isFormValid = false;
+            setIsFormValid(false);
+
         } else {
             setLyricError('');
         }
@@ -79,7 +82,7 @@ const UploadSong = () => {
 
             // setFormData(Data);
             // No need for the X-RapidAPI-Key header for local development
-            const token = btoa('h3:Acccuah3'); // Encode the username and password
+            
 
             try {
 

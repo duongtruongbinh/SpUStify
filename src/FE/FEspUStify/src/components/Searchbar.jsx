@@ -29,7 +29,7 @@ const {username} = useSelector((state) => state.player);
         <form
           onSubmit={handleSubmit}
           autoComplete="off"
-          className=" text-gray-400 focus-within:text-gray-600">
+          className="w-full text-gray-400 focus-within:text-gray-600">
           <label htmlFor="search-field" className="sr-only">
             Search all songs
           </label>
