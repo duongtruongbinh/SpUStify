@@ -114,13 +114,18 @@ class HomeViewAPI(APIView):
             )
         ).distinct().order_by('-created_date')
 
+        filtered_artists = Artist.objects.filter(
+            Q(artist_name__icontains=query)
+        ).distinct()
+
         # Serialize the results
         song_serializer = SongSerializer(filtered_songs, many=True)
         playlist_serializer = PlaylistSerializer(filtered_playlists, many=True)
-
+        artist_serializer = ArtistSerializer(filtered_artists, many=True)
         response = {
             'songs': song_serializer.data,
             'playlists': playlist_serializer.data,
+            'artists': artist_serializer.data,
         }
 
         return Response(response)
