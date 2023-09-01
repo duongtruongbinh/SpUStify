@@ -87,7 +87,6 @@ const CreatePlaylist = () => {
             className="bg-[#202027] w-80 rounded text-white focus:outline-none"
             onChange={(e) => setPlaylistName(e.target.value)}
           />
-          <AddPlaylist />
         </div>
       </div>
 

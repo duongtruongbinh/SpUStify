@@ -27,6 +27,7 @@ import {
   CreatePlaylist,
   UploadSong,
   UploadSongSuccessfull,
+  Profile,
 } from "./pages";
 import { useGetFavouriteSongsQuery } from "./redux/services/CoreApi";
 
@@ -46,6 +47,7 @@ const App = () => {
     "/favourite-song",
     "/upload-song",
     "/create-playlist",
+    "/profile",
   ];
 
   return (
@@ -57,7 +59,7 @@ const App = () => {
           <Searchbar />
         )}
 
-        <div className="px-6 h-[calc(100vh-72px)] overflow-y-scroll hide-scrollbar flex xl:flex-row flex-col-reverse bg-[#18181A]">
+        <div className="h-[calc(100vh-72px)] overflow-y-scroll hide-scrollbar flex xl:flex-row flex-col-reverse bg-[#18181A]">
           <div className="flex-1 h-fit pb-40">
             <Routes>
               <Route path="/" element={<HomePage />} />
@@ -71,6 +73,7 @@ const App = () => {
               <Route path="/signin" element={<SignIn />} />
               <Route path="/signup" element={<SignUp />} />
 
+              <Route path="/profile" element={<Profile />} />
               <Route path="/upload-song" element={<UploadSong />} />
               <Route
                 path="/upload-song-succesfull"
