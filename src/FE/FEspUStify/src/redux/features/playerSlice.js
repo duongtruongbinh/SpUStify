@@ -1,6 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { useState } from 'react';
+debugger
 const initialState = {
+ 
   currentSongs: [],
   currentIndex: 0,
   isActive: false,
@@ -8,7 +10,10 @@ const initialState = {
   activeSong: {},
   genreListId: '',
   likedSongsId: [],
-  isArtist: true,
+  username: "Admin",
+  password: "Acccuaadmin",
+  isArtist: false,
+  isLogin : false,
 };
 
 
@@ -68,11 +73,16 @@ const playerSlice = createSlice({
     setRemoveSong: (state, action) => {
       state.likedSongsId = state.likedSongsId.filter(song => song !== action.payload);
     },
-
+setRegisterLogin: (state, action) => {
+  state.username = action.payload.username,
+  state.password = action.payload.password,
+  state.isArtist = action.payload.isArtist,
+  state.isLogin = true
+}
 
   },
 });
 
-export const { setActiveSong, nextSong, prevSong, playPause, selectGenreListId, setLikeSongId, setRemoveSong } = playerSlice.actions;
+export const { setActiveSong, nextSong, prevSong, playPause, selectGenreListId, setLikeSongId, setRemoveSong,setRegisterLogin } = playerSlice.actions;
 
 export default playerSlice.reducer;

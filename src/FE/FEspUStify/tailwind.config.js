@@ -8,7 +8,12 @@ module.exports = {
         near_black: '#202027',
         grey_bg: '#2F303A',
         cancel_grey: '#636669',
-        submit_blue: '#5291CC'
+        submit_blue: '#5291CC',
+        sign_up_blue: '#607EE9',
+        sign_up_now: '#D34692',
+        bg_sign_up: '#2F303A',
+        form_sign_up: '#202027',
+        input_blue: '#385CDD'
       },
       animation: {
         slideup: 'slideup 1s ease-in-out',

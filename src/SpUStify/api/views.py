@@ -21,6 +21,7 @@ import shutil
 class RegisterAPI(generics.GenericAPIView):
     serializer_class = RegisterSerializer
     permission_classes = [AllowAny]
+    authentication_classes = [BasicAuthentication]
 
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -32,7 +33,7 @@ class RegisterAPI(generics.GenericAPIView):
         }
         return Response(response)
 
-class LoginAPI(APIView):
+class LoginAPI(KnoxLoginView):
     #authentication_classes = [BasicAuthentication]
     serializer_class = AuthTokenSerializer
     permission_classes = [AllowAny]
@@ -41,8 +42,20 @@ class LoginAPI(APIView):
         serializer = AuthTokenSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data['user']
+
+        # Kiểm tra xem tài khoản thuộc nhóm "artist" hay không
+        is_artist = user.groups.filter(name='Artists').exists()
+
         auth_login(request, user)
-        return super(LoginAPI, self).post(request)
+
+        # Thêm trường 'is_artist' vào dữ liệu phản hồi
+        response_data = {
+            'user_id': user.id,
+            'username': user.username,
+            'is_artist': is_artist,
+        }
+
+        return Response(response_data, status=status.HTTP_200_OK)
     
 class AccountViewAPI(APIView):
     authentication_classes = [BasicAuthentication]

@@ -41,10 +41,10 @@ const App = () => {
  
   return (
     <div className="relative flex">
-      {currentRoute != "/signin" && <Sidebar />}
+      {currentRoute != "/signin" && currentRoute != "/signup" && <Sidebar />}
 
       <div className="flex-1 flex flex-col">
-        {currentRoute != "/signin" && <Searchbar />}
+        {currentRoute != "/signin" && currentRoute != "/signup" &&  <Searchbar />}
 
         <div className="px-6 h-[calc(100vh-72px)] overflow-y-scroll hide-scrollbar flex xl:flex-row flex-col-reverse bg-[#18181A]">
           <div className="flex-1 h-fit pb-40">
@@ -69,7 +69,7 @@ const App = () => {
           </div>
           <div className="xl:sticky relative top-0 h-fit">
             {
-              currentRoute != '/top-charts' &&  currentRoute != '/signin' && currentRoute != '/upload-song' && currentRoute != '/favourite-song' && !isSongDetailPage && ( <TopPlay />)
+              currentRoute != '/top-charts' &&  currentRoute != '/signin' && currentRoute != '/signup' && currentRoute != '/upload-song' && currentRoute != '/favourite-song' && !isSongDetailPage && ( <TopPlay />)
             }
            
             

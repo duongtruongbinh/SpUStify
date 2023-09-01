@@ -3,8 +3,11 @@ import { useNavigate } from "react-router-dom";
 import { FiSearch } from "react-icons/fi";
 import { selectUser } from "../assets";
 import Na from "../assets/Na.jpeg";
+import { useSelector } from "react-redux/es/hooks/useSelector";
+import { Button } from "@material-tailwind/react";
 
 const Searchbar = () => {
+const {username} = useSelector((state) => state.player);
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -13,6 +16,12 @@ const Searchbar = () => {
     //chuyển sang trang chứa kết quả search
     navigate(`/search/${searchTerm}`);
   };
+  const handleSignIn = () => {
+    navigate('/signin');
+  }
+  const handleSignUp = () => {
+    navigate('/signup');
+  }
 
   return (
     <div className="flex items-center pl-6 pr-6 pt-4 pb-4 gap-4 bg-[#18181A]">
@@ -40,22 +49,31 @@ const Searchbar = () => {
           </div>
         </form>
       </div>
+{
+  username === 'Admin' && 
+  <div className=" flex flex-row gap-1">
+    <Button onClick={handleSignIn} className="border border-blue-500 bg-blue-500 py-2 ">Sign in</Button>
+    <Button onClick={handleSignUp} className="border border-blue-500 bg-blue-500 py-2  ">Sign up</Button>
+    </div>
+}
+{
+  username !== 'Admin' &&  <div className="w-[180px] relative flex pt-1 pb-1 pl-2 pr-4 items-center gap-2 rounded-[20px] bg-[#2A2A2A]">
+  <img
+    src={Na}
+    className="ml-1 mt-1 mb-1 w-[25px] h-[25px] object-cover rounded-2xl  bg-lightgray bg-center bg-cover bg-no-repeat"
+  />
+  <div className="relative w-[100px] overflow-hidden">
+    <p
+      className="items-center animate-marquee text-gray-100"
+      id="truncate-text">
+      {username}
+    </p>
+  </div>
 
-      <div className="w-[180px] relative flex pt-1 pb-1 pl-2 pr-4 items-center gap-2 rounded-[20px] bg-[#2A2A2A]">
-        <img
-          src={Na}
-          className="ml-1 mt-1 mb-1 w-[25px] h-[25px] object-cover rounded-2xl  bg-lightgray bg-center bg-cover bg-no-repeat"
-        />
-        <div className="relative w-[100px] overflow-hidden">
-          <p
-            className="items-center animate-marquee text-gray-100"
-            id="truncate-text">
-            Trinh
-          </p>
-        </div>
-
-        <img className="absolute right-4" src={selectUser} />
-      </div>
+  <img className="absolute right-4" src={selectUser} />
+</div>
+}
+     
     </div>
   );
 };

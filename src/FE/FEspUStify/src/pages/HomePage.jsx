@@ -167,7 +167,7 @@ const HomePage = () => {
               index={index}
               handlePauseClick={handlePauseClick}
               handlePlayClick={() =>
-                handlePlayClick(song, visibleDataSong, index)
+                handlePlayClick(song, dataSong, index)
               }
             />
           ))}

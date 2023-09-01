@@ -5,6 +5,10 @@ import likes from './likes.svg';
 import addPlaylist from './addPlaylist.svg';
 import bgPlaylist from './bgPlaylist.jpeg';
 import LiuGrace from './Liu-Grace.jpeg';
+import image1 from './image1.png';
+import image2 from './image2.png';
+import image3 from './image3.png';
+
 export {
   logo,
   loader,
@@ -12,6 +16,9 @@ export {
   likes,
   addPlaylist,
   bgPlaylist,
-  LiuGrace
+  LiuGrace,
+  image1,
+  image2,
+  image3
 
 };
