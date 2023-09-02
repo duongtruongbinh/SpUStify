@@ -13,7 +13,7 @@ import {bgPlaylist, LiuGrace }from '../assets';
 const TopCharts = () => {
   const dispatch = useDispatch();
   const { activeSong, isPlaying, likedSongsId, isLogin} = useSelector((state) => state.player);
-  const isLoggedIn = localStorage.getItem('isLoggedIn');
+  
 
   console.log("huhu")
   console.log(likedSongsId)
@@ -105,10 +105,10 @@ const TopCharts = () => {
              />
            <div className='flex flex-row items-center hover:bg-gray-400/50 py-2 p-4 rounded-2xl cursor-pointer mb-2'> 
 
-   { isLoggedIn === true &&
+   { isLogin === true &&
   likedSongsId.includes(song.name) && <Liked className='mb-2 text-center'  handleLike={ () => handleLike(song.id,song.name)}  />
 }
-{ isLoggedIn === true && 
+{ isLogin === true && 
 !likedSongsId.includes(song.name) &&  <Like className='text-center'  handleLike={ () => handleLike(song.id,song.name)} />
 }
            </ div> 

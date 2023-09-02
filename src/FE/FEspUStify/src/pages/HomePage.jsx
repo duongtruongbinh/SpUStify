@@ -31,25 +31,28 @@ const HomePage = () => {
   const [endIndexPlaylist, setEndIndexPlaylist] = useState(4);
 
   const dispatch = useDispatch();
-  const { activeSong, isPlaying, currentSongs } = useSelector((state) => state.player);
+  const { activeSong, isPlaying, currentSongs, isLogin } = useSelector((state) => state.player);
+  const [topChartsKey, setTopChartsKey] = useState('top-charts');
+ //const { data: currentData, isLoading: isFavouriteLoading, isError: isFavouriteError } = useGetFavouriteSongsQuery();
+  const { data: topChartsData, isFetching: isTopChartsFetching, error: topChartsError } =  useGetHomeQuery({ key: topChartsKey }); // Add this line
 
- const { data: currentData, isLoading: isFavouriteLoading, isError: isFavouriteError } = useGetFavouriteSongsQuery();
-  const { data: topChartsData, isFetching: isTopChartsFetching, error: topChartsError } =  useGetHomeQuery(); // Add this line
-
-  const [setPlaySong, { isLoading: isLoadingSong, response }] =
-    usePlaySongMutation();
-
+  const [setPlaySong, { isLoading: isLoadingSong, response }] = usePlaySongMutation();
   useEffect(() => {
-    if (!isFavouriteLoading && !isFavouriteError && currentData) {
-      console.log(currentData);
-      const songLiked = currentData["favourite_songs"];
-      console.log(songLiked);
-      const dataLikeSong = Array.isArray(songLiked) ? songLiked : [songLiked];
-      dataLikeSong.forEach((song) => {
-        dispatch(setLikeSongId(song.song_name));
-      });
-    }
-  }, [currentData, isFavouriteLoading, isFavouriteError, dispatch]);
+    // Thay đổi key khi component được mount lại hoặc focus
+   
+    setTopChartsKey('top-charts-' + new Date().getTime());
+  }, []);
+  // useEffect(() => {
+  //   if (!isFavouriteLoading && !isFavouriteError && currentData) {
+  //     console.log(currentData);
+  //     const songLiked = currentData["favourite_songs"];
+  //     console.log(songLiked);
+  //     const dataLikeSong = Array.isArray(songLiked) ? songLiked : [songLiked];
+  //     dataLikeSong.forEach((song) => {
+  //       dispatch(setLikeSongId(song.song_name));
+  //     });
+  //   }
+  // }, [currentData, isFavouriteLoading, isFavouriteError, dispatch]);
 
   const handlePauseClick = () => {
     dispatch(playPause(false));
@@ -70,11 +73,11 @@ const HomePage = () => {
     dispatch(playPause(true));
   };
 
-  if (isFavouriteLoading || isTopChartsFetching || isLoadingSong) {
+  if (isTopChartsFetching || isLoadingSong) {
     return <Loader title="Loading data..." />;
   }
 
-  if (isFavouriteError || topChartsError) {
+  if ( topChartsError) {
     return <Error message="Error fetching data." />;
   }
 

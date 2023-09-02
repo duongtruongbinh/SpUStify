@@ -15,8 +15,9 @@ const SignUp = () => {
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [isArtist, setIsArtist] = useState(false);
+  const [isArtist, setIsArtist] = useState(null);
   const [register, { isLoading, error}] =  useRegisterUserMutation();
+  
     const handleLogin =  async (event) => {
       event.preventDefault();
         const userData = {
@@ -51,9 +52,14 @@ const SignUp = () => {
             }
         
       };
+    
       const handleArtist = () => {
         setIsArtist(true);
       }
+      const handleUser = () => {
+        setIsArtist(false);
+      }
+      
     return (
       <div className=" gap-20  bg-bg_sign_up flex flex-row my-20 mx-20 py-20 px-20">
          <div className="w-1/2 flex flex-col mr-20">
@@ -108,7 +114,7 @@ const SignUp = () => {
                         </div>
 <div className=" flex  gap-10">
   <p className="text-white block mb-2">Role:</p>
-  <Button className="border rounded-md px-2 py-2">User</Button>
+  <Button className="border rounded-md px-2 py-2" onClick={handleUser}>User</Button>
   <Button className="border rounded-md px-2 py-2" onClick={handleArtist}>Artist</Button>
 </div>
 

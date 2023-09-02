@@ -22,7 +22,7 @@ console.log(playlistid)
   useGetPlaylistDetailsQuery({ playlistid });
   const [setEditPlaylist, { isLoading }] = useEditPlaylistMutation();
   const [uploadedImage, setUploadedImage] = useState(null);
-  const [uploadedImagePost, setUploadedImagePost] = useState('');
+  const [uploadedImagePost, setUploadedImagePost] = useState(null);
  
 
 
@@ -36,6 +36,7 @@ console.log(playlistid)
         setPlaylistName(songData.name);
         setUploadedBackground(`http://127.0.0.1:8000${songData.background_image}`);
         setUploadedImage(`http://127.0.0.1:8000${songData.avatar}`);
+        
     }
    },[]);
 
@@ -58,10 +59,7 @@ console.log(playlistid)
       
       if (isFormValid) {
           const data = new FormData();
-          data.append(
-              "avatar",
-              uploadedImagePost,
-          );
+          data.append( "avatar", uploadedImagePost);
           data.append('background_image', uploadedBackgroundPost);
 
           data.append('name', playlistName);
@@ -98,16 +96,17 @@ debugger
 
   };
 
-
+debugger
   const handleImageUpload = (imageFile) => {
       if (imageFile) {
 
 
           setUploadedImage(URL.createObjectURL(imageFile));
-          setUploadedImagePost(imageFile)
+          setUploadedImagePost(imageFile);
 
       }
   };
+  debugger
   const handleBackgroudUpload = (backgroundFile) => {
       if (backgroundFile) {
           setUploadedBackground(URL.createObjectURL(backgroundFile));

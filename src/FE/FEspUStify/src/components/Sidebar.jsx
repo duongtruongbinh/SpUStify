@@ -11,7 +11,7 @@ import { links } from "../assets/constants";
 const NavLinks = ({ handleClick}) =>{
 
 const { isArtist, isLogin } = useSelector((state) => state.player);
-const isLoggedIn = localStorage.getItem('isLoggedIn');
+
 
 
 return (
@@ -32,7 +32,7 @@ if (isArtist === true && (item.name === 'Upload Song'  ) ) {
 </NavLink> 
   )
 
-}   else if( (item.name === 'Favourite Song' ||  item.name === 'Playlist' || item.name === 'Create Playlist') && isLoggedIn === true  ) 
+}   else if( (item.name === 'Favourite Song' ||  item.name === 'Playlist' || item.name === 'Create Playlist') && isLogin === true  ) 
 
 
 {

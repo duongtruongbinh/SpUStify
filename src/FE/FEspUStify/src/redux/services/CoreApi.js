@@ -175,7 +175,7 @@ export const CoreApi = createApi({
           if (!isLoginOrRegisterEndpoint(request.endpoint)) {
             const { username, password } = useSelector((state) => state.player);
 
-            request.headers.set('Authorization', createAuthorizationHeader("mimo", "phuongtrinh"));
+            request.headers.set('Authorization', createAuthorizationHeader(username, password));
           }
         },
 
@@ -226,7 +226,7 @@ export const CoreApi = createApi({
           if (!isLoginOrRegisterEndpoint(request.endpoint)) {
             const { username, password } = useSelector((state) => state.player);
 
-            request.headers.set('Authorization', createAuthorizationHeader("mimo", "phuongtrinh"));
+            request.headers.set('Authorization', createAuthorizationHeader(username, password));
           }
         },
 
@@ -252,10 +252,7 @@ export const CoreApi = createApi({
     }),
     registerUser: builder.mutation({
       query: (userData) => ({
-        url: 'register/', method: 'POST', body: {
-          username: userData.username,
-          password: userData.password, email: userData.email, isArtist: userData.email
-        },
+        url: 'register/', method: 'POST', body: userData
       })
     }),
     login: builder.mutation({

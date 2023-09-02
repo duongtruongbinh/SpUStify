@@ -35,7 +35,7 @@ import { useGetFavouriteSongsQuery } from "./redux/services/CoreApi";
 
 const App = () => {
   const { activeSong, isLogin } = useSelector((state) => state.player);
-  const isLoggedIn = localStorage.getItem('isLoggedIn');
+  
   const location = useLocation();
   const currentRoute = location.pathname;
 
@@ -70,7 +70,7 @@ const App = () => {
               <Route path="/top-artists" element={<TopArtists />} />
               <Route path="/top-charts" index element={<TopCharts />} />
               {
-               isLoggedIn && ( <Route path="/favourite-song" element={<FavouriteSong />} />)
+               isLogin && ( <Route path="/favourite-song" element={<FavouriteSong />} />)
               }
              
               <Route path="/artists/:id" element={<ArtistDetails />} />

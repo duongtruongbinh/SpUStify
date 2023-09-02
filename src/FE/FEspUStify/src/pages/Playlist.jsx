@@ -35,10 +35,17 @@ const Playlist = () => {
 
   const dispatch = useDispatch();
   const { activeSong, isPlaying, currentSongs } = useSelector((state) => state.player);
+  const [favouriteKey, setFavouriteKey] = useState('favourite-songs');
+  const [topChartsKey, setTopChartsKey] = useState('top-charts');
+ const { data: currentData, isLoading: isFavouriteLoading, isError: isFavouriteError } = useGetFavouriteSongsQuery({ key: favouriteKey });
+  const { data: topChartsData, isFetching: isTopChartsFetching, error: topChartsError } = useGetPlaylistsQuery({ key: topChartsKey }); // Add this line
 
- const { data: currentData, isLoading: isFavouriteLoading, isError: isFavouriteError } = useGetFavouriteSongsQuery();
-  const { data: topChartsData, isFetching: isTopChartsFetching, error: topChartsError } = useGetPlaylistsQuery(); // Add this line
-
+  
+  useEffect(() => {
+    // Thay đổi key khi component được mount lại hoặc focus
+    setFavouriteKey('favourite-songs-' + new Date().getTime());
+    setTopChartsKey('top-charts-' + new Date().getTime());
+  }, []);
   const [setPlaySong, { isLoading: isLoadingSong, response }] =
     usePlaySongMutation();
 
