@@ -13,34 +13,39 @@ const SignIn = () => {
   const [password, setPassword] = useState("");
   const dispatch = useDispatch();
   const [login, { isLoading, error, data }] = useLoginMutation();
-  const handleLogin = async (event) => {
-    event.preventDefault();
-    const userData = {
-      username: username,
-      password: password,
-    };
-
-    debugger;
-
-    const response = await login(userData);
-    console.log(response);
-    debugger;
-    // Gọi API đăng ký và unwrap kết quả
-
-    if (isLoading) return <Loader title="Sending" />;
-    if (error) return <Error />;
-
-    if (response.data) {
-      const useForSlice = {
-        ...userData,
-        isArtist: response.data.is_artist,
-        isLogin: true,
+    const handleLogin =  async (event) => {
+      event.preventDefault();
+        const userData = {
+         "username": username,
+          "password": password,
+          
+          
+        };
+        
+        debugger
+        
+        const response = await login(userData);
+       console.log(response.data)
+        debugger
+         // Gọi API đăng ký và unwrap kết quả
+        
+        if (isLoading) return <Loader title='Sending' />;
+        if (error) return <Error />;
+        
+          if(response.data){
+            const useForSlice = {
+              ...userData,
+              "isArtist": response.data.is_artist,
+              "isLogin": true
+            }
+            
+            dispatch(setRegisterLogin(useForSlice));
+            navigate('/home')
+            sessionStorage.setItem("user", JSON.stringify(useForSlice));
+          }
       };
-      sessionStorage.setItem("user", JSON.stringify(useForSlice));
+      
 
-      dispatch(setRegisterLogin(useForSlice));
-      navigate("/home");
-    }
   };
   const handleArtist = () => {
     setIsArtist(true);

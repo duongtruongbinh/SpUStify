@@ -86,7 +86,8 @@ class DetailSongSerializer(ModelSerializer):
 
     class Meta:
         model = Song
-        fields = ('avatar', 'background_image', 'name', 'lyric_data', 'song_file')
+        fields = ('avatar', 'background_image',
+                  'name', 'lyric_data', 'song_file')
 
 
 class FeaturesSongSerializer(serializers.ModelSerializer):
@@ -127,6 +128,7 @@ class EditPlaylistSerializer(ModelSerializer):
     class Meta:
         model = Playlist
         fields = ('avatar', 'background_image', 'name', 'status', 'songs')
+
 
 class PlayedSongSerializer(ModelSerializer):
     song = SongSerializer(many=False)

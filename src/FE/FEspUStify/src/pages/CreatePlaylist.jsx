@@ -2,109 +2,195 @@ import { AddPlaylist } from "../components";
 import { Dispatch, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useCreatePlaylistMutation } from "../redux/services/CoreApi";
-
+import { Button } from '@material-tailwind/react';
+import { useNavigate } from "react-router-dom";
 const CreatePlaylist = () => {
+  
+  const navigate = useNavigate();
+
+
   const dispatch = useDispatch();
 
-  const [playlistName, setPlaylistName] = useState("");
+  const [playlistName, setPlaylistName] = useState('');
+  const [PlaylistNameError, setPlaylistNameError] = useState('');
+
+
+
+ 
+
 
   const [uploadedImage, setUploadedImage] = useState(null);
-  const [uploadedImagePost, setUploadedImagePost] = useState("");
+  const [uploadedImagePost, setUploadedImagePost] = useState('');
+  const [imageError, setImageError] = useState('');
+
 
   const [uploadedBackground, setUploadedBackground] = useState(null);
   const [uploadedBackgroundPost, setUploadedBackgroundPost] = useState(null);
+  const [backgroundError, setBackgroundError] = useState('');
+
+
+  const [isUploaded, setIsUploaded] = useState(false);
+
+
+  const [isFormValid,setIsFormValid] = useState(true);
 
   const [setCreatePlaylist, { isLoading }] = useCreatePlaylistMutation();
 
-  const handleInputImage = (e) => {
-    if (!uploadedImage) {
-      setUploadedImage(URL.createObjectURL(e.target.files[0]));
-      setUploadedImagePost(e.target.files[0]);
-    } else setUploadedImage(null);
-  };
-
   const handleSubmit = async (event) => {
-    //  event.preventDefault();
-    event.preventDefault();
 
-    const data = new FormData();
-    data.append("avatar", uploadedImagePost);
-    data.append("background_image", uploadedBackgroundPost);
-    data.append("name", playlistName);
-    data.append("status", "Public");
 
-    try {
-      const [{ request }] = dispatch(setCreatePlaylist(data));
-      console.log(request);
-    } catch (error) {
-      console.log(error);
-    }
+      //  event.preventDefault();
+      event.preventDefault();
 
-    if (isLoading) {
-      return <Loader title="Loading DATA..." />;
-    }
+      if (playlistName === '') {
+        setPlaylistNameError('Song name is required');
+          setIsFormValid(false);
+      } else {
+        setPlaylistNameError('');
+      }
+      if (uploadedBackgroundPost === null) {
+          setBackgroundError('File song is required');
+          setIsFormValid(false);
+      } else {
+          setBackgroundError('');
+      }
+      if (uploadedImagePost === null) {
+          setImageError('Lyric of the song is required');
+          setIsFormValid(false);
+
+      } else {
+          setImageError('');
+      }
+      if (isFormValid) {
+          const data = new FormData();
+          data.append(
+              "avatar",
+              uploadedImagePost,
+          );
+          data.append('background_image', uploadedBackgroundPost);
+
+          data.append('name', playlistName);
+
+          data.append('status', 'pub');
+          
+
+
+          // setFormData(Data);
+          // No need for the X-RapidAPI-Key header for local development
+          
+
+          try {
+
+              const responseData = await setCreatePlaylist(data);
+
+              if (responseData.avatar !== null) {
+                  navigate('/upload-song-succesfull');
+              }
+
+          }
+          catch (error) {
+              console.log(error);
+          }
+
+          if (isLoading) {
+              return <Loader title='Loading DATA...' />
+          }
+      }
+
+
+
+
+
   };
 
-  const handleCancle = (e) => {};
+
+  const handleImageUpload = (imageFile) => {
+      if (imageFile) {
+
+
+          setUploadedImage(URL.createObjectURL(imageFile));
+          setUploadedImagePost(imageFile)
+
+      }
+  };
+  const handleBackgroudUpload = (backgroundFile) => {
+      if (backgroundFile) {
+          setUploadedBackground(URL.createObjectURL(backgroundFile));
+          setUploadedBackgroundPost(backgroundFile);
+
+      }
+  };
 
   return (
-    <div className="flex flex-col bg-[#2F303A] w-[70%] h-[80%] rounded-2xl mt-16 ml-44">
-      <p className="flex items-center justify-center h-40 text-[#FFFFFF] text-2xl">
-        Create playlist
-      </p>
+      <div className=" bg-grey_bg flex flex-col my-10 mx-5">
 
-      <div className="flex space-x-16 items-center justify-center">
-        <div className="h-48 w-48 flex items-center justify-center overflow-hidden border-dashed border-2 border-[#AEAEAE]">
-          {!uploadedImage ? (
-            <>
-              <input
-                type="file"
-                id="html"
-                className="hidden"
-                onChange={handleInputImage}
-                accept="image/png, image/jpeg"
-              />
-              <label
-                htmlFor="html"
-                className="flex flex-col items-center text-white hover:cursor-pointer">
-                <div className="text-white text-3xl">+</div>
-                Image
-              </label>
-            </>
-          ) : (
-            <img
-              src={uploadedImage}
-              className="h-[192px] w-[192px] object-cover"
-              onClick={handleInputImage}
-            />
-          )}
-        </div>
-        <div className="flex flex-col space-y-2">
-          <div className="text-[#FAF6F6]">Playlist name</div>
-          <input
-            type="text"
-            id="playlistname"
-            className="bg-[#202027] w-80 rounded text-white focus:outline-none"
-            onChange={(e) => setPlaylistName(e.target.value)}
-          />
-        </div>
-      </div>
+          <div className=" text-white flex my-10 justify-center ">Create Playlist</div>
+          <form onSubmit={handleSubmit}>
+              <div className="flex flex-row h-1/2 my-8 mx-8 justify-center">
+                  <div class=" flex flex-row items-center justify-center gap-4 ">
 
-      <div className="flex items-end h-40 pb-2 pr-2 justify-end">
-        <button
-          type="button"
-          onClick={handleCancle}
-          class="text-[#FFFFFF] bg-[#636669] hover:bg-[#2d2e2f] font-medium rounded-lg text-sm px-8 py-2.5 mr-2 mb-2">
-          Cancel
-        </button>
-        <button
-          type="button"
-          onClick={handleSubmit}
-          class="text-[#FFFFFF] bg-[#5291CC] hover:bg-[#20517f] font-medium rounded-lg text-sm px-8 py-2.5 mr-2 mb-2">
-          Create
-        </button>
+                      <div className="border border-dashed border-gray-300 p-4 h-[250px] w-[250px] flex flex-col items-center justify-center">
+                          <label className="cursor-pointer rounded-md py-2 px-2 bg-white">
+                              Choose image
+                              <input
+                                  type="file"
+                                  accept=".jpg, .jpeg, .png, .gif"
+                                  onChange={(e) => handleImageUpload(e.target.files[0])}
+                                  className="hidden"
+                              />
+                          </label>
+                          {uploadedImage && <img src={uploadedImage} alt="Uploaded" className="object-cover w-full h-full border border-gray-400"
+                          />}
+                      </div>
+
+
+                      <div className="border border-dashed border-gray-300 p-4 h-[250px] w-[250px] flex flex-col items-center justify-center">
+                          <label className="cursor-pointer rounded-md bg-white py-2 px-2  items-center">
+                              Choose background
+                              <input
+                                  type="file"
+                                  accept=".jpg, .jpeg, .png, .gif"
+                                  onChange={(e) => handleBackgroudUpload(e.target.files[0])}
+                                  className="hidden"
+                              />
+                          </label>
+                          {uploadedBackground && <img src={uploadedBackground} alt="Uploaded" className="object-cover w-full h-full border border-gray-400"
+                          />}
+                      </div>
+                  </div>
+
+                  <div className=" ml-10 self-center flex flex-col w-2/5 gap-4 ">
+
+                      <div>
+                          <label className="text-white block mb-2">Playlist name</label>
+
+                          <input
+                              type="text"
+
+                              className="w-full h-12 rounded bg-near_black focus:outline-none focus:border-blue-500"
+                              value={playlistName}
+                              onChange={(e) => setPlaylistName(e.target.value)}
+                          />
+                          {PlaylistNameError && <p className="text-red-500">{PlaylistNameError}</p>}
+
+                      </div>
+
+
+
+                  
+
+
+                  </div>
+
+              </div>
+
+
+              <div className="text-white my-10 flex flex-row gap-4 justify-end mr-20">
+                  <Button className='bg-cancel_grey  px-8 py-4 my-2 rounded-xl   text-white'>Cancel</Button>
+                  <Button type='submit' className='bg-submit_blue  px-8 py-4 my-2 rounded-xl   text-white'>Submit</Button>
+              </div>
+          </form>
       </div>
-    </div>
   );
 };
 

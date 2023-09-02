@@ -15,8 +15,7 @@ const Player = ({
   // eslint-disable-next-line no-unused-expressions
   if (ref.current) {
     if (isPlaying) {
-      console.log("lấy thử nha")
-      console.log(activeSong)
+     
       ref.current.play();
     } else {
       ref.current.pause();

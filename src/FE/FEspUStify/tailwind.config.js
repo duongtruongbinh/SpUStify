@@ -13,7 +13,8 @@ module.exports = {
         sign_up_now: '#D34692',
         bg_sign_up: '#2F303A',
         form_sign_up: '#202027',
-        input_blue: '#385CDD'
+        input_blue: '#385CDD',
+        player_playlist: '#2F2F2F'
       },
       animation: {
         slideup: 'slideup 1s ease-in-out',

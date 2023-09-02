@@ -27,11 +27,11 @@ import { bgPlaylist, LiuGrace } from "../assets";
 
 const TopCharts = () => {
   const dispatch = useDispatch();
-  const { activeSong, isPlaying, likedSongsId, isLogin } = useSelector(
-    (state) => state.player
-  );
-  console.log("huhu");
-  console.log(likedSongsId);
+  const { activeSong, isPlaying, likedSongsId, isLogin} = useSelector((state) => state.player);
+  
+
+  console.log("huhu")
+  console.log(likedSongsId)
 
   const [setLikeSongName, { isLoading }] = useLikeSongMutation();
   const { data, isFetching, error } = useGetTopChartsQuery();
@@ -82,7 +82,9 @@ const TopCharts = () => {
   const listens = data["listens_leaderboard"];
   const dataLikes = Array.isArray(likes) ? likes : [likes];
   const dataListens = Array.isArray(listens) ? listens : [listens];
-
+ 
+ 
+  debugger
   return (
     <div className=" flex flex-col">
       <div className="w-full flex flex-col">
@@ -97,37 +99,37 @@ const TopCharts = () => {
             LEADER BOARD
           </h3>
         </div>
-        <div className="mt-4 flex flex-col gap-1">
-          {likes?.map((song, index) => (
-            <div
-              className="flex flex-row items-center text-center"
-              key={song.id}>
-              <LeaderboardCard
-                song={song}
-                index={index}
-                isPlaying={isPlaying}
-                activeSong={activeSong}
-                handlePauseClick={handlePauseClick}
-                handlePlayClick={() => handlePlayClick(song, likes, index)}
-              />
-              {isLogin === true ? (
-                <div className="flex flex-row items-center hover:bg-gray-400/50 py-2 p-4 rounded-2xl cursor-pointer mb-2">
-                  {likedSongsId.includes(song.name) ? (
-                    <Liked
-                      className="mb-2 text-center"
-                      handleLike={() => handleLike(song.id, song.name)}
-                    />
-                  ) : (
-                    <Like
-                      className="text-center"
-                      handleLike={() => handleLike(song.id, song.name)}
-                    />
-                  )}
-                </div>
-              ) : null}
-              <AddPlaylist />
-            </div>
-          ))}
+        <div className='mt-4 flex flex-col gap-1'>
+          {dataLikes?.map((song, index) => (
+             <div className='flex flex-row items-center text-center' key={song.id}>
+              
+             <LeaderboardCard
+               song={song}
+               index={index}
+               isPlaying={isPlaying}
+               activeSong={activeSong}
+               handlePauseClick={handlePauseClick}
+               handlePlayClick={() => handlePlayClick(song, likes, index)}
+             />
+           <div className='flex flex-row items-center hover:bg-gray-400/50 py-2 p-4 rounded-2xl cursor-pointer mb-2'> 
+
+   { isLogin === true &&
+  likedSongsId.includes(song.name) && <Liked className='mb-2 text-center'  handleLike={ () => handleLike(song.id,song.name)}  />
+}
+{ isLogin === true && 
+!likedSongsId.includes(song.name) &&  <Like className='text-center'  handleLike={ () => handleLike(song.id,song.name)} />
+}
+           </ div> 
+             
+
+            
+             <AddPlaylist
+             songid = {song.id}
+             />
+           </div>
+            
+))}
+           
         </div>
       </div>
 
@@ -135,5 +137,5 @@ const TopCharts = () => {
     </div>
   );
 };
-
+debugger
 export default TopCharts;
