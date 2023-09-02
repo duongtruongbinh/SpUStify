@@ -48,9 +48,10 @@ class LoginAPI(KnoxLoginView):
         user = serializer.validated_data['user']
 
         # Kiểm tra xem tài khoản thuộc nhóm "artist" hay không
-        is_artist = user.groups.filter(name='Artists').exists()
+        
 
         auth_login(request, user)
+        is_artist = request.user.groups.filter(name='Artists').exists()
 
         # Thêm trường 'is_artist' vào dữ liệu phản hồi
         response_data = {
@@ -150,22 +151,8 @@ class HomeFeaturesAPI(APIView):
         }
         return Response(response)
 
-    def get_favourites(self, request, user_id):
-        user_played_songs = UserPlayedSong.objects.filter(
-            played_song__accounts__id=user_id, liked=True)
-        user_played_songs_serializer = UserPlayedSongSerializer(
-            user_played_songs, many=True)
-
-        user_played_playlists = UserPlayedPlaylist.objects.filter(
-            played_playlist__accounts__id=user_id, liked=True)
-        user_played_playlists_serializer = UserPlayedPlaylistSerializer(
-            user_played_playlists, many=True)
-
-        response = {
-            'favourite_songs': user_played_songs_serializer.data,
-            'favourite_playlists': user_played_playlists_serializer.data,
-        }
-        return Response(response)
+    # def get_favourites(self, request, user_id):
+        
 
     def get_history(self, request, user_id):
         played_songs = PlayedSong.objects.filter(accounts__id=user_id)
@@ -212,12 +199,35 @@ class HomeFeaturesAPI(APIView):
 
         if feature == "leaderboard":
             return self.get_leaderboard(request)
-        elif feature == "favourite":
-            return self.get_favourites(request, user_id)
+        # elif feature == "favourite":
+        #     return self.get_favourites(request, user_id)
         elif feature == "history":
             return self.get_history(request, user_id)
         elif feature == "recommend":
             return self.get_recommendations(request, user_id)
+
+class FavouriteViewAPI(APIView):
+    authentication_classes = [BasicAuthentication]
+    permission_classes = [IsAuthenticated]
+    
+    def get(self, request):
+        user_id = request.user.id
+        
+        user_played_songs = UserPlayedSong.objects.filter(
+            played_song__accounts__id=user_id, liked=True)
+        user_played_songs_serializer = UserPlayedSongSerializer(
+            user_played_songs, many=True)
+
+        user_played_playlists = UserPlayedPlaylist.objects.filter(
+            played_playlist__accounts__id=user_id, liked=True)
+        user_played_playlists_serializer = UserPlayedPlaylistSerializer(
+            user_played_playlists, many=True)
+
+        response = {
+            'favourite_songs': user_played_songs_serializer.data,
+            'favourite_playlists': user_played_playlists_serializer.data,
+        }
+        return Response(response)
 
 
 class ProfileViewAPI(APIView):

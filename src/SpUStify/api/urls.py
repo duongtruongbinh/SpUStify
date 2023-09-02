@@ -18,6 +18,7 @@ urlpatterns = [
     # Home Page
     path('home/', HomeViewAPI.as_view(), name="get_homepage"),
     path('home/<str:feature>/', HomeFeaturesAPI.as_view(), name="get_homepage_features"),
+    path('home/favourite/', FavouriteViewAPI.as_view(), name="get_homepage_features"),
     
     # Profile Page
     path('profile/', ProfileViewAPI.as_view(), name="get_profile"),
@@ -37,7 +38,7 @@ urlpatterns = [
     # Detail Song Page
     path('songs/<str:song_id>/', SongsViewAPI.as_view(), name="get_song"),
     path('songs/<str:song_id>/edit/', EditSongAPI.as_view(), name="edit_song"),
-    path('songs/<str:song_id>/add-to-playlist/', AddSongToPlaylistAPI.as_view(), name='add_song_to_playlist'),
+    path('songs/<str:song_id>/add-to-playlist/<int:playlist_id>', AddSongToPlaylistAPI.as_view(), name='add_song_to_playlist'),
     path('songs/<str:song_id>/play/', PlaySongAPI.as_view(), name='play_song'),
     path('songs/<str:song_id>/like/', LikeSongAPI.as_view(), name='like_song'),
    
@@ -47,7 +48,7 @@ urlpatterns = [
     path('playlists/create', CreatePlaylistAPI.as_view(), name="create_playlist"),
     # Detail Playlist Page
     path('playlists/<str:playlist_id>/', PlaylistsViewAPI.as_view(), name="get_playlist"),
-    path('playlists/<str:playlist_id>/edit/', EditPlaylistAPI.as_view(), name="edit_playlist"),
+    path('playlists/<int:playlist_id>/edit/', EditPlaylistAPI.as_view(), name="edit_playlist"),
     path('playlists/<str:playlist_id>/play/', PlayPlaylistAPI.as_view(), name='play_playlist'),
     path('playlists/<str:playlist_id>/like/', LikePlaylistAPI.as_view(), name='like_playlist'),
     path('your_playlists/', YourPlaylistsViewAPI.as_view(), name="get_your_playlists"),

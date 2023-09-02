@@ -33,7 +33,7 @@ class RegisterSerializer(ModelSerializer):
         is_artist = validated_data.pop('is_artist', False)
 
         # Check if the group exists, otherwise create it
-        group_name = 'Artist' if is_artist else 'User'
+        group_name = 'Artists' if is_artist else 'Users'
         group, _ = Group.objects.get_or_create(name=group_name)
 
         user = User.objects.create_user(
