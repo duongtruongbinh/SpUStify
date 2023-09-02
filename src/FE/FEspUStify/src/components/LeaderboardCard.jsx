@@ -8,7 +8,7 @@ import Like from "./Like";
 import AddPlaylist from "./AddPlaylist";
 
 
-const LeaderboardCard = ({ song, index, isPlaying, activeSong, handlePauseClick, handlePlayClick,handleLikeClick }) => (
+const LeaderboardCard = ({song, index, isPlaying, activeSong, handlePauseClick, handlePlayClick }) => (
     <div className='w-full  flex flex-row items-center hover:bg-gray-400/50 py-2 p-4 rounded-2xl cursor-pointer mb-2'>
       <h3 className='font-bold text-base text-gray-100 mr-3'>
         {index + 1}.

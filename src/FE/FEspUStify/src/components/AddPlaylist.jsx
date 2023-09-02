@@ -2,23 +2,26 @@ import { MdOutlinePlaylistAdd } from "react-icons/md";
 import { useState, useRef, useEffect } from "react";
 import { useGetPlaylistsQuery } from "../redux/services/CoreApi";
 import { useAddSongToPlaylistMutation } from "../redux/services/CoreApi";
-const Popup = ({data, songid}) => {
+const Popup =  ({data, songid}) => {
   const playlistList =data;
   console.log("data add");
   console.log(playlistList);
+  const [id, setId] = useState(null);
   const [setAddSong, { isLoading: isLoadingAdd, responseAdd }] =useAddSongToPlaylistMutation();
-  const handleaddSong = ({songid, playlist}) => {
+  const handleaddSong = async ({songid, playlist}) => {
     console.log("check")
     console.log(songid)
-    debugger
-    const id = {
-      "playlist_id": playlist.id
-    }
-    debugger
+    
+    const id = playlist.id;
+    
+   
     console.log(id)
     try {
-        const response = setAddSong({songid,id});
+      debugger
+        const response = await setAddSong({songid,id});
+        debugger
     } catch(error){
+      debugger
         console.log(error)
     }
 
@@ -78,6 +81,7 @@ console.log(songid)
           onClick={() => {
             setShowModal(false);
           }}
+         
         songid = {songid}
          
           

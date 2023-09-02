@@ -109,7 +109,7 @@ export const CoreApi = createApi({
 
     }), // Adjust endpoint path
     getFavouriteSongs: builder.query({
-      query: () => 'home/favourite/',
+      query: () => 'favourite/',
 
       async onQueryStarted(request, api, context) {
         if (!isLoginOrRegisterEndpoint(request.endpoint)) {
@@ -182,11 +182,8 @@ export const CoreApi = createApi({
       })
     }),
     addSongToPlaylist: builder.mutation({
-      query: ({songid,FormData}) => ({
-        url: `/songs/${songid}/add-to-playlist/`, method: 'POST', body:
-          FormData
-
-        ,
+      query: ({songid,id}) => ({
+        url: `/songs/${songid}/add-to-playlist/${id}`, method: 'POST',
         async onQueryStarted(request, api, context) {
           if (!isLoginOrRegisterEndpoint(request.endpoint)) {
             const { username, password } = useSelector((state) => state.player);
