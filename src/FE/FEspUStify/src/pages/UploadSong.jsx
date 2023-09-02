@@ -185,7 +185,7 @@ const UploadSong = () => {
                             <input
                                 type="text"
 
-                                className="w-full h-12 rounded bg-near_black focus:outline-none focus:border-blue-500"
+                                className="text-white w-full h-12 rounded bg-near_black focus:outline-none focus:border-blue-500"
                                 value={songName}
                                 onChange={(e) => setSongName(e.target.value)}
                             />
@@ -202,7 +202,7 @@ const UploadSong = () => {
                                     type="file"
                                     accept="audio/mp3"
 
-                                    className="w-full h-12 bg-near_black rounded focus:outline-none focus:border-blue-500"
+                                    className="text-white w-full h-12 bg-near_black rounded focus:outline-none focus:border-blue-500"
 
                                     onChange={(e) => handleFileUploadAudio(e.target.files[0])}
                                 />
@@ -221,7 +221,7 @@ const UploadSong = () => {
                                     type="file"
                                     accept=".txt, .pdf"
 
-                                    className="w-full h-12 bg-near_black rounded focus:outline-none focus:border-blue-500"
+                                    className="text-white w-full h-12 bg-near_black rounded focus:outline-none focus:border-blue-500"
 
                                     onChange={(e) => handleFileUploadLyric(e.target.files[0])}
                                 />
