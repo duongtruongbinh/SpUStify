@@ -1,22 +1,25 @@
 
 from django.contrib.auth import login as auth_login
+from django.shortcuts import get_object_or_404
+from django.contrib.auth.models import User
+from django.db import IntegrityError
+
 from rest_framework import generics, status
 from rest_framework.response import Response
-from rest_framework.authentication import SessionAuthentication, TokenAuthentication, BasicAuthentication
+from rest_framework.authentication import BasicAuthentication
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.authtoken.serializers import AuthTokenSerializer
 from rest_framework.parsers import MultiPartParser
+
 from knox.models import AuthToken
 from knox.views import LoginView as KnoxLoginView
-from django.contrib.auth.models import User
+
 from .models import *
 from .serializers import *
-from .utils import *
 from .permissions import IsAdminGroup, IsArtistGroup, IsUserGroup, IsPlaylistOwner
-from django.db import IntegrityError
 import os
-import shutil
+
 
 
 class RegisterAPI(generics.GenericAPIView):
@@ -40,7 +43,7 @@ class LoginAPI(KnoxLoginView):
     serializer_class = AuthTokenSerializer
     permission_classes = [AllowAny]
 
-    def post(self, request):
+    def post(self, request, *args, **kwargs):
         serializer = AuthTokenSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data['user']
@@ -80,17 +83,14 @@ class AccountViewAPI(APIView):
         return self.get_accounts_list(request)
 
 
-class EditAccountAPI(APIView):
+class DeleteAccountAPI(APIView):
     authentication_classes = [BasicAuthentication]
     permission_classes = [IsAuthenticated,]  # IsAdminGroup]
-
-    def delete_account(self, request, account_id):
+        
+    def delete(self, request, account_id, *args, **kwargs):
         account = get_object_or_404(User, pk=account_id)
         account.delete()
         return Response('Account was deleted!')
-
-    def delete(self, request, account_id):
-        return self.delete_account(request, account_id)
 
 
 class HomeViewAPI(APIView):
@@ -225,13 +225,10 @@ class ProfileViewAPI(APIView):
     authentication_classes = [BasicAuthentication]
     permission_classes = [IsAuthenticated]
 
-    def get_user_profile(self, request):
-        profile = Profile.objects.filter(account=request.user).first()
+    def get(self, request):
+        profile = Profile.objects.get(account=request.user)
         serializer = ProfileSerializer(profile)
         return Response(serializer.data)
-
-    def get(self, request):
-        return self.get_user_profile(request)
 
 
 class CreateProfileAPI(APIView):
@@ -239,7 +236,7 @@ class CreateProfileAPI(APIView):
     permission_classes = [IsAuthenticated]
     serializer_class = ProfileSerializer
 
-    def create_profile(self, request):
+    def post(self, request, *args, **kwargs):
         data = request.data.copy()
         account = request.user
 
@@ -252,18 +249,14 @@ class CreateProfileAPI(APIView):
         except IntegrityError:
             return Response({'error': 'A profile already exists for this user.'})
 
-    def post(self, request):
-        return self.create_profile(request)
-
 
 class EditProfileAPI(APIView):
     authentication_classes = [BasicAuthentication]
     permission_classes = [IsAuthenticated]
     serializer_class = ProfileSerializer
-
-    def edit_profile(self, request):
-        account = request.user
-        profile = Profile.objects.filter(account=account).first()
+       
+    def put(self, request, *arg, **kwarg):
+        profile = Profile.objects.get(account=request.user)
 
         if not profile:
             return Response({'error': 'Profile not found.'})
@@ -275,8 +268,6 @@ class EditProfileAPI(APIView):
         serializer.save()
         return Response(serializer.data)
 
-    def put(self, request):
-        return self.edit_profile(request)
 
 
 class ArtistViewAPI(APIView):
@@ -323,22 +314,16 @@ class ArtistViewAPI(APIView):
 class CreateArtistAPI(APIView):
     authentication_classes = [BasicAuthentication]
     permission_classes = [IsAuthenticated, ]  # IsAdminGroup, IsArtistGroup]
-    serializer_class = FeaturesArtistSerializer
+    serializer_class = FeaturesArtistSerializer        
 
-    def create_artist(self, request):
-        data = request.data.copy()
-        account = request.user
-        profile = Profile.objects.get(account=account)
+    def post(self, request, *args, **kwargs):
+        profile = Profile.objects.get(account=request.user)
 
-        serializer = FeaturesArtistSerializer(data=data)
-
+        serializer = FeaturesArtistSerializer(data=request.data.copy())
         serializer.is_valid(raise_exception=True)
         serializer.save(profile=profile)
 
         return Response(serializer.data)
-
-    def post(self, request):
-        return self.create_artist(request)
 
 
 class EditArtistAPI(APIView):
@@ -346,30 +331,24 @@ class EditArtistAPI(APIView):
     permission_classes = [IsAuthenticated, ]  # IsAdminGroup, IsArtistGroup]
     serializer_class = ProfileSerializer
 
-    def edit_artist(self, request, artist_id):
+    def put(self, request, artist_id=None, *args, **kwargs):
         artist = get_object_or_404(Artist, id=artist_id)
 
         if not artist.profile:
             return Response({'error': 'Does not have any information about this artist.'})
 
-        data = request.data.copy()
         profile = artist.profile
-        serializer = ProfileSerializer(profile, data=data, partial=True)
-
+        
+        serializer = ProfileSerializer(profile, data=request.data.copy(), partial=True)
         serializer.is_valid(raise_exception=True)
         serializer.save()
+        
         return Response(serializer.data)
 
-    def delete_artist(self, request, artist_id):
+    def delete(self, request, artist_id=None, *args, **kwargs):
         artist = get_object_or_404(Artist, id=artist_id)
         artist.delete()
         return Response('Artist was deleted!')
-
-    def put(self, request, artist_id):
-        return self.edit_artist(request, artist_id)
-
-    def delete(self, request, artist_id):
-        return self.delete_artist(request, artist_id)
 
 
 class SongsViewAPI(APIView):
@@ -408,22 +387,17 @@ class CreateSongAPI(APIView):
     permission_classes = [IsAuthenticated, ]  # IsAdminGroup, IsArtistGroup]
     serializer_class = FeaturesSongSerializer
     parser_classes = [MultiPartParser]
-
-    def create_song(self, request):
-        data = request.data.copy()
-        account = request.user
-        profile = Profile.objects.get(account=account)
+        
+    def post(self, request, *args, **kwargs):
+        profile = Profile.objects.get(account=request.user)
         main_artist = Artist.objects.get(profile=profile)
 
-        serializer = FeaturesSongSerializer(data=data)
+        serializer = FeaturesSongSerializer(data=request.data.copy())
 
         serializer.is_valid(raise_exception=True)
         serializer.save(main_artist=main_artist)
 
         return Response(serializer.data)
-
-    def post(self, request):
-        return self.create_song(request)
 
 
 class EditSongAPI(APIView):
@@ -432,22 +406,20 @@ class EditSongAPI(APIView):
     serializer_class = FeaturesSongSerializer
     parser_classes = [MultiPartParser]
 
-    def edit_song(self, request, song_id):
+    def put(self, request, song_id=None, *args, **kwargs):
         profile = Profile.objects.get(account=request.user)
         main_artist = Artist.objects.get(profile=profile)
-
         song = get_object_or_404(Song, id=song_id, main_artist=main_artist)
 
-        data = request.data.copy()
-        serializer = FeaturesSongSerializer(song, data=data, partial=True)
-
+        serializer = FeaturesSongSerializer(song, data=request.data.copy(), partial=True)
         serializer.is_valid(raise_exception=True)
         serializer.save()
 
         return Response(serializer.data)
 
-    def delete_song(self, request, song_id):
+    def delete(self, request, song_id=None, *args, **kwargs):
         song = get_object_or_404(Song, id=song_id)
+        
         file_paths = {'song': f'SpUStify/api/media/{str(song.song_file)}',
                       'lyric': f'SpUStify/api/media/{str(song.lyric_file)}',
                       'avatar': f'SpUStify/api/media/{str(song.avatar)}',
@@ -457,51 +429,39 @@ class EditSongAPI(APIView):
             if os.path.exists(file_paths[attr]):
                 os.remove(file_paths[attr])
         song.delete()
+        
         return Response('Song was deleted!')
-
-    def put(self, request, song_id=None):
-        return self.edit_song(request, song_id)
-
-    def delete(self, request, song_id=None):
-        return self.delete_song(request, song_id)
 
 
 class AddSongToPlaylistAPI(APIView):
     authentication_classes = [BasicAuthentication]
     permission_classes = [IsAuthenticated, IsPlaylistOwner]
 
-    def add_song_to_playlist(self, request, song_id, playlist_id):
+    def post(self, request, song_id=None, playlist_id=None, *args, **kwargs):
         playlist = get_object_or_404(Playlist, id=playlist_id, account=request.user)
         song = get_object_or_404(Song, id=song_id)
         playlist.songs.add(song)
 
         return Response({'message': 'Song added to playlist successfully.'})
 
-    def post(self, request, song_id=None, playlist_id=None):
-        return self.add_song_to_playlist(request, song_id, playlist_id)
-
 
 class PlaySongAPI(APIView):
     authentication_classes = [BasicAuthentication]
     permission_classes = [AllowAny]
-
-    def play_song(self, request, song_id):
+        
+    def post(self, request, song_id=None, *args, **kwargs):
         song = get_object_or_404(Song, id=song_id)
         account = request.user if request.user.is_authenticated else None
         if account:
             played_song, _ = PlayedSong.objects.get_or_create(song=song)
 
-            user_played_song, created = UserPlayedSong.objects.get_or_create(
+            _, _ = UserPlayedSong.objects.get_or_create(
                 account=request.user,
                 played_song=played_song,
-                defaults={'liked': False, 'listens': 1}
+                defaults={'liked': False,}
             )
 
-            if not created:
-                user_played_song.listens += 1
-                user_played_song.save()
-        else:
-            song.listens += 1
+        song.listens += 1
         song.save()
 
         song_url = song.song_file.url if song.song_file else None
@@ -509,15 +469,12 @@ class PlaySongAPI(APIView):
             return Response({'song_url': "File is not exist.", 'message': 'Song played successfully'})
         return Response({'song_url': song_url, 'message': 'Song played successfully'})
 
-    def post(self, request, song_id=None):
-        return self.play_song(request, song_id)
-
 
 class LikeSongAPI(APIView):
     authentication_classes = [BasicAuthentication]
     permission_classes = [IsAuthenticated,]  # IsAdminGroup, IsUserGroup]
 
-    def like_song(self, request, song_id):
+    def post(self, request, song_id, *args, **kwargs):
         song = get_object_or_404(Song, id=song_id)
 
         played_song, _ = PlayedSong.objects.get_or_create(song=song)
@@ -525,7 +482,7 @@ class LikeSongAPI(APIView):
         user_played_song, created = UserPlayedSong.objects.get_or_create(
             account=request.user,
             played_song=played_song,
-            defaults={'liked': True, 'listens': 0}
+            defaults={'liked': True}
         )
 
         if not created:
@@ -533,43 +490,9 @@ class LikeSongAPI(APIView):
             user_played_song.save()
         song.save()
 
-        return Response({'message': 'Song liked successfully'})
-
-    def post(self, request, song_id):
-        return self.like_song(request, song_id)
-
-
-class DownloadSongAPI(APIView):
-    authentication_classes = [BasicAuthentication]
-    permission_classes = [IsAuthenticated, ]  # IsAdminGroup, IsUserGroup]
-
-    def copy_file(self, source_file, destination_folder):
-        try:
-            if not os.path.exists(destination_folder):
-                os.makedirs(destination_folder)
-
-            file_name = os.path.basename(source_file)
-            destination_path = os.path.join(destination_folder, file_name)
-
-            shutil.copy2(source_file, destination_path)
-            print("File copied successfully!")
-        except Exception as e:
-            print("An error occurred:", e)
-
-    def download_song(self, request, song_id):
-        song = get_object_or_404(Song, id=song_id)
-        song_url = song.song_file.url if song.song_file else None
-        if not song_url:
-            return Response({'song_url': "File is not exist.", 'message': 'Song played successfully'})
-
-        source_file = str(song_url)[1:]
-        destination_folder = "download_songs"
-        self.copy_file(source_file, destination_folder)
-        return Response({'song_url': source_file, 'message': 'Song played successfully'})
-
-    def post(self, request, song_id):
-        return self.download_song(request, song_id)
-
+        if user_played_song.liked:
+            return Response({'message': 'Song liked successfully'})
+        return Response({'message': 'Song unliked successfully'})
 
 class PlaylistsViewAPI(APIView):
     authentication_classes = [BasicAuthentication]
@@ -622,18 +545,12 @@ class CreatePlaylistAPI(APIView):
     serializer_class = CreatePlaylistSerializer
     parser_classes = [MultiPartParser]
 
-    def create_playlist(self, request):
-        data = request.data.copy()
-        account = request.user
-
-        serializer = CreatePlaylistSerializer(data=data)
+    def post(self, request, *args, **kwargs):
+        serializer = CreatePlaylistSerializer(data=request.data.copy())
         serializer.is_valid(raise_exception=True)
-        serializer.save(account=account)
+        serializer.save(account=request.user)
 
         return Response(serializer.data)
-
-    def post(self, request):
-        return self.create_playlist(request)
 
 
 class EditPlaylistAPI(APIView):
@@ -641,21 +558,18 @@ class EditPlaylistAPI(APIView):
     permission_classes = [IsAuthenticated, IsPlaylistOwner]
     serializer_class = EditPlaylistSerializer
 
-    def edit_playlist(self, request, playlist_id):
+    def put(self, request, playlist_id=None, *args, **kwargs):
+        playlist = get_object_or_404(Playlist, id=playlist_id, account=request.user)
 
-        playlist = get_object_or_404(
-            Playlist, id=playlist_id, account=request.user)
-
-        data = request.data.copy()
-        serializer = EditPlaylistSerializer(playlist, data=data, partial=True)
-
+        serializer = EditPlaylistSerializer(playlist, data=request.data.copy(), partial=True)
         serializer.is_valid(raise_exception=True)
         serializer.save()
 
         return Response(serializer.data)
 
-    def delete_playlist(self, request, playlist_id):
+    def delete(self, request, playlist_id=None, *args, **kwargs):
         playlist = get_object_or_404(Playlist, id=playlist_id)
+        
         file_paths = {'avatar': f'SpUStify/api/media/{str(playlist.avatar)}',
                       'background_img': f'SpUStify/api/media/{str(playlist.background_image)}'}
 
@@ -663,35 +577,26 @@ class EditPlaylistAPI(APIView):
             if os.path.exists(file_paths[attr]):
                 os.remove(file_paths[attr])
         playlist.delete()
+        
         return Response('Playlist was deleted!')
-
-    def put(self, request, playlist_id=None):
-        return self.edit_playlist(request, playlist_id)
-
-    def delete(self, request, playlist_id=None):
-        return self.delete_playlist(request, playlist_id)
 
 
 class PlayPlaylistAPI(APIView):
     authentication_classes = [BasicAuthentication]
     permission_classes = [AllowAny]
 
-    def play_playlist(self, request, playlist_id):
+    def post(self, request, playlist_id=None, *args, **kwargs):
         playlist = get_object_or_404(Playlist, id=playlist_id)
         account = request.user if request.user.is_authenticated else None
         if account:
             played_playlist, _ = PlayedPlaylist.objects.get_or_create(
                 playlist=playlist)
 
-            user_played_playlist, created = UserPlayedPlaylist.objects.get_or_create(
+            _, _ = UserPlayedPlaylist.objects.get_or_create(
                 account=self.request.user,
                 played_playlist=played_playlist,
-                defaults={'liked': False, 'listens': 1}
+                defaults={'liked': False}
             )
-
-            if not created:
-                user_played_playlist.listens += 1
-                user_played_playlist.save()
 
         song_data = []
         for song in playlist.songs.all():
@@ -703,15 +608,12 @@ class PlayPlaylistAPI(APIView):
 
         return Response({'message': 'Playlist played successfully', 'songs': song_data})
 
-    def post(self, request, playlist_id=None):
-        return self.play_playlist(request, playlist_id)
-
 
 class LikePlaylistAPI(APIView):
     authentication_classes = [BasicAuthentication]
     permission_classes = [IsAuthenticated]
 
-    def like_song(self, request, playlist_id):
+    def post(self, request, playlist_id=None, *args, **kwargs):
         playlist = get_object_or_404(Playlist, id=playlist_id)
 
         played_playlist, _ = PlayedPlaylist.objects.get_or_create(
@@ -720,7 +622,7 @@ class LikePlaylistAPI(APIView):
         user_played_playlist, created = UserPlayedPlaylist.objects.get_or_create(
             account=self.request.user,
             played_playlist=played_playlist,
-            defaults={'liked': True, 'listens': 0}
+            defaults={'liked': True}
         )
 
         if not created:
@@ -728,6 +630,3 @@ class LikePlaylistAPI(APIView):
             user_played_playlist.save()
 
         return Response({'message': 'Playlist liked successfully'})
-
-    def post(self, request, playlist_id=None):
-        return self.like_song(request, playlist_id)

@@ -13,7 +13,7 @@ urlpatterns = [
     path('accounts/', AccountViewAPI.as_view(), name="get_accounts"),
     # Detail Account Page
     path('accounts/<str:account_id>', AccountViewAPI.as_view(), name="get_account"),
-    path('accounts/<str:account_id>/edit', EditAccountAPI.as_view(), name="edit_account"),
+    path('accounts/<str:account_id>/edit', DeleteAccountAPI.as_view(), name="delete_account"),
     
     # Home Page
     path('home/', HomeViewAPI.as_view(), name="get_homepage"),
@@ -40,7 +40,6 @@ urlpatterns = [
     path('songs/<str:song_id>/add-to-playlist/<int:playlist_id>/', AddSongToPlaylistAPI.as_view(), name='add_song_to_playlist'),
     path('songs/<str:song_id>/play/', PlaySongAPI.as_view(), name='play_song'),
     path('songs/<str:song_id>/like/', LikeSongAPI.as_view(), name='like_song'),
-    path('songs/<str:song_id>/download/', DownloadSongAPI.as_view(), name='download_song'),
     
     # Playlists Page
     path('playlists/', PlaylistsViewAPI.as_view(), name="get_playlists"),

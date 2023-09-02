@@ -8,11 +8,11 @@ class IsAdminGroup(BasePermission):
     
 class IsArtistGroup(BasePermission):
     def has_permission(self, request, view):
-        return request.user.groups.filter(name='Artist').exists()
+        return request.user.groups.filter(name='Artists').exists()
     
 class IsUserGroup(BasePermission):
     def has_permission(self, request, view):
-        return request.user.groups.filter(name='User').exists()
+        return request.user.groups.filter(name='Users').exists()
     
 class IsPlaylistOwner(BasePermission):
     """
