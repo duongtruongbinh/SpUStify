@@ -35,7 +35,6 @@ class Song(models.Model):
     
     def save(self, *args, **kwargs):
         self.likes = UserPlayedSong.objects.filter(played_song__song=self).filter(liked=True).count()
-        self.listens = UserPlayedSong.objects.filter(played_song__song=self).aggregate(total_listens=Sum('listens'))['total_listens'] or 0
         super(Song, self).save(*args, **kwargs)
 
     def __str__(self) -> str:
@@ -71,7 +70,7 @@ class UserPlayedSong(models.Model):
     account = models.ForeignKey(User, on_delete=models.CASCADE)
     played_song = models.ForeignKey(PlayedSong, on_delete=models.CASCADE)
     liked = models.BooleanField()
-    listens = models.PositiveIntegerField(default=0)
+    #listens = models.PositiveIntegerField(default=0)
 
 
 class PlayedPlaylist(models.Model):
@@ -86,4 +85,4 @@ class UserPlayedPlaylist(models.Model):
     account = models.ForeignKey(User, on_delete=models.CASCADE)
     played_playlist = models.ForeignKey(PlayedPlaylist, on_delete=models.CASCADE)
     liked = models.BooleanField()
-    listens = models.PositiveIntegerField(default=0)
+    #listens = models.PositiveIntegerField(default=0)
