@@ -468,25 +468,17 @@ class EditSongAPI(APIView):
 
 class AddSongToPlaylistAPI(APIView):
     authentication_classes = [BasicAuthentication]
-    permission_classes = [IsAuthenticated]
-    serializer_class = AddSongToPlaylistSerializer
+    permission_classes = [IsAuthenticated, IsPlaylistOwner]
 
-    def add_song_to_playlist(self, request, song_id):
-        serializer = AddSongToPlaylistSerializer(data=request.data)
-        if not serializer.is_valid():
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-        playlist_id = serializer.validated_data['playlist_id'].id
-
-        playlist = get_object_or_404(
-            Playlist, id=playlist_id, account=request.user)
+    def add_song_to_playlist(self, request, song_id, playlist_id):
+        playlist = get_object_or_404(Playlist, id=playlist_id, account=request.user)
         song = get_object_or_404(Song, id=song_id)
         playlist.songs.add(song)
 
         return Response({'message': 'Song added to playlist successfully.'})
 
-    def post(self, request, song_id=None):
-        return self.add_song_to_playlist(request, song_id)
+    def post(self, request, song_id=None, playlist_id=None):
+        return self.add_song_to_playlist(request, song_id, playlist_id)
 
 
 class PlaySongAPI(APIView):
@@ -646,7 +638,7 @@ class CreatePlaylistAPI(APIView):
 
 class EditPlaylistAPI(APIView):
     authentication_classes = [BasicAuthentication]
-    permission_classes = [IsAuthenticated, ]  # IsPlaylistOwner]
+    permission_classes = [IsAuthenticated, IsPlaylistOwner]
     serializer_class = EditPlaylistSerializer
 
     def edit_playlist(self, request, playlist_id):

@@ -30,10 +30,10 @@ class RegisterSerializer(ModelSerializer):
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
-        is_artist = validated_data.pop('is_artist', False)
+        is_artist = validated_data['is_artist']
 
         # Check if the group exists, otherwise create it
-        group_name = 'Artist' if is_artist else 'User'
+        group_name = 'Artists' if is_artist else 'Users'
         group, _ = Group.objects.get_or_create(name=group_name)
 
         user = User.objects.create_user(
@@ -127,32 +127,6 @@ class EditPlaylistSerializer(ModelSerializer):
     class Meta:
         model = Playlist
         fields = ('avatar', 'background_image', 'name', 'status', 'songs')
-
-
-class AddSongToPlaylistSerializer(ModelSerializer):
-    playlist_id = serializers.PrimaryKeyRelatedField(
-        queryset=Playlist.objects.all(), write_only=True)
-    # song_id = serializers.PrimaryKeyRelatedField(queryset=Song.objects.all())
-
-    class Meta:
-        model = Playlist
-        fields = ['playlist_id']
-
-
-class CreateUserPlayedSongSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = UserPlayedSong
-        fields = '__all__'
-
-
-class CreatePlayedSongSerializer(serializers.ModelSerializer):
-    user_played_songs = CreateUserPlayedSongSerializer(
-        many=True, read_only=True)
-
-    class Meta:
-        model = PlayedSong
-        fields = '__all__'
-
 
 class PlayedSongSerializer(ModelSerializer):
     song = SongSerializer(many=False)
