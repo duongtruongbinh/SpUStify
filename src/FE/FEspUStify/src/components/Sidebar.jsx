@@ -10,7 +10,8 @@ import { links } from "../assets/constants";
 
 const NavLinks = ({ handleClick}) =>{
 
-const { isArtist } = useSelector((state) => state.player);
+const { isArtist, isLogin } = useSelector((state) => state.player);
+const isLoggedIn = localStorage.getItem('isLoggedIn');
 
 
 return (
@@ -18,7 +19,7 @@ return (
   <div className="mt-10">
     {links.map((item) => {
 
-if (isArtist === true && item.name === 'Upload Song' ) {
+if (isArtist === true && (item.name === 'Upload Song'  ) ) {
   return (
 <NavLink
   key={item.name}
@@ -31,7 +32,24 @@ if (isArtist === true && item.name === 'Upload Song' ) {
 </NavLink> 
   )
 
-}     else if(item.name !== 'Upload Song') {
+}   else if( (item.name === 'Favourite Song' ||  item.name === 'Playlist' || item.name === 'Create Playlist') && isLoggedIn === true  ) 
+
+
+{
+  return (
+    <NavLink
+      key={item.name}
+      to={item.to}
+      className="flex flex-row justify-start items-center my-8 text-xs font-medium text-gray-500 hover:text-gray-400"
+      onClick={() => handleClick && handleClick()}
+    >
+      <item.icon className="w-4 h-6 mr-2" />
+      {item.name}
+    </NavLink> 
+      )
+    
+} 
+else if(item.name !== 'Upload Song' && item.name !== 'Favourite Song' && item.name !== 'Playlist' && item.name !== 'Create Playlist' ) {
   
   return (
 <NavLink

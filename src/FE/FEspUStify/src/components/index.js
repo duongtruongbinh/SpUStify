@@ -18,6 +18,7 @@ import Like from './Like';
 import Liked from './Liked';
 import AddPlaylist from './AddPlaylist';
 import TopChartCard from './TopChartCard';
+import UserHeader from './UserHeader';
 export {
 
   Sidebar,
@@ -33,7 +34,7 @@ export {
   MusicPlayer,
   Loader,
   Error,
-
+  UserHeader,
   PlaylistCard,
   ButtonNext,
   ButtonPrev,

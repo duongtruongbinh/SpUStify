@@ -38,6 +38,7 @@ const SignIn = () => {
               "isArtist": response.data.is_artist,
               "isLogin": true
             }
+            localStorage.setItem('isLoggedIn', 'true');
             dispatch(setRegisterLogin(useForSlice));
             navigate('/home')
           }

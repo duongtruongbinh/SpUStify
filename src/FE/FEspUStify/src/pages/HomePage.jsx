@@ -200,7 +200,7 @@ const HomePage = () => {
 <div className='absolute self-center right-[-30px]' >
 {
   hasNextPageSong && (
-<ButtonNext onClick = {handleNextPageSong}/>
+<ButtonNext onClick = {handleNextPagePlaylist}/>
   )
 }
 </div>

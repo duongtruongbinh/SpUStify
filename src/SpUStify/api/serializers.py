@@ -130,10 +130,10 @@ class EditPlaylistSerializer(ModelSerializer):
 
 
 class AddSongToPlaylistSerializer(ModelSerializer):
-    playlist_id = serializers.PrimaryKeyRelatedField(
-        queryset=Playlist.objects.all(), write_only=True)
-    # song_id = serializers.PrimaryKeyRelatedField(queryset=Song.objects.all())
-
+    # playlist_id = serializers.PrimaryKeyRelatedField(
+    #     queryset=Playlist.objects.all(), write_only=True)
+    # # song_id = serializers.PrimaryKeyRelatedField(queryset=Song.objects.all())
+    playlist_id = serializers.CharField()
     class Meta:
         model = Playlist
         fields = ['playlist_id']

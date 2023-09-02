@@ -36,7 +36,7 @@ class RegisterAPI(generics.GenericAPIView):
 
 
 class LoginAPI(KnoxLoginView):
-    # authentication_classes = [BasicAuthentication]
+    authentication_classes = [BasicAuthentication]
     serializer_class = AuthTokenSerializer
     permission_classes = [AllowAny]
 
@@ -233,6 +233,8 @@ class CreateProfileAPI(APIView):
     authentication_classes = [BasicAuthentication]
     permission_classes = [IsAuthenticated]
     serializer_class = ProfileSerializer
+    parser_classes = [MultiPartParser]
+    
 
     def create_profile(self, request):
         data = request.data.copy()
@@ -255,6 +257,8 @@ class EditProfileAPI(APIView):
     authentication_classes = [BasicAuthentication]
     permission_classes = [IsAuthenticated]
     serializer_class = ProfileSerializer
+    parser_classes = [MultiPartParser]
+    
 
     def edit_profile(self, request):
         account = request.user
@@ -319,6 +323,8 @@ class CreateArtistAPI(APIView):
     authentication_classes = [BasicAuthentication]
     permission_classes = [IsAuthenticated, ]  # IsAdminGroup, IsArtistGroup]
     serializer_class = FeaturesArtistSerializer
+    parser_classes = [MultiPartParser]
+    
 
     def create_artist(self, request):
         data = request.data.copy()
@@ -340,6 +346,8 @@ class EditArtistAPI(APIView):
     authentication_classes = [BasicAuthentication]
     permission_classes = [IsAuthenticated, ]  # IsAdminGroup, IsArtistGroup]
     serializer_class = ProfileSerializer
+    parser_classes = [MultiPartParser]
+    
 
     def edit_artist(self, request, artist_id):
         artist = get_object_or_404(Artist, id=artist_id)
@@ -427,6 +435,8 @@ class EditSongAPI(APIView):
     serializer_class = FeaturesSongSerializer
     parser_classes = [MultiPartParser]
 
+    
+
     def edit_song(self, request, song_id):
         profile = Profile.objects.get(account=request.user)
         main_artist = Artist.objects.get(profile=profile)
@@ -460,7 +470,6 @@ class EditSongAPI(APIView):
     def delete(self, request, song_id=None):
         return self.delete_song(request, song_id)
 
-
 class AddSongToPlaylistAPI(APIView):
     authentication_classes = [BasicAuthentication]
     permission_classes = [IsAuthenticated]
@@ -471,16 +480,16 @@ class AddSongToPlaylistAPI(APIView):
         if not serializer.is_valid():
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-        playlist_id = serializer.validated_data['playlist_id'].id
+        playlist_id = serializer.validated_data['playlist_id']
 
         playlist = get_object_or_404(
-            Playlist, id=playlist_id, account=request.user)
+            Playlist, id=int(playlist_id), account=request.user)
         song = get_object_or_404(Song, id=song_id)
         playlist.songs.add(song)
 
-        return Response({'message': 'Song added to playlist successfully.'})
+        return Response(serializer.data)
 
-    def post(self, request, song_id=None):
+    def post(self, request, song_id=None, *args, **kwargs):
         return self.add_song_to_playlist(request, song_id)
 
 
@@ -639,6 +648,8 @@ class EditPlaylistAPI(APIView):
     authentication_classes = [BasicAuthentication]
     permission_classes = [IsAuthenticated, ]  # IsPlaylistOwner]
     serializer_class = EditPlaylistSerializer
+    parser_classes = [MultiPartParser]
+    
 
     def edit_playlist(self, request, playlist_id):
 

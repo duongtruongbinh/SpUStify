@@ -1,40 +1,53 @@
 import { AddPlaylist } from "../components";
-import { Dispatch, useState } from "react";
+import { Dispatch, useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+
 import { useSelector, useDispatch } from "react-redux";
-import { useCreatePlaylistMutation } from "../redux/services/CoreApi";
+import { useEditPlaylistMutation, useGetPlaylistDetailsQuery } from "../redux/services/CoreApi";
 import { Button } from '@material-tailwind/react';
 import { useNavigate } from "react-router-dom";
-const CreatePlaylist = () => {
+const EditPlaylist = () => {
   
   const navigate = useNavigate();
-
+  const  {playlistid} = useParams();
+console.log("checl playlistid")
+console.log(playlistid)
 
   const dispatch = useDispatch();
 
   const [playlistName, setPlaylistName] = useState('');
-  const [PlaylistNameError, setPlaylistNameError] = useState('');
 
 
-
- 
-
-
+  const { data: songData, isFetching: isFetchingSongDetails } =
+  useGetPlaylistDetailsQuery({ playlistid });
+  const [setEditPlaylist, { isLoading }] = useEditPlaylistMutation();
   const [uploadedImage, setUploadedImage] = useState(null);
   const [uploadedImagePost, setUploadedImagePost] = useState('');
-  const [imageError, setImageError] = useState('');
+ 
 
 
   const [uploadedBackground, setUploadedBackground] = useState(null);
   const [uploadedBackgroundPost, setUploadedBackgroundPost] = useState(null);
-  const [backgroundError, setBackgroundError] = useState('');
+ 
+
+  if (isFetchingSongDetails) return <Loader title="Searching song details" />;
+   useEffect(() => {
+    if(songData){
+        setPlaylistName(songData.name);
+        setUploadedBackground(`http://127.0.0.1:8000${songData.background_image}`);
+        setUploadedImage(`http://127.0.0.1:8000${songData.avatar}`);
+    }
+   },[]);
 
 
-  const [isUploaded, setIsUploaded] = useState(false);
+  
+
+  const [isUploaded, setIsUploaded] = useState(true);
 
 
   const [isFormValid,setIsFormValid] = useState(true);
 
-  const [setCreatePlaylist, { isLoading }] = useCreatePlaylistMutation();
+ 
 
   const handleSubmit = async (event) => {
 
@@ -42,25 +55,7 @@ const CreatePlaylist = () => {
       //  event.preventDefault();
       event.preventDefault();
 
-      if (playlistName === '') {
-        setPlaylistNameError('Song name is required');
-          setIsFormValid(false);
-      } else {
-        setPlaylistNameError('');
-      }
-      if (uploadedBackgroundPost === null) {
-          setBackgroundError('File song is required');
-          setIsFormValid(false);
-      } else {
-          setBackgroundError('');
-      }
-      if (uploadedImagePost === null) {
-          setImageError('Lyric of the song is required');
-          setIsFormValid(false);
-
-      } else {
-          setImageError('');
-      }
+      
       if (isFormValid) {
           const data = new FormData();
           data.append(
@@ -78,11 +73,11 @@ const CreatePlaylist = () => {
           // setFormData(Data);
           // No need for the X-RapidAPI-Key header for local development
           
-
+debugger
           try {
 
-              const responseData = await setCreatePlaylist(data);
-
+              const responseData = await setEditPlaylist({playlistid,data});
+debugger
               if (responseData.avatar !== null) {
                   navigate('/upload-song-succesfull');
               }
@@ -167,11 +162,11 @@ const CreatePlaylist = () => {
                           <input
                               type="text"
 
-                              className="w-full h-12 rounded bg-near_black focus:outline-none focus:border-blue-500"
+                              className="w-full h-12 text-white rounded bg-near_black focus:outline-none focus:border-blue-500"
                               value={playlistName}
                               onChange={(e) => setPlaylistName(e.target.value)}
                           />
-                          {PlaylistNameError && <p className="text-red-500">{PlaylistNameError}</p>}
+                        
 
                       </div>
 
@@ -187,11 +182,11 @@ const CreatePlaylist = () => {
 
               <div className="text-white my-10 flex flex-row gap-4 justify-end mr-20">
                   <Button className='bg-cancel_grey  px-8 py-4 my-2 rounded-xl   text-white'>Cancel</Button>
-                  <Button type='submit' className='bg-submit_blue  px-8 py-4 my-2 rounded-xl   text-white'>Submit</Button>
+                  <Button type='submit' className='bg-submit_blue  px-8 py-4 my-2 rounded-xl   text-white'>ENTER</Button>
               </div>
           </form>
       </div>
   );
 };
 
-export default CreatePlaylist;
+export default EditPlaylist;

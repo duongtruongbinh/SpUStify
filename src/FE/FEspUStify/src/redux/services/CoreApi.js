@@ -7,7 +7,7 @@ const Api = () => {
 
 }
 
-
+debugger
 export const CoreApi = createApi({
 
   // DatabaseApi là store: nơi lưu trữ state
@@ -79,6 +79,16 @@ export const CoreApi = createApi({
     }), // Adjust endpoint path
     getPlaylists: builder.query({
       query: () => 'playlists/',
+      async onQueryStarted(request, api, context) {
+        if (!isLoginOrRegisterEndpoint(request.endpoint)) {
+          const { username, password } = useSelector((state) => state.player);
+
+          request.headers.set('Authorization', createAuthorizationHeader(username, password));
+        }
+      },
+    }), // Adjust endpoint path
+    getPlaylistDetails :  builder.query({
+      query: ({playlistid}) =>  `playlists/${playlistid}`,
       async onQueryStarted(request, api, context) {
         if (!isLoginOrRegisterEndpoint(request.endpoint)) {
           const { username, password } = useSelector((state) => state.player);
@@ -165,9 +175,26 @@ export const CoreApi = createApi({
           if (!isLoginOrRegisterEndpoint(request.endpoint)) {
             const { username, password } = useSelector((state) => state.player);
 
+            request.headers.set('Authorization', createAuthorizationHeader("mimo", "phuongtrinh"));
+          }
+        },
+
+      })
+    }),
+    addSongToPlaylist: builder.mutation({
+      query: ({songid,FormData}) => ({
+        url: `/songs/${songid}/add-to-playlist/`, method: 'POST', body:
+          FormData
+
+        ,
+        async onQueryStarted(request, api, context) {
+          if (!isLoginOrRegisterEndpoint(request.endpoint)) {
+            const { username, password } = useSelector((state) => state.player);
+
             request.headers.set('Authorization', createAuthorizationHeader(username, password));
           }
         },
+
 
       })
     }),
@@ -191,7 +218,24 @@ export const CoreApi = createApi({
 
     createPlaylist: builder.mutation({
       query: (FormData) => ({
-        url: 'playlist/create', method: 'POST', body:
+        url: 'playlists/create', method: 'POST', body:
+          FormData
+
+        ,
+        async onQueryStarted(request, api, context) {
+          if (!isLoginOrRegisterEndpoint(request.endpoint)) {
+            const { username, password } = useSelector((state) => state.player);
+
+            request.headers.set('Authorization', createAuthorizationHeader("mimo", "phuongtrinh"));
+          }
+        },
+
+
+      })
+    }),
+    editPlaylist: builder.mutation({
+      query: ({playlistid,FormData}) => ({
+        url: `playlists/${playlistid}/edit/`, method: 'PUT', body:
           FormData
 
         ,
@@ -225,6 +269,7 @@ export const CoreApi = createApi({
     })
   })
 });
+debugger
 // Helper function to check if an endpoint is 'login' or 'register'
 function isLoginOrRegisterEndpoint(endpoint) {
   return endpoint.queryKey === 'register';
@@ -246,14 +291,17 @@ export const {
   useGetSongRecommendQuery,
   useGetSongDetailsQuery,
   useGetPlaylistsQuery,
+  useGetPlaylistDetailsQuery,
   useGetArtistDetailsQuery,
   useGetFavouriteSongsQuery,
   useGetHomeQuery,
+  useAddSongToPlaylistMutation,
   useGetSongsBySearchQuery,
   useGetAllBySearchQuery,
   usePlaySongMutation,
   useLikeSongMutation,
   useCreateSongMutation,
+  useEditPlaylistMutation,
   useRegisterUserMutation,
   useLoginMutation,
   useCreatePlaylistMutation,

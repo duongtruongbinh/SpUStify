@@ -1,6 +1,6 @@
 import { HiOutlineHashtag, HiOutlineHome, HiOutlinePhotograph, HiOutlineUserGroup, HiUpload } from 'react-icons/hi';
 import {MdOutlinePlaylistAdd} from 'react-icons/md';
-
+import {RiPlayListFill} from 'react-icons/ri'
 export const genres = [
   { title: 'Pop', value: 'POP' },
   { title: 'Hip-Hop', value: 'HIP_HOP_RAP' },
@@ -21,8 +21,9 @@ export const genres = [
 export const links = [
   { name: 'HomePage', to: '/', icon: HiOutlineHome },
   { name: 'Favourite Song', to: '/favourite-song', icon: HiOutlinePhotograph },
-  { name: 'Top Artists', to: '/top-artists', icon: HiOutlineUserGroup },
-  { name: 'Leaderboard', to: '/top-charts', icon: HiOutlineHashtag },
+
+  { name: 'Leaderboard', to: '/top-charts', icon:  HiOutlineUserGroup },
   { name: 'Upload Song', to: '/upload-song', icon: HiUpload } ,
-  {name: 'Create Playlist', to: '/create-playlist',icon: MdOutlinePlaylistAdd}
+  {name: 'Create Playlist', to: '/create-playlist',icon: MdOutlinePlaylistAdd},
+  {name: 'Playlist', to: '/playlist', icon: RiPlayListFill}
 ];

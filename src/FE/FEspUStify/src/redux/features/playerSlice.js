@@ -11,7 +11,7 @@ const initialState = {
   genreListId: '',
   likedSongsId: [],
   username: "Admin",
-  password: "Acccuaadmin",
+  password: "Accuaadmin",
   isArtist: false,
   isLogin : false,
 };
