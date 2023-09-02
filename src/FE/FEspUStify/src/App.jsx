@@ -30,8 +30,14 @@ import {
   Profile,
 } from "./pages";
 import { useGetFavouriteSongsQuery } from "./redux/services/CoreApi";
+import { setRegisterLogin } from "./redux/features/playerSlice";
 
 const App = () => {
+  const dispatch = useDispatch();
+  const user = JSON.parse(sessionStorage.getItem("user"));
+  if (user) {
+    dispatch(setRegisterLogin(user));
+  }
   const { activeSong } = useSelector((state) => state.player);
 
   const location = useLocation();

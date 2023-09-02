@@ -18,11 +18,12 @@ const SignUp = () => {
   const [register, { isLoading, error }] = useRegisterUserMutation();
   const handleLogin = async (event) => {
     event.preventDefault();
+
     const userData = {
       username: username,
       email: "mhg@gmail.com",
       password: password,
-      is_artist: isArtist,
+      is_artist: false,
     };
 
     // Gọi API đăng ký và unwrap kết quả
@@ -42,6 +43,7 @@ const SignUp = () => {
         isArtist: isArtist,
         isLogin: true,
       };
+      sessionStorage.setItem("user", JSON.stringify(useForSlice));
       dispatch(setRegisterLogin(useForSlice));
       navigate("/home");
     }
@@ -49,12 +51,17 @@ const SignUp = () => {
   const handleArtist = () => {
     setIsArtist(true);
   };
+  const handleUser = () => {
+    setIsArtist(false);
+  };
   return (
     <div className=" gap-20  bg-bg_sign_up flex flex-row my-20 mx-20 py-20 px-20">
       <div className="w-1/2 flex flex-col mr-20">
-        <div className="flex flex-row gap-6">
+        <div
+          onClick={() => navigate("/home")}
+          className="flex flex-row gap-6 hover:cursor-pointer">
           <img src={logo} className="h-20" />
-          <p className="text-white text-2xl  self-center">SpUStify</p>
+          <p className="text-white text-2xl self-center">SpUStify</p>
         </div>
         <p className=" text-sign_up_blue text-5xl my-10">Let's Sign Up</p>
         <p className="text-sign_up_now text-6xl font-bold mb-10">Now!</p>
@@ -92,11 +99,17 @@ const SignUp = () => {
             </div>
             <div className=" flex  gap-10">
               <p className="text-white block mb-2">Role:</p>
-              <Button className="border rounded-md px-2 py-2 hover:bg-red-400 active:bg-red-400">
+              <Button
+                className={`border rounded-md px-2 py-2 hover:bg-red-400 ${
+                  !isArtist ? "bg-red-400" : ""
+                }`}
+                onClick={handleUser}>
                 User
               </Button>
               <Button
-                className="border rounded-md px-2 py-2 hover:bg-red-400 active:bg-red-400"
+                className={`border rounded-md px-2 py-2 hover:bg-red-400 ${
+                  isArtist ? "bg-red-400" : ""
+                }`}
                 onClick={handleArtist}>
                 Artist
               </Button>
@@ -106,7 +119,7 @@ const SignUp = () => {
           <div className="text-white my-10 flex flex-row gap-4 justify-center ">
             <Button
               type="submit"
-              className="bg-submit_blue  px-8 py-4 my-2 rounded-xl   text-white">
+              className="bg-submit_blue hover:bg-sign_up_blue  px-8 py-4 my-2 rounded-xl   text-white">
               Sign Up
             </Button>
           </div>

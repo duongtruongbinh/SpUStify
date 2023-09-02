@@ -23,7 +23,7 @@ const SignIn = () => {
     debugger;
 
     const response = await login(userData);
-    console.log(response.data);
+    console.log(response);
     debugger;
     // Gọi API đăng ký và unwrap kết quả
 
@@ -36,6 +36,8 @@ const SignIn = () => {
         isArtist: response.data.is_artist,
         isLogin: true,
       };
+      sessionStorage.setItem("user", JSON.stringify(useForSlice));
+
       dispatch(setRegisterLogin(useForSlice));
       navigate("/home");
     }

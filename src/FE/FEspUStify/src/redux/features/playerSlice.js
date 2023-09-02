@@ -2,7 +2,6 @@ import { createSlice } from '@reduxjs/toolkit';
 import { useState } from 'react';
 debugger
 const initialState = {
- 
   currentSongs: [],
   currentIndex: 0,
   isActive: false,
@@ -13,7 +12,7 @@ const initialState = {
   username: "Admin",
   password: "Acccuaadmin",
   isArtist: false,
-  isLogin : false,
+  isLogin: false,
 };
 
 
@@ -26,18 +25,18 @@ const playerSlice = createSlice({
     setActiveSong: (state, action) => {
       state.activeSong = action.payload.song;
 
-      
+
       state.currentSongs = action.payload.data;
-      
-      
-    
+
+
+
 
       state.currentIndex = action.payload.index;
       state.isActive = true;
     },
 
     nextSong: (state, action) => {
-      
+
       state.activeSong = state.currentSongs[action.payload];
 
       console.log("check action playload")
@@ -73,16 +72,16 @@ const playerSlice = createSlice({
     setRemoveSong: (state, action) => {
       state.likedSongsId = state.likedSongsId.filter(song => song !== action.payload);
     },
-setRegisterLogin: (state, action) => {
-  state.username = action.payload.username,
-  state.password = action.payload.password,
-  state.isArtist = action.payload.isArtist,
-  state.isLogin = true
-}
+    setRegisterLogin: (state, action) => {
+      state.username = action.payload.username,
+        state.password = action.payload.password,
+        state.isArtist = action.payload.isArtist,
+        state.isLogin = true
+    }
 
   },
 });
 
-export const { setActiveSong, nextSong, prevSong, playPause, selectGenreListId, setLikeSongId, setRemoveSong,setRegisterLogin } = playerSlice.actions;
+export const { setActiveSong, nextSong, prevSong, playPause, selectGenreListId, setLikeSongId, setRemoveSong, setRegisterLogin } = playerSlice.actions;
 
 export default playerSlice.reducer;
