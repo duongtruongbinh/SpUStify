@@ -2,7 +2,9 @@ import { MdOutlinePlaylistAdd } from "react-icons/md";
 import { useState, useRef, useEffect } from "react";
 import { useGetPlaylistsQuery } from "../redux/services/CoreApi";
 import { useAddSongToPlaylistMutation } from "../redux/services/CoreApi";
-const Popup =  ({data, songid}) => {
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+const Popup =  ({data, songid, onClick}) => {
   const playlistList =data;
   console.log("data add");
   console.log(playlistList);
@@ -17,11 +19,17 @@ const Popup =  ({data, songid}) => {
    
     console.log(id)
     try {
-      debugger
+     
         const response = await setAddSong({songid,id});
-        debugger
+        if(response.data.message === 'Song added to playlist successfully.'){
+          toast.success(`Add Song to ${playlistList.name} successfully`, {
+            position: toast.POSITION.TOP_CENTER,
+            autoClose: 3000, // Thời gian tự động đóng thông báo (3 giây)
+          });
+        }
+       
     } catch(error){
-      debugger
+      
         console.log(error)
     }
 
@@ -38,7 +46,9 @@ const Popup =  ({data, songid}) => {
               <button
                 className="ml-auto bg-transparent border-0 text-black float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
                 >
-                <span className="flex items-center justify-center bg-transparent text-black h-6 w-6 text-2xl outline-none focus:outline-none">
+                <span
+                 onClick={onClick}
+                 className="flex items-center justify-center bg-transparent text-black h-6 w-6 text-2xl outline-none focus:outline-none">
                   <p>×</p>
                 </span>
               </button>
