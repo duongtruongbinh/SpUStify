@@ -130,7 +130,7 @@ const userData = {
 
               <AddPlaylist
               
-              songid = {song.id}
+              songid = {song.played_song.id}
                />
             </div>
 
