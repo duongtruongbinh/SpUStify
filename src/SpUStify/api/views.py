@@ -30,7 +30,7 @@ class RegisterAPI(generics.GenericAPIView):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
-        
+
         response = {
             "user": UserSerializer(user, context=self.get_serializer_context()).data,
             "token": AuthToken.objects.create(user)[1],
@@ -50,11 +50,10 @@ class LoginAPI(KnoxLoginView):
         user = serializer.validated_data['user']
 
         # Kiểm tra xem tài khoản thuộc nhóm "artist" hay không
-        
 
         auth_login(request, user)
         is_artist = user.groups.filter(name='Artists').exists()
-        
+
         try:
             auth_token = AuthToken.objects.get(user=user)
             token = auth_token.digest
@@ -162,7 +161,6 @@ class HomeFeaturesAPI(APIView):
         return Response(response)
 
     # def get_favourites(self, request, user_id):
-        
 
     def get_history(self, request, user_id):
         played_songs = PlayedSong.objects.filter(accounts__id=user_id)
@@ -216,13 +214,14 @@ class HomeFeaturesAPI(APIView):
         elif feature == "recommend":
             return self.get_recommendations(request, user_id)
 
+
 class FavouriteViewAPI(APIView):
     authentication_classes = [BasicAuthentication]
-    permission_classes = [IsAuthenticated]
-    
+    permission_classes = [AllowAny]
+
     def get(self, request):
         user_id = request.user.id
-        
+
         user_played_songs = UserPlayedSong.objects.filter(
             played_song__accounts__id=user_id, liked=True)
         user_played_songs_serializer = UserPlayedSongSerializer(
@@ -581,9 +580,11 @@ class EditPlaylistAPI(APIView):
     serializer_class = EditPlaylistSerializer
 
     def put(self, request, playlist_id=None, *args, **kwargs):
-        playlist = get_object_or_404(Playlist, id=playlist_id, account=request.user)
+        playlist = get_object_or_404(
+            Playlist, id=playlist_id, account=request.user)
 
-        serializer = EditPlaylistSerializer(playlist, data=request.data.copy(), partial=True)
+        serializer = EditPlaylistSerializer(
+            playlist, data=request.data.copy(), partial=True)
         serializer.is_valid(raise_exception=True)
         serializer.save()
 
@@ -605,20 +606,25 @@ class EditPlaylistAPI(APIView):
 
 class SongsOfPlaylistAPI(APIView):
     permission_classes = [AllowAny]
+
     def get(self, request, playlist_id=None):
         playlist = get_object_or_404(Playlist, id=playlist_id)
         serializer = SongsOfPlaylistSerializer(playlist, many=False)
         return Response(serializer.data)
-    
+
+
 class RemoveSongFromPlaylist(APIView):
     permission_classes = [IsAuthenticated, IsPlaylistOwner]
+
     def post(self, request, playlist_id=None, song_id=None, *args, **kwargs):
-        playlist = get_object_or_404(Playlist, id=playlist_id, account=request.user)
+        playlist = get_object_or_404(
+            Playlist, id=playlist_id, account=request.user)
         song = get_object_or_404(Song, id=song_id)
         playlist.songs.remove(song)
 
         return Response({'message': 'Song removed from playlist successfully.'})
-    
+
+
 class PlayPlaylistAPI(APIView):
     authentication_classes = [BasicAuthentication]
     permission_classes = [AllowAny]
