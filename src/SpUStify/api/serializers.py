@@ -19,10 +19,8 @@ class DetailUserSerializer(ModelSerializer):
         fields = '__all__'
 
 # Register Serializer
-
-
 class RegisterSerializer(ModelSerializer):
-    is_artist = serializers.BooleanField(default=False)
+    is_artist = serializers.BooleanField()
 
     class Meta:
         model = User
@@ -122,38 +120,18 @@ class CreatePlaylistSerializer(ModelSerializer):
 
 
 class EditPlaylistSerializer(ModelSerializer):
+    #songs = SongSerializer(many=True)
+
+    class Meta:
+        model = Playlist
+        fields = ('avatar', 'background_image', 'name', 'status')
+
+class SongsOfPlaylistSerializer(ModelSerializer):
     songs = SongSerializer(many=True)
-
     class Meta:
         model = Playlist
-        fields = ('avatar', 'background_image', 'name', 'status', 'songs')
-
-
-class AddSongToPlaylistSerializer(ModelSerializer):
-    # playlist_id = serializers.PrimaryKeyRelatedField(
-    #     queryset=Playlist.objects.all(), write_only=True)
-    # # song_id = serializers.PrimaryKeyRelatedField(queryset=Song.objects.all())
-    playlist_id = serializers.CharField()
-    class Meta:
-        model = Playlist
-        fields = ['playlist_id']
-
-
-class CreateUserPlayedSongSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = UserPlayedSong
-        fields = '__all__'
-
-
-class CreatePlayedSongSerializer(serializers.ModelSerializer):
-    user_played_songs = CreateUserPlayedSongSerializer(
-        many=True, read_only=True)
-
-    class Meta:
-        model = PlayedSong
-        fields = '__all__'
-
-
+        fields = ['songs']
+        
 class PlayedSongSerializer(ModelSerializer):
     song = SongSerializer(many=False)
 
