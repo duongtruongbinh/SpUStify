@@ -12,58 +12,56 @@ const SignUp = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [isArtist, setIsArtist] = useState(null);
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [isArtist, setIsArtist] = useState(false);
   const [register, { isLoading, error }] = useRegisterUserMutation();
 
   const handleLogin = async (event) => {
     event.preventDefault();
     const userData = {
-      "username": username,
-      "email": "mhg@gmail.com",
-      "password": password,
-      "is_artist": isArtist
-
-
+      username: username,
+      email: "mhg@gmail.com",
+      password: password,
+      is_artist: isArtist,
     };
-
 
     // Gọi API đăng ký và unwrap kết quả
 
     const response = await register(userData);
-    console.log(response)
+    console.log(response);
 
     // Gọi API đăng ký và unwrap kết quả
 
-    if (isLoading) return <Loader title='Sending' />;
+    if (isLoading) return <Loader title="Sending" />;
     if (error) return <Error />;
 
     if (response.data.user) {
       const useForSlice = {
-        "username": username,
-        "password": password,
-        "isArtist": isArtist,
-        "isLogin": true
-      }
-      sessionStorage.setItem('user', JSON.stringify(useForSlice));
+        username: username,
+        password: password,
+        isArtist: isArtist,
+        isLogin: true,
+      };
+      sessionStorage.setItem("user", JSON.stringify(useForSlice));
       dispatch(setRegisterLogin(useForSlice));
-      navigate('/home');
+      navigate("/home");
     }
-
   };
 
   const handleArtist = () => {
     setIsArtist(true);
-  }
+  };
   const handleUser = () => {
     setIsArtist(false);
-  }
+  };
 
   return (
     <div className=" gap-20  bg-bg_sign_up flex flex-row my-20 mx-20 py-20 px-20">
       <div className="w-1/2 flex flex-col mr-20">
-        <div className="flex flex-row gap-6">
+        <div
+          onClick={() => navigate("/home")}
+          className="flex flex-row gap-6 hover:cursor-pointer">
           <img src={logo} className="h-20" />
           <p className="text-white text-2xl  self-center">SpUStify</p>
         </div>
@@ -74,8 +72,6 @@ const SignUp = () => {
           <img className="w-[150px] h-[150px] " src={image2} />
 
           <img className="w-[150px] h-[150px] " src={image3} />
-
-
         </div>
       </div>
       {/* <div className="w-1/2  bg-form_sign_up px-12  ml-20 rounded-[10px] flex flex-col">
@@ -139,7 +135,7 @@ const SignUp = () => {
                 type="text"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                className="border text-white border-input_blue bg-form_sign_up rounded-md h-10 w-full "
+                className="p-2 border text-white border-input_blue bg-form_sign_up rounded-md h-10 w-full "
               />
             </div>
 
@@ -150,20 +146,22 @@ const SignUp = () => {
                 type="text"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="border text-white border-input_blue bg-form_sign_up rounded-md h-10 w-full "
+                className="p-2 border text-white border-input_blue bg-form_sign_up rounded-md h-10 w-full "
               />
             </div>
             <div className=" flex  gap-10">
               <p className="text-white block mb-2">Role:</p>
               <Button
-                className={`border rounded-md px-2 py-2 hover:bg-red-400 ${!isArtist ? "bg-red-400" : ""
-                  }`}
+                className={`border rounded-md px-2 py-2 hover:bg-red-400 ${
+                  !isArtist ? "bg-red-400" : ""
+                }`}
                 onClick={handleUser}>
                 User
               </Button>
               <Button
-                className={`border rounded-md px-2 py-2 hover:bg-red-400 ${isArtist ? "bg-red-400" : ""
-                  }`}
+                className={`border rounded-md px-2 py-2 hover:bg-red-400 ${
+                  isArtist ? "bg-red-400" : ""
+                }`}
                 onClick={handleArtist}>
                 Artist
               </Button>

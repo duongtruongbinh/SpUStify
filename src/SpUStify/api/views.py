@@ -151,7 +151,21 @@ class HomeFeaturesAPI(APIView):
         return Response(response)
 
     # def get_favourites(self, request, user_id):
-
+    def get_favourites(self, request, user_id):
+        user_played_songs = UserPlayedSong.objects.filter(
+            played_song__accounts__id=user_id, liked=True)
+        user_played_songs_serializer = UserPlayedSongSerializer(
+            user_played_songs, many=True)
+        user_played_playlists = UserPlayedPlaylist.objects.filter(
+            played_playlist__accounts__id=user_id, liked=True)
+        user_played_playlists_serializer = UserPlayedPlaylistSerializer(
+            user_played_playlists, many=True)
+        response = {
+            'favourite_songs': user_played_songs_serializer.data,
+            'favourite_playlists': user_played_playlists_serializer.data,
+        }
+        return Response(response)
+    
     def get_history(self, request, user_id):
         played_songs = PlayedSong.objects.filter(accounts__id=user_id)
         played_songs_serializer = PlayedSongSerializer(played_songs, many=True)
@@ -197,8 +211,8 @@ class HomeFeaturesAPI(APIView):
 
         if feature == "leaderboard":
             return self.get_leaderboard(request)
-        # elif feature == "favourite":
-        #     return self.get_favourites(request, user_id)
+        elif feature == "favourite":
+            return self.get_favourites(request, user_id)
         elif feature == "history":
             return self.get_history(request, user_id)
         elif feature == "recommend":

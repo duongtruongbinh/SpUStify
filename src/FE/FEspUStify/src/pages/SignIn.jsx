@@ -16,44 +16,39 @@ const SignIn = () => {
   const handleLogin = async (event) => {
     event.preventDefault();
     const userData = {
-      "username": username,
-      "password": password,
-
-
+      username: username,
+      password: password,
     };
 
-    debugger
+    debugger;
 
     const response = await login(userData);
-    console.log(response.data)
-    debugger
+    console.log(response.data);
+    debugger;
     // Gọi API đăng ký và unwrap kết quả
 
-    if (isLoading) return <Loader title='Sending' />;
+    if (isLoading) return <Loader title="Sending" />;
     if (error) return <Error />;
 
     if (response.data) {
       const useForSlice = {
         ...userData,
-        "isArtist": response.data.is_artist,
-        "isLogin": true
-      }
+        isArtist: response.data.is_artist,
+        isLogin: true,
+      };
 
       dispatch(setRegisterLogin(useForSlice));
-      navigate('/home')
+      navigate("/home");
       sessionStorage.setItem("user", JSON.stringify(useForSlice));
     }
   };
 
-
-
-  const handleArtist = () => {
-    setIsArtist(true);
-  };
   return (
     <div className=" gap-20  bg-bg_sign_up flex flex-row my-20 mx-20 py-20 px-20">
       <div className="w-1/2 flex flex-col mr-20">
-        <div className="flex flex-row gap-6">
+        <div
+          onClick={() => navigate("/home")}
+          className="flex flex-row gap-6 hover:cursor-pointer">
           <img src={logo} className="h-20" />
           <p className="text-white text-2xl  self-center">SpUStify</p>
         </div>
@@ -77,7 +72,7 @@ const SignIn = () => {
                 type="text"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                className="border text-white border-input_blue bg-form_sign_up rounded-md h-10 w-full "
+                className="p-2 border text-white border-input_blue bg-form_sign_up rounded-md h-10 w-full "
               />
             </div>
 
@@ -88,7 +83,7 @@ const SignIn = () => {
                 type="text"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="border text-white border-input_blue bg-form_sign_up rounded-md h-10 w-full "
+                className="p-2 border text-white border-input_blue bg-form_sign_up rounded-md h-10 w-full "
               />
             </div>
           </div>
@@ -96,7 +91,7 @@ const SignIn = () => {
           <div className="text-white my-10 flex flex-row gap-4 justify-center ">
             <Button
               type="submit"
-              className="bg-submit_blue  px-8 py-4 my-2 rounded-xl   text-white">
+              className="bg-submit_blue hover:bg-sign_up_blue  px-8 py-4 my-2 rounded-xl   text-white">
               Sign In
             </Button>
           </div>

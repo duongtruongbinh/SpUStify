@@ -87,8 +87,8 @@ export const CoreApi = createApi({
         }
       },
     }), // Adjust endpoint path
-    getPlaylistDetails :  builder.query({
-      query: ({playlistid}) =>  `playlists/${playlistid}`,
+    getPlaylistDetails: builder.query({
+      query: ({ playlistid }) => `playlists/${playlistid}`,
       async onQueryStarted(request, api, context) {
         if (!isLoginOrRegisterEndpoint(request.endpoint)) {
           const { username, password } = useSelector((state) => state.player);
@@ -109,7 +109,7 @@ export const CoreApi = createApi({
 
     }), // Adjust endpoint path
     getFavouriteSongs: builder.query({
-      query: () => 'favourite/',
+      query: () => '/home/favourite/',
 
       async onQueryStarted(request, api, context) {
         if (!isLoginOrRegisterEndpoint(request.endpoint)) {
@@ -182,7 +182,7 @@ export const CoreApi = createApi({
       })
     }),
     addSongToPlaylist: builder.mutation({
-      query: ({songid,id}) => ({
+      query: ({ songid, id }) => ({
         url: `/songs/${songid}/add-to-playlist/${id}`, method: 'POST',
         async onQueryStarted(request, api, context) {
           if (!isLoginOrRegisterEndpoint(request.endpoint)) {
@@ -231,7 +231,7 @@ export const CoreApi = createApi({
       })
     }),
     editPlaylist: builder.mutation({
-      query: ({playlistid,FormData}) => ({
+      query: ({ playlistid, FormData }) => ({
         url: `playlists/${playlistid}/edit/`, method: 'PUT', body:
           FormData
 
