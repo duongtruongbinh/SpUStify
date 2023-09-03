@@ -55,7 +55,7 @@ const CreatePlaylist = () => {
       data.append("name", playlistName);
 
       data.append("status", "pub");
-
+      console.log(data);
       // setFormData(Data);
       // No need for the X-RapidAPI-Key header for local development
 

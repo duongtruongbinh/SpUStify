@@ -67,12 +67,10 @@ const App = () => {
   const noMusicPlayer = ["/signin", "/signup"];
   return (
     <div className="relative flex">
-      {currentRoute != "/signin" && currentRoute != "/signup" && <Sidebar />}
+      {!noMusicPlayer.includes(currentRoute) && <Sidebar />}
 
       <div className="flex-1 flex flex-col">
-        {currentRoute != "/signin" && currentRoute != "/signup" && (
-          <Searchbar />
-        )}
+        {!noMusicPlayer.includes(currentRoute) && <Searchbar />}
 
         <div className="h-[calc(100vh-72px)] overflow-y-scroll hide-scrollbar flex xl:flex-row flex-col-reverse bg-[#18181A]">
           <div className="flex-1 h-fit pb-40">
