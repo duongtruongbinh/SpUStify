@@ -2,7 +2,8 @@ import { Button } from "@material-tailwind/react";
 import { useSelector } from "react-redux";
 import { logo, image1, image2, image3 } from "../assets";
 import { Error, Loader, SongCard } from "../components";
-import { useLoginMutation } from "../redux/services/CoreApi";
+//import { useLoginMutation } from "../redux/services/CoreApi";
+import { Signin } from "../redux/services/Api";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { setRegisterLogin } from "../redux/features/playerSlice";
@@ -12,23 +13,22 @@ const SignIn = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const dispatch = useDispatch();
-  const [login, { isLoading, error, data }] = useLoginMutation();
+ // const [login, { isLoading, error, data }] = useLoginMutation();
   const handleLogin = async (event) => {
     event.preventDefault();
     const userData = {
-      username: username,
-      password: password,
+      "username": username,
+      "password": password,
     };
 
     debugger;
 
-    const response = await login(userData);
+    const response = await Signin(userData, username, password);
     console.log(response.data);
     debugger;
     // Gọi API đăng ký và unwrap kết quả
 
-    if (isLoading) return <Loader title="Sending" />;
-    if (error) return <Error />;
+   
 
     if (response.data) {
       const useForSlice = {

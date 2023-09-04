@@ -16,11 +16,8 @@ import {
   selectGenreListId,
   setLikeSongId,
 } from "../redux/features/playerSlice";
-import {
-  useGetFavouriteSongsQuery,
-  usePlaySongMutation,
-} from "../redux/services/CoreApi";
-import { useGetPlaylistsQuery } from "../redux/services/CoreApi";
+
+import { getPlaylist, playSong } from "../redux/services/Api";
 import { setActiveSong } from "../redux/features/playerSlice";
 import { playPause } from "../redux/features/playerSlice";
 
@@ -33,55 +30,50 @@ const Playlist = () => {
   const dispatch = useDispatch();
   const { activeSong, isPlaying, currentSongs, username, password } =
     useSelector((state) => state.player);
-  const [favouriteKey, setFavouriteKey] = useState("favourite-songs");
-  const [topChartsKey, setTopChartsKey] = useState("top-charts");
-  const {
-    data: currentData,
-    isLoading: isFavouriteLoading,
-    isError: isFavouriteError,
-  } = useGetFavouriteSongsQuery({ key: favouriteKey });
-  const {
-    data: topChartsData,
-    isFetching: isTopChartsFetching,
-    error: topChartsError,
-  } = useGetPlaylistsQuery({ key: topChartsKey }); // Add this line
+  const [state, setState] = useState("state");
+
+  const [playlist, setPlaylist] = useState([]);
+  const [DataFav,setDataFav] = useState([]);
+  useEffect(() => {
+    const fetchData = async () => {
+
+
+      await getPlaylist(username, password).then(response => {
+        setDataFav(response.data);
+      
+      })
+        ;
+
+    }
+
+
+    fetchData();
+  }, [state]);
+  useEffect(() => {
+   
+    if (DataFav !== undefined && Array.isArray(DataFav)) {
+      setPlaylist(DataFav);
+    
+    }
+
+
+  }, [DataFav]);
+
+
 
   useEffect(() => {
     // Thay đổi key khi component được mount lại hoặc focus
-    setFavouriteKey("favourite-songs-" + new Date().getTime());
-    setTopChartsKey("top-charts-" + new Date().getTime());
+    setState("state-" + new Date().getTime());
+
   }, []);
-  const [setPlaySong, { isLoading: isLoadingSong, response }] =
-    usePlaySongMutation();
+ 
 
-  useEffect(() => {
-    if (!isFavouriteLoading && !isFavouriteError && currentData) {
-      console.log(currentData);
-      const songLiked = currentData["favourite_songs"];
-      console.log(songLiked);
-      const dataLikeSong = Array.isArray(songLiked) ? songLiked : [songLiked];
-      dataLikeSong.forEach((song) => {
-        dispatch(setLikeSongId(song.song_name));
-      });
-    }
-  }, [currentData, isFavouriteLoading, isFavouriteError, dispatch]);
 
-  if (isFavouriteLoading || isTopChartsFetching || isLoadingSong) {
-    return <Loader title="Loading data..." />;
-  }
 
-  if (isFavouriteError || topChartsError) {
-    return <Error message="Error fetching data." />;
-  }
 
-  const ListPlaylist = topChartsData;
-  console.log("playlist");
-  console.log(ListPlaylist);
 
-  const dataPlaylist = Array.isArray(ListPlaylist)
-    ? ListPlaylist
-    : [ListPlaylist];
-  // const genreTitle = genres.find(({ value }) => value === genreListId)?.title
+
+
 
   return (
     <div className="flex flex-col">
@@ -102,7 +94,7 @@ const Playlist = () => {
       </div>
       <div className="flex flex-col items-center gap-9">
         <div className=" relative flex flex-wrap sm:justify-start justify-center gap-8">
-          {dataPlaylist?.map((song, index) => (
+          {playlist?.map((song, index) => (
             <PlaylistCard
               key={song.id}
               song={song}

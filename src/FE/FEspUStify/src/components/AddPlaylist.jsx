@@ -4,16 +4,20 @@ import { useGetPlaylistsQuery } from "../redux/services/CoreApi";
 import { addSongToPlaylist } from "../redux/services/Api";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useSelector, useDispatch } from "react-redux";
+
 
 const Popup = ({ data, songid, onClick }) => {
+  const { activeSong, isPlaying, username, password, likedSongsId } =
+  useSelector((state) => state.player);
   const playlistList = data;
   console.log("data add");
   console.log(playlistList);
 
-  const handleaddSong = async ({ songid, playlist }) => {
+  const handleaddSong = async ({songid, playlist }) => {
     const id = playlist.id;
     try {
-      const response = addSongToPlaylist(songid, id);
+      const response = await addSongToPlaylist(username, password,songid, id);
       // if (response.data.message === "Song added to playlist successfully.") {
       //   toast.success(`Add Song to ${playlistList.name} successfully`, {
       //     position: toast.POSITION.TOP_CENTER,
@@ -61,7 +65,7 @@ const Popup = ({ data, songid, onClick }) => {
 
 const AddPlaylist = ({ songid }) => {
   const [showModal, setShowModal] = useState(false);
-  const { data, isFetching, error } = useGetPlaylistsQuery();
+  const { data, isFetching, error } = useGetPlaylistsQuery({key: showModal});
   console.log("check ở đây");
   console.log(songid);
   return (

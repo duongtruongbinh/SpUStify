@@ -2,7 +2,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 
-const Api = () => {};
+const Api = () => { };
 
 debugger;
 export const CoreApi = createApi({
