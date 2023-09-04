@@ -217,7 +217,7 @@ class HomeFeaturesAPI(APIView):
 
 class FavouriteViewAPI(APIView):
     authentication_classes = [BasicAuthentication]
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
 
     def get(self, request):
         user_id = request.user.id
