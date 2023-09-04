@@ -68,6 +68,22 @@ const getPlaylistDetails = async (username, password, playlistid) => {
     return error;
   }
 };
+const getSongDetails = async (username, password, songid) => {
+  try {
+    const response = await axios
+      .get(`http://localhost:8000/api/songs/${songid}/`,
+        {
+          auth: {
+            username: username,
+            password: password,
+          },
+        }
+      );
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
 
 
 const addSongToPlaylist = async (username, password, songid, playlistid) => {
@@ -94,7 +110,7 @@ const editAction = async (username, password, id, data, type) => {
   };
   try {
     const response = await axios
-      .put(typeURL[type], data, {
+      .patch(typeURL[type], data, {
         auth: {
           username: username,
           password: password,
@@ -183,4 +199,4 @@ const Signup = async (data) => {
 };
 
 
-export { likeAction, createAction, editAction, addSongToPlaylist, getFavouriteSongs, Signin, playSong, getTopChart, getPlaylist, getPlaylistDetails, Signup, getItemBySearch };
+export { likeAction, createAction, editAction, addSongToPlaylist, getFavouriteSongs, Signin, playSong, getTopChart, getPlaylist, getPlaylistDetails, Signup, getItemBySearch, getSongDetails };

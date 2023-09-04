@@ -30,6 +30,7 @@ import {
   Playlist,
   PlaylistDetails,
   EditPlaylist,
+  EditSong
 } from "./pages";
 import { useGetFavouriteSongsQuery } from "./redux/services/CoreApi";
 
@@ -97,6 +98,8 @@ const App = () => {
                 path="/playlist/:playlistid/edit"
                 element={<EditPlaylist />}
               />
+              <Route 
+              path="/song/:songid/edit" element = {<EditSong />}/>
             </Routes>
           </div>
           <div className="xl:sticky relative top-0 h-fit">

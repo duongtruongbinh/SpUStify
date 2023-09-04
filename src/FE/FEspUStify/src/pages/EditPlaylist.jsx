@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 
 import { useSelector, useDispatch } from "react-redux";
 import { useGetPlaylistDetailsQuery } from "../redux/services/CoreApi";
-import { editAction } from "../redux/services/Api";
+import { editAction, getPlaylistDetails } from "../redux/services/Api";
 import { Button } from "@material-tailwind/react";
 import { useNavigate } from "react-router-dom";
 const EditPlaylist = () => {
@@ -13,25 +13,44 @@ const EditPlaylist = () => {
   const dispatch = useDispatch();
 
   const [playlistName, setPlaylistName] = useState("");
+ 
+  const [playlist, setPlaylist] = useState();
+  const [state, setState] = useState('state');
 
-  const { data: songData, isFetching: isFetchingSongDetails } =
-    useGetPlaylistDetailsQuery({ playlistid });
+  
   const [uploadedImage, setUploadedImage] = useState(null);
   const [uploadedImagePost, setUploadedImagePost] = useState(null);
 
   const [uploadedBackground, setUploadedBackground] = useState(null);
   const [uploadedBackgroundPost, setUploadedBackgroundPost] = useState(null);
 
-  if (isFetchingSongDetails) return <Loader title="Searching song details" />;
+  
   useEffect(() => {
-    if (songData) {
-      setPlaylistName(songData.name);
+    
+    
+      setPlaylistName(playlist?.name);
       setUploadedBackground(
-        `http://127.0.0.1:8000${songData.background_image}`
+        `http://127.0.0.1:8000${playlist?.background_image}`
       );
-      setUploadedImage(`http://127.0.0.1:8000${songData.avatar}`);
-    }
+      setUploadedImage(`http://127.0.0.1:8000${playlist?.avatar}`);
+      setState("state-" + new Date().getTime());
   }, []);
+  useEffect(() => {
+    
+    const fetchData = async () => {
+      
+
+      await getPlaylistDetails(username, password, playlistid).then(response => {
+        setPlaylist(response.data);
+        
+        console.log(playlist);
+   
+
+      });
+
+    }
+    fetchData();
+  }, [state]);
 
   const [isFormValid, setIsFormValid] = useState(true);
 
@@ -71,14 +90,14 @@ const EditPlaylist = () => {
     }
   };
 
-  debugger;
+  
   const handleImageUpload = (imageFile) => {
     if (imageFile) {
       setUploadedImage(URL.createObjectURL(imageFile));
       setUploadedImagePost(imageFile);
     }
   };
-  debugger;
+ 
   const handleBackgroudUpload = (backgroundFile) => {
     if (backgroundFile) {
       setUploadedBackground(URL.createObjectURL(backgroundFile));

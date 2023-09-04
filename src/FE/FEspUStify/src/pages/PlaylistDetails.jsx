@@ -64,7 +64,7 @@ const PlaylistDetails= () => {
   const dispatch = useDispatch();
   const [playlistDetail, setPlaylistDetail] = useState([]);
   const [playlist, setPlaylist] = useState();
-  const [state, setState] = useState('state')
+  const [state, setState] = useState('state');
 
 
   const  {playlistid} = useParams();
@@ -139,7 +139,7 @@ const PlaylistDetails= () => {
   
 
 <PlaySong 
-songData = {activeSong}
+songData = {playlist}
 related_song={playlistDetail}
 
 isPlaying={isPlaying}

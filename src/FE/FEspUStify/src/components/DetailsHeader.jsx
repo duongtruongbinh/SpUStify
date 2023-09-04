@@ -16,14 +16,14 @@ const DetailsHeader = ({ artistId, songData, handlePauseClick, handlePlayClick }
     <div
       className="w-full bg-gradient-to-l from-transparent to-violet-900 sm:h-48 h-28"
       style={{
-        backgroundImage: `url(http://127.0.0.1:8000${songData.background_image})`,
+        backgroundImage: `url(http://127.0.0.1:8000${songData?.background_image})`,
       }}
     />
 
     <div className="absolute inset-0 flex items-center">
       <img
         alt="profile"
-        src={`http://127.0.0.1:8000${songData.avatar}`}
+        src={`http://127.0.0.1:8000${songData?.avatar}`}
         className="sm:w-48 w-28 sm:h-48 h-28 rounded-full object-cover border-2 shadow-xl shadow-black"
       />
 

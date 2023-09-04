@@ -5,12 +5,11 @@ import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { DetailsHeader, Error, Loader, RelatedSongs ,TopChartCard, Like,
   Liked,AddPlaylist,} from "../components";
-
+  import {AiFillEdit} from 'react-icons/ai';
+  import { Link } from "react-router-dom";
 import { setActiveSong, playPause } from "../redux/features/playerSlice";
-import {
-  useGetSongDetailsQuery,
-  useGetSongRecommendQuery,
-} from "../redux/services/CoreApi";
+import { getSongDetails,editAction } from "../redux/services/Api";
+
 import { likeAction, getTopChart, getFavouriteSongs, playSong } from "../redux/services/Api";
 
 
@@ -23,25 +22,31 @@ const SongDetails = () => {
   const [dataFavo, setDataFav] = useState();
   const [likedSong, setLikeSdSong] = useState([]);
   const [likeSongId, setLikeSongId] = useState([]);
+  const [state, setState] = useState('state');
+  const [responseData, setresponseData] = useState();
+  const [songData,setSongData] = useState();
+  const [relatedSong, setRelativeSong] = useState([]);
+
   const { activeSong, isPlaying, username, password, isLogin } = useSelector((state) => state.player);
 
-  const { data: songData, isFetching: isFetchingSongDetails } =
-    useGetSongDetailsQuery({ songid });
+  useEffect(() => {
+   
+    // Thay đổi key khi component được mount lại hoặc focus
+   
+    setState("state-" + new Date().getTime());
+    
+  }, []);
 
-  if (isFetchingSongDetails) return <Loader title="Searching song details" />;
-  console.log("song data");
-  console.log(songData);
 
-  const related = songData["related_songs"];
-  const song = songData["song"];
-  console.log(song);
-  const related_song = Array.isArray(related) ? related : [related];
+
+
+
   useEffect(() => {
     const fetchData = async () => {
 
-
-      await getFavouriteSongs(username, password).then(response => {
-        setDataFav(response.data);
+debugger
+      await getSongDetails(username, password,songid ).then(response => {
+        setresponseData(response.data);
        
       })
         ;
@@ -50,17 +55,18 @@ const SongDetails = () => {
 
 
     fetchData();
-  }, [likeState]);
+  }, [state]);
 
   useEffect(() => {
    
-    if (dataFavo !== undefined && Array.isArray(dataFavo.favourite_songs)) {
-      setLikeSdSong(dataFavo.favourite_songs);
+    if (responseData !== undefined && Array.isArray(responseData.related_songs)) {
+      setRelativeSong(responseData.related_songs);
+      setSongData(responseData.songs);
     
     }
 
 
-  }, [dataFavo]);
+  }, [responseData]);
   useEffect(() => {
    
   if(likedSong !== null){
@@ -113,11 +119,14 @@ const SongDetails = () => {
     <div className="flex flex-col">
       
       <DetailsHeader
-        artistId={related_song[0]?.main_artist.id}
-        songData={song}
+        artistId={songData?.id}
+        songData={songData}
         handlePauseClick={handlePauseClick}
-        handlePlayClick={() => handlePlayClick(song, related_song,related_song.length + 1)}
+        handlePlayClick={() => handlePlayClick(songData, relatedSong,relatedSong.length + 1)}
       />
+       <Link to =  {`/song/${songid}/edit`}>
+    <AiFillEdit className="text-white "/>
+    </Link>
        
 
   
@@ -145,8 +154,8 @@ const SongDetails = () => {
         <h2 className="text-gray-100 text-3xl font-bold">Lyrics:</h2>
 
         <div className="mt-5">
-          {song ? (
-            <p className="text-gray-300 text-base my-1">{song.lyric_data}</p>
+          {songData ? (
+            <p className="text-gray-300 text-base my-1">{songData?.lyric_data}</p>
           ) : (
             <p className="text-gray-300 text-base my-1">
               Sorry, No lyrics found!
@@ -155,7 +164,7 @@ const SongDetails = () => {
         </div>
       </div>
       <div className='mt-4 w-1/2 flex flex-col gap-1 mr-10'>
-          {related_song?.map((song, index) => (
+          {relatedSong?.map((song, index) => (
             <TopChartCard
               key={index}
               song={song}
@@ -164,7 +173,7 @@ const SongDetails = () => {
               isPlaying={isPlaying}
               activeSong={activeSong}
               handlePauseClick={handlePauseClick}
-              handlePlayClick={() => handlePlayClick(song, related_song,index)}
+              handlePlayClick={() => handlePlayClick(song, relatedSong,index)}
             />
           ))}
         </div>

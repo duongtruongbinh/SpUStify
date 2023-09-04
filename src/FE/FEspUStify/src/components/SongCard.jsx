@@ -31,7 +31,7 @@ const SongCard = ({ song, isPlaying, activeSong, index, data, handlePauseClick, 
         </div>
         <img 
           // src={song.images?.coverart} 
-          src = {`http://127.0.0.1:8000${song.avatar }`}
+          src = {`http://127.0.0.1:8000${song?.avatar }`}
           alt='song_img' 
           className='object-cover w-full h-full overflow-hidden '/>
        </div> 
@@ -43,7 +43,7 @@ const SongCard = ({ song, isPlaying, activeSong, index, data, handlePauseClick, 
   <div
     className="absolute inset-0 bg-center bg-cover bg-no-repeat "
     style={{
-      backgroundImage: `url(http://127.0.0.1:8000${song.avatar })`,
+      backgroundImage: `url(http://127.0.0.1:8000${song?.avatar })`,
     }}
   />
   <div className="absolute inset-0 bg-black opacity-40 " />
@@ -62,12 +62,12 @@ const SongCard = ({ song, isPlaying, activeSong, index, data, handlePauseClick, 
   {/* QUA PAGE SONG DETAILS */}
           <Link to={`/songs/${song?.id}`}>
             
-            {song.name}
+            {song?.name}
           </Link>
         </p>
         <p className=' text-xs truncate text-gray-300 '>
           {/* QUA PAGE ARTIST DETAIL */}
-          <Link to={song.main_artist
+          <Link to={song?.main_artist
             ? `/artists/${song?.main_artist.id}`
             : '/top-artists'}
           >

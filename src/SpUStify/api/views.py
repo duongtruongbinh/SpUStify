@@ -215,6 +215,28 @@ class HomeFeaturesAPI(APIView):
             return self.get_recommendations(request, user_id)
 
 
+# class FavouriteViewAPI(APIView):
+#     authentication_classes = [BasicAuthentication]
+#     permission_classes = [IsAuthenticated]
+
+#     def get(self, request):
+#         user_id = request.user.id
+
+#         user_played_songs = UserPlayedSong.objects.filter(
+#             played_song__accounts__id=user_id, liked=True)
+#         user_played_songs_serializer = UserPlayedSongSerializer(
+#             user_played_songs, many=True)
+
+#         user_played_playlists = UserPlayedPlaylist.objects.filter(
+#             played_playlist__accounts__id=user_id, liked=True)
+#         user_played_playlists_serializer = UserPlayedPlaylistSerializer(
+#             user_played_playlists, many=True)
+
+#         response = {
+#             'favourite_songs': user_played_songs_serializer.data,
+#             'favourite_playlists': user_played_playlists_serializer.data,
+#         }
+#         return Response(response)
 class FavouriteViewAPI(APIView):
     authentication_classes = [BasicAuthentication]
     permission_classes = [IsAuthenticated]
@@ -223,12 +245,12 @@ class FavouriteViewAPI(APIView):
         user_id = request.user.id
 
         user_played_songs = UserPlayedSong.objects.filter(
-            played_song__accounts__id=user_id, liked=True)
+            account__id=user_id, liked=True)
         user_played_songs_serializer = UserPlayedSongSerializer(
             user_played_songs, many=True)
 
         user_played_playlists = UserPlayedPlaylist.objects.filter(
-            played_playlist__accounts__id=user_id, liked=True)
+            account__id=user_id, liked=True)
         user_played_playlists_serializer = UserPlayedPlaylistSerializer(
             user_played_playlists, many=True)
 
@@ -237,7 +259,6 @@ class FavouriteViewAPI(APIView):
             'favourite_playlists': user_played_playlists_serializer.data,
         }
         return Response(response)
-
 
 class ProfileViewAPI(APIView):
     authentication_classes = [BasicAuthentication]
@@ -424,7 +445,7 @@ class EditSongAPI(APIView):
     serializer_class = FeaturesSongSerializer
     parser_classes = [MultiPartParser]
 
-    def put(self, request, song_id=None, *args, **kwargs):
+    def patch(self, request, song_id=None, *args, **kwargs):
         profile = Profile.objects.get(account=request.user)
         main_artist = Artist.objects.get(profile=profile)
         song = get_object_or_404(Song, id=song_id, main_artist=main_artist)
@@ -579,7 +600,7 @@ class EditPlaylistAPI(APIView):
     permission_classes = [IsAuthenticated, IsPlaylistOwner]
     serializer_class = EditPlaylistSerializer
 
-    def put(self, request, playlist_id=None, *args, **kwargs):
+    def patch(self, request, playlist_id=None, *args, **kwargs):
         playlist = get_object_or_404(
             Playlist, id=playlist_id, account=request.user)
 
