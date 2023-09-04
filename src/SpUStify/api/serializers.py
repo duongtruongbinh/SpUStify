@@ -51,9 +51,14 @@ class ProfileSerializer(ModelSerializer):
 
 
 class ArtistSerializer(ModelSerializer):
+    avatar = serializers.SerializerMethodField()
+    
+    def get_avatar(self, artist):
+        return artist.profile.avatar.url if artist.profile.avatar else None
+    
     class Meta:
         model = Artist
-        fields = ('id', 'artist_name')
+        fields = ('id', 'artist_name', 'avatar')
 
 
 class FeaturesArtistSerializer(ModelSerializer):
