@@ -57,10 +57,10 @@ const CreatePlaylist = () => {
       // const responseData = await setCreatePlaylist(data);
       const create = createAction;
       const response = await create(username, password, data, "playlist");
-      console.log(response);
-      // if (responseData.avatar !== null) {
-      //   navigate("/upload-song-succesfull");
-      // }
+
+      if (response) {
+        navigate("/upload-song-succesfull");
+      }
 
       // if (isLoading) {
       //   return <Loader title="Loading DATA..." />;

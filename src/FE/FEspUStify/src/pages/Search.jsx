@@ -20,10 +20,10 @@ const Search = () => {
 
   const { searchTerm } = useParams();
   const { activeSong, isPlaying, username, password } = useSelector((state) => state.player);
- const [data, setData] = useState();
- const [songSearch, setSongSearch] = useState([]);
- const [playlistSearch, setPlaylistSearch] = useState([]);
- const [ArtistSearch, setArtistSearch] = useState([]);
+  const [data, setData] = useState();
+  const [songSearch, setSongSearch] = useState([]);
+  const [playlistSearch, setPlaylistSearch] = useState([]);
+  const [ArtistSearch, setArtistSearch] = useState([]);
 
   // const { dataAll, isLoading, error: isError} = useGetAllBySearchQuery(searchTerm);
 
@@ -32,25 +32,21 @@ const Search = () => {
   useEffect(() => {
     const fetchData = async () => {
 
-
-      await getItemBySearch(username, password,searchTerm).then(response => {
-       setData(response.data);
-       
-      })
-        ;
+      await getItemBySearch(searchTerm).then(response => {
+        setData(response.data);
+      });
 
     }
 
-
     fetchData();
-  }, []);
+  }, [searchTerm]);
   useEffect(() => {
-    if (data !== undefined ) {
+    if (data !== undefined) {
       setSongSearch(data.songs);
       setPlaylistSearch(data.playlists);
       setArtistSearch(data.artists);
       // setDataFav( dataFavo.favourite_songs ) ;
-     
+
     }
 
 
@@ -73,7 +69,7 @@ const Search = () => {
   };
 
 
-  
+
 
   return (
     <div className='flex flex-col'>
@@ -104,18 +100,18 @@ const Search = () => {
       <h2 className='text-white my-10 font-bold'>Playlist</h2>
       <div className='flex flex-wrap sm:justify-start justify-center gap-8'>
         {playlistSearch?.map((song, index) => (
-           <PlaylistCard
-           key={song.id}
-           song={song}
-           isPlaying={isPlaying}
-           activeSong={activeSong}
-           index={index}
-         />
+          <PlaylistCard
+            key={song.id}
+            song={song}
+            isPlaying={isPlaying}
+            activeSong={activeSong}
+            index={index}
+          />
         ))}
       </div>
       <h2 className='text-white my-10 font-bold'>Artist</h2>
       <div className='flex flex-wrap sm:justify-start justify-center gap-8'>
-      <Swiper
+        <Swiper
           slidesPerView="auto"
           spaceBetween={15}
           freeMode
@@ -140,7 +136,7 @@ const Search = () => {
             </SwiperSlide>
           ))}
         </Swiper>
-     
+
       </div>
     </div>
   );

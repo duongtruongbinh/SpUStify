@@ -289,7 +289,7 @@ class EditProfileAPI(APIView):
 
 class ArtistViewAPI(APIView):
     authentication_classes = [BasicAuthentication]
-    permission_classes = [IsAuthenticated, ]  # IsAdminGroup, IsUserGroup]
+    permission_classes = [AllowAny]  # IsAdminGroup, IsUserGroup]
 
     def get_artists_list(self, request):
         query = request.query_params.get('query', '')

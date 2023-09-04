@@ -51,7 +51,7 @@ export const CoreApi = createApi({
       query: ({ playlistid }) => `playlists/${playlistid}`,
     }), // Adjust endpoint path
     getArtistDetails: builder.query({
-      query: ({ artistId }) => `v2/artists/details?artist_id=${artistId}`,
+      query: ({ artistId }) => `artists/${artistId}`,
     }), // Adjust endpoint path
     getFavouriteSongs: builder.query({
       query: () => "favourite/",
