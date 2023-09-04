@@ -1,27 +1,30 @@
 import { MdOutlinePlaylistAdd } from "react-icons/md";
-import { useState, useRef, useEffect } from "react";
+import { useState } from "react";
 import { useGetPlaylistsQuery } from "../redux/services/CoreApi";
-import { useAddSongToPlaylistMutation } from "../redux/services/CoreApi";
+import { addSongToPlaylist } from "../redux/services/Api";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { useSelector, useDispatch } from "react-redux";
+
+
 const Popup = ({ data, songid, onClick }) => {
+  const { activeSong, isPlaying, username, password, likedSongsId } =
+    useSelector((state) => state.player);
   const playlistList = data;
   console.log("data add");
   console.log(playlistList);
-  const [id, setId] = useState(null);
-  const [setAddSong, { isLoading: isLoadingAdd, responseAdd }] =
-    useAddSongToPlaylistMutation();
+
   const handleaddSong = async ({ songid, playlist }) => {
-    console.log("check");
-    console.log(songid);
-
     const id = playlist.id;
-
-    console.log(id);
     try {
-      debugger;
-      const response = await setAddSong({ songid, id });
-      debugger;
+      const response = await addSongToPlaylist(username, password, songid, id);
+      // if (response.data.message === "Song added to playlist successfully.") {
+      //   toast.success(`Add Song to ${playlistList.name} successfully`, {
+      //     position: toast.POSITION.TOP_CENTER,
+      //     autoClose: 3000, // Thời gian tự động đóng thông báo (3 giây)
+      //   });
+      // }
     } catch (error) {
-      debugger;
       console.log(error);
     }
   };
@@ -62,8 +65,9 @@ const Popup = ({ data, songid, onClick }) => {
 
 const AddPlaylist = ({ songid }) => {
   const [showModal, setShowModal] = useState(false);
-  const { data, isFetching, error } = useGetPlaylistsQuery();
-
+  const { data, isFetching, error } = useGetPlaylistsQuery({ key: showModal });
+  console.log("check ở đây");
+  console.log(songid);
   return (
     <div className="p-4">
       <MdOutlinePlaylistAdd

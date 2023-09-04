@@ -4,14 +4,13 @@ import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
 
 import React from "react";
-import { Dispatch } from "react";
+
 import { bgPlaylist, LiuGrace } from "../assets";
 
 import {
   useGetFavouriteSongsQuery,
-  useLikeSongMutation,
   usePlaySongMutation,
-  useAddSongToPlaylistMutation,
+
 } from "../redux/services/CoreApi";
 import {
   Error,
@@ -25,86 +24,83 @@ import {
 import {
   playPause,
   setActiveSong,
-  setLikeSongId,
-  setRemoveSong,
+
 } from "../redux/features/playerSlice";
 
+import { likeAction, getFavouriteSongs, playSong } from "../redux/services/Api";
+
 const FavorutieSong = () => {
+
+
+  const { activeSong, isPlaying, username, password } =
+    useSelector((state) => state.player);
+
   const dispatch = useDispatch();
-  const { activeSong, isPlaying, username, likedSongsId } = useSelector(
-    (state) => state.player
-  );
-
+  const [dataFavo, setDataFav] = useState();
+  const [likedSong, setLikeSdSong] = useState([]);
   const [likeState, setLikeState] = useState("likestates");
-  const [setLikeSongName, { isLoading }] = useLikeSongMutation();
-  const { data, isFetching, error } = useGetFavouriteSongsQuery({
-    key: likeState,
-  });
-  const [setPlaySong, { isLoading: isLoadingSong, response }] =
-    usePlaySongMutation();
+  //const [setLikeSongName, { isLoading }] = useLikeSongMutation();
+  //const { data, isFetching, error } = useGetFavouriteSongsQuery({key: likeState});
 
-  const handleaddSong = ({ songid, namePlaylist }) => {
-    try {
-      const response = dispatch(setAddSong({ songid, namePlaylist }));
-    } catch (error) {
-      console.log(error);
+
+
+  useEffect(() => {
+    const fetchData = async () => {
+
+
+      await getFavouriteSongs(username, password).then(response => {
+        setDataFav(response.data);
+        console.log(dataFavo);
+      })
+        ;
+
     }
-  };
+
+
+    fetchData();
+  }, [likeState, dataFavo]);
+  useEffect(() => {
+    if (dataFavo !== undefined && Array.isArray(dataFavo.favourite_songs)) {
+      setLikeSdSong(dataFavo.favourite_songs);
+      // setDataFav( dataFavo.favourite_songs ) ;
+      console.log("check top chart");
+      console.log(likedSong);
+    }
+  }
+  )
+  useEffect(() => {
+    // Thay đổi key khi component được mount lại hoặc focus
+
+  }, [dataFavo]);
+
 
   const handleLike = async (songId, songName) => {
     console.log(songId);
 
     try {
-      const [{ request }] = dispatch(setLikeSongName(songId));
+      const responseLike = await likeAction(username, password, songId, "song");
+
       setLikeState("likestates-" + new Date().getTime());
+
+
     } catch (error) {
       console.log(error);
     }
-
-    if (isLoading) {
-      return <Loader title="Loading DATA..." />;
-    }
-    likedSongsId.includes(songName)
-      ? dispatch(setRemoveSong(songName))
-      : dispatch(setLikeSongId(songName));
   };
-
-  useEffect(() => {
-    // Thay đổi key khi component được mount lại hoặc focus
-
-    setLikeState("likestates-" + new Date().getTime());
-  }, [!isLoading]);
 
   const handlePauseClick = () => {
     dispatch(playPause(false));
   };
 
-  const handlePlayClick = (song, data, index) => {
+  const handlePlayClick = async (song, data, index) => {
     try {
-      const [{ request }] = setPlaySong(song.id);
+      const response = await playSong(username, password, song.id);
     } catch (error) {
       console.log(error);
-    }
-    if (isLoading) {
-      return <Loader title="Loading DATA..." />;
     }
     dispatch(setActiveSong({ song, data, index }));
     dispatch(playPause(true));
   };
-
-  if (isFetching || isLoading || isLoadingSong)
-    return <Loader title="Loading DATA..." />;
-
-  if (error) return <Error />;
-
-  const datas = data;
-  console.log(datas);
-
-  const LikedSong = Array.isArray(datas.favourite_songs)
-    ? datas.favourite_songs
-    : [datas.favourite_songs];
-  console.log("check top chart");
-  console.log(LikedSong);
 
   const userData = {
     username: username,
@@ -117,10 +113,10 @@ const FavorutieSong = () => {
       <UserHeader songData={userData} />
       <div className="w-full flex flex-col">
         <div className="mt-4 flex flex-col gap-1">
-          {LikedSong?.map((song, index) => (
+          {likedSong.map((song, index) => (
             <div
               className="flex flex-row items-center text-center"
-              key={song.id}>
+              key={song.played_song.id}>
               <LeaderboardCard
                 song={song.played_song}
                 index={index}
@@ -128,7 +124,7 @@ const FavorutieSong = () => {
                 activeSong={activeSong}
                 handlePauseClick={handlePauseClick}
                 handlePlayClick={() =>
-                  handlePlayClick(song.played_song, LikedSong, index)
+                  handlePlayClick(song.played_song, likedSong, index)
                 }
               />
 
@@ -141,7 +137,7 @@ const FavorutieSong = () => {
                 />
               </div>
 
-              <AddPlaylist songid={song.id} />
+              <AddPlaylist songid={song.played_song.id} />
             </div>
           ))}
         </div>

@@ -60,8 +60,7 @@ const App = () => {
     "/favourite-song",
     "/upload-song",
     "/create-playlist",
-    "/profile",
-    "/upload-song-succesful",
+    "/upload-song-succesfull",
   ];
 
   const noMusicPlayer = ["/signin", "/signup"];

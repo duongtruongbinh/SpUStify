@@ -55,8 +55,12 @@ urlpatterns = [
     # Detail Playlist Page
     path('playlists/<str:playlist_id>/',
          PlaylistsViewAPI.as_view(), name="get_playlist"),
-    path('playlists/<int:playlist_id>/edit/',
+    path('playlists/<str:playlist_id>/songs/',
+         SongsOfPlaylistAPI.as_view(), name="get_songs_playlist"),
+    path('playlists/<str:playlist_id>/edit/',
          EditPlaylistAPI.as_view(), name="edit_playlist"),
+    path('playlists/<str:playlist_id>/remove/<str:song_id>',
+         RemoveSongFromPlaylist.as_view(), name="remove_song_from_playlist"),
     path('playlists/<str:playlist_id>/play/',
          PlayPlaylistAPI.as_view(), name='play_playlist'),
     path('playlists/<str:playlist_id>/like/',

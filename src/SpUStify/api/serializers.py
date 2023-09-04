@@ -22,7 +22,7 @@ class DetailUserSerializer(ModelSerializer):
 
 
 class RegisterSerializer(ModelSerializer):
-    is_artist = serializers.BooleanField(default=False)
+    is_artist = serializers.BooleanField()
 
     class Meta:
         model = User
@@ -53,9 +53,14 @@ class ProfileSerializer(ModelSerializer):
 
 
 class ArtistSerializer(ModelSerializer):
+    avatar = serializers.SerializerMethodField()
+
+    def get_avatar(self, artist):
+        return artist.profile.avatar.url if artist.profile.avatar else None
+
     class Meta:
         model = Artist
-        fields = ('id', 'artist_name')
+        fields = ('id', 'artist_name', 'avatar')
 
 
 class FeaturesArtistSerializer(ModelSerializer):
@@ -123,11 +128,19 @@ class CreatePlaylistSerializer(ModelSerializer):
 
 
 class EditPlaylistSerializer(ModelSerializer):
+    # songs = SongSerializer(many=True)
+
+    class Meta:
+        model = Playlist
+        fields = ('avatar', 'background_image', 'name', 'status')
+
+
+class SongsOfPlaylistSerializer(ModelSerializer):
     songs = SongSerializer(many=True)
 
     class Meta:
         model = Playlist
-        fields = ('avatar', 'background_image', 'name', 'status', 'songs')
+        fields = ['songs']
 
 
 class PlayedSongSerializer(ModelSerializer):

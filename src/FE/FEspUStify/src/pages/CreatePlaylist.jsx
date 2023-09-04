@@ -1,12 +1,12 @@
-import { Dispatch, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { useCreatePlaylistMutation } from "../redux/services/CoreApi";
+import { useState } from "react";
 import { Button } from "@material-tailwind/react";
 import { useNavigate } from "react-router-dom";
+import { createAction } from "../redux/services/Api";
+import { useSelector } from "react-redux";
+
 const CreatePlaylist = () => {
   const navigate = useNavigate();
-
-  const dispatch = useDispatch();
+  const { username, password } = useSelector((state) => state.player);
 
   const [playlistName, setPlaylistName] = useState("");
   const [PlaylistNameError, setPlaylistNameError] = useState("");
@@ -19,11 +19,7 @@ const CreatePlaylist = () => {
   const [uploadedBackgroundPost, setUploadedBackgroundPost] = useState(null);
   const [backgroundError, setBackgroundError] = useState("");
 
-  const [isUploaded, setIsUploaded] = useState(false);
-
   const [isFormValid, setIsFormValid] = useState(true);
-
-  const [setCreatePlaylist, { isLoading }] = useCreatePlaylistMutation();
 
   const handleSubmit = async (event) => {
     //  event.preventDefault();
@@ -55,23 +51,20 @@ const CreatePlaylist = () => {
       data.append("name", playlistName);
 
       data.append("status", "pub");
-      console.log(data);
       // setFormData(Data);
       // No need for the X-RapidAPI-Key header for local development
 
-      try {
-        const responseData = await setCreatePlaylist(data);
+      // const responseData = await setCreatePlaylist(data);
+      const create = createAction;
+      const response = await create(username, password, data, "playlist");
 
-        if (responseData.avatar !== null) {
-          navigate("/upload-song-succesfull");
-        }
-      } catch (error) {
-        console.log(error);
+      if (response) {
+        navigate("/upload-song-succesfull");
       }
 
-      if (isLoading) {
-        return <Loader title="Loading DATA..." />;
-      }
+      // if (isLoading) {
+      //   return <Loader title="Loading DATA..." />;
+      // }
     }
   };
 

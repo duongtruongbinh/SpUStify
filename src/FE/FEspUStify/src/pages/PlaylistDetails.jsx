@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { DetailsHeader, Error, Loader, RelatedSongs ,TopChartCard} from "../components";
@@ -6,9 +6,7 @@ import PlayPause from "../components/PlayPause";
 import {AiFillEdit} from 'react-icons/ai';
 import { Link } from "react-router-dom";
 import { setActiveSong, playPause } from "../redux/features/playerSlice";
-import {
-  useGetPlaylistDetailsQuery
-} from "../redux/services/CoreApi";
+import { getPlaylistDetails } from "../redux/services/Api";
 const PlaySong = ({songData,related_song,
     
     isPlaying,
@@ -64,27 +62,57 @@ const PlaySong = ({songData,related_song,
 
 const PlaylistDetails= () => {
   const dispatch = useDispatch();
+  const [playlistDetail, setPlaylistDetail] = useState([]);
+  const [playlist, setPlaylist] = useState();
+  const [state, setState] = useState('state')
+
 
   const  {playlistid} = useParams();
+ console.log(playlistid)
   
-  const { activeSong, isPlaying } = useSelector((state) => state.player);
-  console.log("song dnag phat")
-  console.log(activeSong)
+  const { activeSong, isPlaying, username, password } = useSelector((state) => state.player);
+  // getPlaylistDetails(username, password, 31).then(response => {
+  //   setPlaylist(response.data);
+  //   console.log(playlist);
 
-  const { data: songData, isFetching: isFetchingSongDetails } =
-    useGetPlaylistDetailsQuery({ playlistid });
 
-  if (isFetchingSongDetails) return <Loader title="Searching song details" />;
-  console.log("song data");
-  console.log(songData.avatar);
+  // });
+  useEffect(() => {
+    debugger
+    // Thay đổi key khi component được mount lại hoặc focus
+   
+    setState("state-" + new Date().getTime());
+    
+  }, []);
+  useEffect(() => {
+    debugger
+    console.log("check cho CD coi")
+      console.log(playlistid);
+    const fetchData = async () => {
+      
 
- 
-  const related = songData.songs;
-  
-  console.log(related)
-  const related_song = Array.isArray(related) ? related : [related];
-  
-  
+      await getPlaylistDetails(username, password, playlistid).then(response => {
+        setPlaylist(response.data);
+        
+        console.log(playlist);
+   
+
+      });
+
+    }
+    fetchData();
+  }, [state]);
+  useEffect(() => {
+   
+    if (playlist !== undefined && Array.isArray(playlist.songs)) {
+      setPlaylistDetail(playlist.songs);
+    debugger
+    }
+
+
+  }, [playlist]);
+
+
   const handlePauseClick = () => {
     dispatch(playPause(false));
   };
@@ -102,8 +130,8 @@ const PlaylistDetails= () => {
 
 <div className=" flex flex-col   mb-10 w-1/2 ">
     <div className="flex  justify-center flex-row">
-    <p className="text-white  mb-4 flex ">{songData.name}</p>
-    <Link to =  {`/playlist/${songData.id}/edit`}>
+    <p className="text-white  mb-4 flex "> {playlist? playlist.name: ''}</p>
+    <Link to =  {`/playlist/${playlist? playlist.id: ''}/edit`}>
     <AiFillEdit className="text-white "/>
     </Link>
    
@@ -111,18 +139,18 @@ const PlaylistDetails= () => {
   
 
 <PlaySong 
-songData = {songData}
-related_song={related_song}
+songData = {activeSong}
+related_song={playlistDetail}
 
 isPlaying={isPlaying}
 activeSong={activeSong}
 handlePauseClick={handlePauseClick}
-handlePlayClick={() => handlePlayClick(activeSong, related_song, activeSong.index)}
+handlePlayClick={() => handlePlayClick(activeSong, playlistDetail, activeSong.index)}
  />
      
       </div>
       <div className='mt-4 w-1/2 flex flex-col gap-1 mr-10'>
-          {related_song?.map((song, index) => (
+          {playlistDetail?.map((song, index) => (
             <TopChartCard
               key={index}
               song={song}
@@ -131,7 +159,7 @@ handlePlayClick={() => handlePlayClick(activeSong, related_song, activeSong.inde
               isPlaying={isPlaying}
               activeSong={activeSong}
               handlePauseClick={handlePauseClick}
-              handlePlayClick={() => handlePlayClick(song, related_song,index)}
+              handlePlayClick={() => handlePlayClick(song, playlistDetail,index)}
             />
           ))}
         </div>

@@ -30,9 +30,11 @@ class RegisterAPI(generics.GenericAPIView):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
+
         response = {
             "user": UserSerializer(user, context=self.get_serializer_context()).data,
-            "token": AuthToken.objects.create(user)[1]
+            "token": AuthToken.objects.create(user)[1],
+            "is_artist": user.groups.filter(name='Artists').exists()
         }
         return Response(response)
 
@@ -50,13 +52,21 @@ class LoginAPI(KnoxLoginView):
         # Kiểm tra xem tài khoản thuộc nhóm "artist" hay không
 
         auth_login(request, user)
-        is_artist = request.user.groups.filter(name='Artists').exists()
+        is_artist = user.groups.filter(name='Artists').exists()
+
+        try:
+            auth_token = AuthToken.objects.get(user=user)
+            token = auth_token.digest
+        except AuthToken.DoesNotExist:
+            # Handle the case where the AuthToken for the user does not exist
+            token = None
 
         # Thêm trường 'is_artist' vào dữ liệu phản hồi
         response_data = {
             'user_id': user.id,
             'username': user.username,
             'is_artist': is_artist,
+            "token": token,
         }
 
         return Response(response_data, status=status.HTTP_200_OK)
@@ -151,21 +161,6 @@ class HomeFeaturesAPI(APIView):
         return Response(response)
 
     # def get_favourites(self, request, user_id):
-    def get_favourites(self, request, user_id):
-        user_played_songs = UserPlayedSong.objects.filter(
-            played_song__accounts__id=user_id, liked=True)
-        user_played_songs_serializer = UserPlayedSongSerializer(
-            user_played_songs, many=True)
-        user_played_playlists = UserPlayedPlaylist.objects.filter(
-            played_playlist__accounts__id=user_id, liked=True)
-        user_played_playlists_serializer = UserPlayedPlaylistSerializer(
-            user_played_playlists, many=True)
-        response = {
-            'favourite_songs': user_played_songs_serializer.data,
-            'favourite_playlists': user_played_playlists_serializer.data,
-        }
-        return Response(response)
-    
     def get_history(self, request, user_id):
         played_songs = PlayedSong.objects.filter(accounts__id=user_id)
         played_songs_serializer = PlayedSongSerializer(played_songs, many=True)
@@ -293,7 +288,7 @@ class EditProfileAPI(APIView):
 
 class ArtistViewAPI(APIView):
     authentication_classes = [BasicAuthentication]
-    permission_classes = [IsAuthenticated, ]  # IsAdminGroup, IsUserGroup]
+    permission_classes = [AllowAny]  # IsAdminGroup, IsUserGroup]
 
     def get_artists_list(self, request):
         query = request.query_params.get('query', '')
@@ -602,6 +597,27 @@ class EditPlaylistAPI(APIView):
                 os.remove(file_paths[attr])
         playlist.delete()
         return Response('Playlist was deleted!')
+
+
+class SongsOfPlaylistAPI(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request, playlist_id=None):
+        playlist = get_object_or_404(Playlist, id=playlist_id)
+        serializer = SongsOfPlaylistSerializer(playlist, many=False)
+        return Response(serializer.data)
+
+
+class RemoveSongFromPlaylist(APIView):
+    permission_classes = [IsAuthenticated, IsPlaylistOwner]
+
+    def post(self, request, playlist_id=None, song_id=None, *args, **kwargs):
+        playlist = get_object_or_404(
+            Playlist, id=playlist_id, account=request.user)
+        song = get_object_or_404(Song, id=song_id)
+        playlist.songs.remove(song)
+
+        return Response({'message': 'Song removed from playlist successfully.'})
 
 
 class PlayPlaylistAPI(APIView):
