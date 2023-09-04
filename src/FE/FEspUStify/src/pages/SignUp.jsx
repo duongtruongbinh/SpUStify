@@ -2,7 +2,7 @@ import { Button } from "@material-tailwind/react";
 import { useSelector, useDispatch } from 'react-redux';
 import { logo , image1, image2, image3} from "../assets";
 import { Error, Loader, SongCard } from '../components';
-import { useRegisterUserMutation} from '../redux/services/CoreApi';
+import { Signup } from "../redux/services/Api";
 import { useState } from "react";
 import { MdReportGmailerrorred } from "react-icons/md";
 import { useNavigate } from 'react-router-dom';
@@ -16,7 +16,7 @@ const SignUp = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [isArtist, setIsArtist] = useState(null);
-  const [register, { isLoading, error}] =  useRegisterUserMutation();
+
   
     const handleLogin =  async (event) => {
       event.preventDefault();
@@ -32,13 +32,12 @@ const SignUp = () => {
         
          // Gọi API đăng ký và unwrap kết quả
         
-         const response = await register(userData);
+         const response = await Signup(userData);
          console.log(response)
           
            // Gọi API đăng ký và unwrap kết quả
           
-          if (isLoading) return <Loader title='Sending' />;
-          if (error) return <Error />;
+          
           
             if(response.data.user){
               const useForSlice = {

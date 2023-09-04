@@ -1,5 +1,18 @@
 import axios from "axios";
-
+const getItemBySearch = async (username, password, keyword) => {
+  try {
+    const response = await axios
+      .get(`http://127.0.0.1:8000/api/home/?query=${keyword}`, {
+        auth: {
+          username: username,
+          password: password,
+        },
+      });
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
 const getFavouriteSongs = async (username, password) => {
   try {
     const response = await axios
@@ -168,4 +181,4 @@ const Signup = async (data) => {
 };
 
 
-export { likeAction, createAction, editAction, addSongToPlaylist,getFavouriteSongs,Signin, playSong ,getTopChart, getPlaylist, getPlaylistDetails};
+export { likeAction, createAction, editAction, addSongToPlaylist,getFavouriteSongs,Signin, playSong ,getTopChart, getPlaylist, getPlaylistDetails, Signup, getItemBySearch};
