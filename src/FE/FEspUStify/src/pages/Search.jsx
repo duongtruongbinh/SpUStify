@@ -1,5 +1,8 @@
 import { useSelector, useDispatch } from 'react-redux';
 import { useParams, useLocation } from 'react-router-dom';
+import { Swiper, SwiperSlide } from "swiper/react";
+import { FreeMode } from "swiper";
+import { Link } from "react-router-dom";
 
 import { Error, Loader, SongCard, PlaylistCard } from '../components';
 import { useGetSongsBySearchQuery, useGetAllBySearchQuery, usePlaySongMutation } from '../redux/services/CoreApi';
@@ -110,9 +113,9 @@ const Search = () => {
          />
         ))}
       </div>
-      {/* <div className='flex flex-wrap sm:justify-start justify-center gap-8'>
-        {ArtistSearch?.map((song, index) => (
-          <Swiper
+      <h2 className='text-white my-10 font-bold'>Artist</h2>
+      <div className='flex flex-wrap sm:justify-start justify-center gap-8'>
+      <Swiper
           slidesPerView="auto"
           spaceBetween={15}
           freeMode
@@ -120,14 +123,14 @@ const Search = () => {
           centeredSlidesBounds
           modules={[FreeMode]}
           className="mt-4">
-          {topPlays?.map((song, index) => (
+          {ArtistSearch?.map((song, index) => (
             <SwiperSlide
               key={index}
               style={{ width: "50%", height: "auto" }}
               className="shadow-lg rounded-full animate-slideright">
-              <Link to={`/artists/${song?.main_artist[0]}`}>
+              <Link to={`/artists/${song?.id}`}>
                 <img
-                  src={`http://127.0.0.1:8000${song.avatar}`}
+                  src={`http://127.0.0.1:8000${song?.avatar}`}
                   //{song?.avatar}
                   alt="name"
                   className="rounded-full object-cover w-auto"
@@ -137,8 +140,8 @@ const Search = () => {
             </SwiperSlide>
           ))}
         </Swiper>
-        ))}
-      </div> */}
+     
+      </div>
     </div>
   );
 };
