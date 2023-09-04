@@ -42,7 +42,7 @@ const TopCharts = () => {
 
       await getTopChart().then(response => {
         setGetData(response.data);
-        console.log(dataFavo);
+        
       })
         ;
 
@@ -91,7 +91,7 @@ const TopCharts = () => {
   useEffect(() => {
    
   if(likedSong !== null){
-    likedSong.map((song,index) => setLikeSongId([...likeSongId, song.played_song.id]));
+    likedSong.map((song,index) => setLikeSongId((prevState) => [...prevState, song.played_song.id]));
     
   }
      

@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 import { createAction } from "../redux/services/Api";
 import { useDispatch, useSelector } from "react-redux";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import React from "react";
 import { Loader } from "../components";
 const UploadSong = () => {
@@ -31,6 +31,7 @@ const UploadSong = () => {
   const [isUploaded, setIsUploaded] = useState(false);
 
   const [isFormValid, setIsFormValid] = useState(true);
+  const [responseData, setResponseData] = useState();
 
   const handleSubmit = async (event) => {
     //  event.preventDefault();
@@ -68,21 +69,27 @@ const UploadSong = () => {
       // No need for the X-RapidAPI-Key header for local development
 
       try {
-        const responseData = createAction(username, password, data, "song");
+        createAction(username, password, data, "song").then((response) => {
+          setResponseData(response.data);
+        })
 
-        // if (responseData.data.avatar !== null) {
-        //   navigate("/upload-song-succesfull");
-        // }
       } catch (error) {
         console.log(error);
       }
 
-      if (isLoading) {
-        return <Loader title="Loading DATA..." />;
-      }
+     
     }
   };
+  useEffect(() => {
+    if (responseData !== undefined) {
+      debugger
+      if (responseData.avatar !== null) {
+        navigate("/home");
+      }
+    }
 
+
+  }, [responseData]);
   const handleFileUploadAudio = (file) => {
     if (file) {
       setFile(URL.createObjectURL(file));
