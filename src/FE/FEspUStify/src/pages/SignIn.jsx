@@ -12,20 +12,45 @@ const SignIn = () => {
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [usernameError, setUsernameError] = useState(""); 
+  const [passwordError, setPasswordError] = useState("");
   const dispatch = useDispatch();
  // const [login, { isLoading, error, data }] = useLoginMutation();
   const handleLogin = async (event) => {
     event.preventDefault();
+    let hasError = false;
+
+    if (!username) {
+      setUsernameError("Username is required");
+      hasError = true;
+    } else {
+      setUsernameError(""); // Đặt lại thông báo lỗi nếu input không rỗng
+    }
+
+    if (!password) {
+      setPasswordError("Password is required");
+      hasError = true;
+    } else {
+      setPasswordError(""); // Đặt lại thông báo lỗi nếu input không rỗng
+    }
+
+    if (hasError) {
+      // Nếu có lỗi, không gọi API và hiển thị thông báo lỗi tổng quan
+      setError("Please fill in all required fields.");
+      return;
+    }
+
     const userData = {
       "username": username,
       "password": password,
     };
 
-    debugger;
+    
 
     const response = await Signin(userData, username, password);
     console.log(response.data);
-    debugger;
+   
     // Gọi API đăng ký và unwrap kết quả
 
    
@@ -39,6 +64,9 @@ const SignIn = () => {
 
       dispatch(setRegisterLogin(useForSlice));
       navigate("/home");
+    } else  {
+      // Kiểm tra nếu có trường "non_field_errors" trong response
+      setError("Incorrect username/password"); // Đặt thông báo lỗi
     }
   };
   const handleArtist = () => {
@@ -73,6 +101,9 @@ const SignIn = () => {
                 onChange={(e) => setUsername(e.target.value)}
                 className="border text-white border-input_blue bg-form_sign_up rounded-md h-10 w-full "
               />
+                {usernameError && (
+                <p className="text-red-500">{usernameError}</p>
+              )}
             </div>
 
             <div>
@@ -84,6 +115,9 @@ const SignIn = () => {
                 onChange={(e) => setPassword(e.target.value)}
                 className="border text-white border-input_blue bg-form_sign_up rounded-md h-10 w-full "
               />
+             {passwordError && (
+                <p className="text-red-500">{passwordError}</p>
+              )}
             </div>
           </div>
 
@@ -95,6 +129,7 @@ const SignIn = () => {
             </Button>
           </div>
         </form>
+        {error && <p className="text-red-500">{error}</p>} {/* Hiển thị thông báo lỗi */}
       </div>
     </div>
   );
