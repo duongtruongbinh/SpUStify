@@ -41,7 +41,9 @@ class RegisterSerializer(ModelSerializer):
 
         # Add the user to the selected group
         group.user_set.add(user)
-
+        profile = Profile.objects.create(full_name=user.username, account=user)
+        artist = Artist.objects.create(
+            artist_name=user.username, profile=profile)
         return user
 
 

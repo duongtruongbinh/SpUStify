@@ -69,7 +69,7 @@ const SignUp = () => {
 
 
 
-    if (response.data?.user !== undefined) {
+    if (response) {
       const useForSlice = {
         "username": username,
         "password": password,

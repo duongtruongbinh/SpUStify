@@ -304,7 +304,7 @@ class ArtistViewAPI(APIView):
             return Response({'error': 'Does not have any information about this artist.'})
 
         profile = artist.profile
-        artist_serializer = ProfileSerializer(profile, many=False)
+        artist_serializer = ArtistSerializer(artist, many=False)
 
         related_songs = Song.objects.filter(main_artist=artist)
         related_songs_serializer = SongSerializer(related_songs, many=True)

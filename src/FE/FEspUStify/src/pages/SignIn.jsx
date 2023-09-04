@@ -55,7 +55,7 @@ const SignIn = () => {
 
 
 
-    if (response.data) {
+    if (response) {
       const useForSlice = {
         ...userData,
         isArtist: response.data.is_artist,
