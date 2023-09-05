@@ -260,6 +260,7 @@ class FavouriteViewAPI(APIView):
         }
         return Response(response)
 
+
 class ProfileViewAPI(APIView):
     authentication_classes = [BasicAuthentication]
     permission_classes = [IsAuthenticated]
@@ -391,7 +392,7 @@ class EditArtistAPI(APIView):
 
 
 class SongsViewAPI(APIView):
-    authentication_classes = [BasicAuthentication]
+    # authentication_classes = [BasicAuthentication]
     permission_classes = [AllowAny]
 
     def get_songs_list(self, request):
