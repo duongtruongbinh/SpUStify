@@ -42,17 +42,7 @@ const HomePage = () => {
    
     setTopChartsKey('top-charts-' + new Date().getTime());
   }, []);
-  // useEffect(() => {
-  //   if (!isFavouriteLoading && !isFavouriteError && currentData) {
-  //     console.log(currentData);
-  //     const songLiked = currentData["favourite_songs"];
-  //     console.log(songLiked);
-  //     const dataLikeSong = Array.isArray(songLiked) ? songLiked : [songLiked];
-  //     dataLikeSong.forEach((song) => {
-  //       dispatch(setLikeSongId(song.song_name));
-  //     });
-  //   }
-  // }, [currentData, isFavouriteLoading, isFavouriteError, dispatch]);
+
 
   const handlePauseClick = () => {
     dispatch(playPause(false));
@@ -60,9 +50,8 @@ const HomePage = () => {
 
   const handlePlayClick = (song, data, index) => {
     try {
-      console.log("songcard");
-      console.log(song.id);
-      const [{ request }] = dispatch(setPlaySong(song.id));
+     
+      const  request  = setPlaySong(song.id);
     } catch (error) {
       console.log(error);
     }

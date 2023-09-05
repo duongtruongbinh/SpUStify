@@ -35,7 +35,7 @@ const SongDetails = () => {
    
     setState("state-" + new Date().getTime());
     
-  }, []);
+  }, [songid,likeState ]);
 
 
 
@@ -44,7 +44,7 @@ const SongDetails = () => {
   useEffect(() => {
     const fetchData = async () => {
 
-debugger
+
       await getSongDetails(username, password,songid ).then(response => {
         setresponseData(response.data);
        
@@ -58,11 +58,35 @@ debugger
   }, [state]);
 
   useEffect(() => {
+    const fetchData = async () => {
+
+
+      await getFavouriteSongs(username, password).then(response => {
+        setDataFav(response.data);
+        console.log(dataFavo);
+      })
+        ;
+
+    }
+
+
+    fetchData();
+  }, [state]);
+  useEffect(() => {
+   
+    if (dataFavo !== undefined && Array.isArray(dataFavo.favourite_songs)) {
+      setLikeSdSong(dataFavo.favourite_songs);
+    
+    }
+
+
+  }, [dataFavo]);
+  useEffect(() => {
    
     if (responseData !== undefined && Array.isArray(responseData.related_songs)) {
       setRelativeSong(responseData.related_songs);
-      setSongData(responseData.songs);
-    
+      setSongData(responseData.song);
+     
     }
 
 
@@ -81,16 +105,15 @@ debugger
 
 
   }, [likedSong]);
-  const handleLike = async (songId, songName) => {
-    console.log("check like song ở dòng 77")
-    console.log(songId);
+  const handleLike = async (songid) => {
+    debugger
 
     try {
-      const responseLike = await likeAction(username, password, songId, "song");
+      await likeAction(username, password, songid, "song");
 
       setLikeState("likestates-" + new Date().getTime());
 
-
+debugger
 
     } catch (error) {
       console.log(error);
@@ -124,9 +147,7 @@ debugger
         handlePauseClick={handlePauseClick}
         handlePlayClick={() => handlePlayClick(songData, relatedSong,relatedSong.length + 1)}
       />
-       <Link to =  {`/song/${songid}/edit`}>
-    <AiFillEdit className="text-white "/>
-    </Link>
+      
        
 
   
@@ -136,18 +157,26 @@ debugger
  
 
 <div className="mb-10 w-1/2 ">
-  <div className="flex flex-row">
-  <div className='flex flex-row items-center   rounded-2xl cursor-pointer  '>
+  <div className="flex flex-row gap-6 my-4 self-center">
+    <div className="self-center">
+    <Link to =  {`/song/${songid}/edit`}>
+    <AiFillEdit className="text-white "/>
+    </Link>
+    </div>
+  
+  <div className='self-center flex flex-row items-center hover:bg-gray-400/50 py-2 p-4 rounded-2xl cursor-pointer mb-2'>
 
 {isLogin === true  &&
-  likeSongId.includes(parseInt(songid, 10)) && <Liked className=' flex mb-2 text-center ' handleLike={() => handleLike(songid, song.name)} />
+  likeSongId.includes(parseInt(songid, 10)) && <Liked className='mb-2 self-center text-center' handleLike={() => handleLike(songid)} />
 }
 {isLogin === true  &&
-  !likeSongId.includes(parseInt(songid, 10)) && <Like className=' flex text-center' handleLike={() => handleLike(songid, song.name)} />
+  !likeSongId.includes(parseInt(songid, 10)) && <Like className='text-center mb2 self-center' handleLike={() => handleLike(songid)} />
 }
 </ div>
-
+<div className="self-center">
 <AddPlaylist songid={songid} />
+</div>
+
   </div>
 
   
