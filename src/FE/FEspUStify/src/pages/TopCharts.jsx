@@ -89,8 +89,9 @@ const TopCharts = () => {
 
   }, [dataFavo]);
   useEffect(() => {
-   
+  
   if(likedSong !== null){
+    setLikeSongId([]);
     likedSong.map((song,index) => setLikeSongId((prevState) => [...prevState, song.played_song.id]));
     
   }

@@ -178,34 +178,6 @@ debugger
   </div>
 
 
-        <div className="mb-10 w-1/2 ">
-          <div className="flex flex-row">
-            <div className='flex flex-row items-center   rounded-2xl cursor-pointer  '>
-
-              {isLogin === true &&
-                likeSongId.includes(parseInt(songid, 10)) && <Liked className=' flex mb-2 text-center ' handleLike={() => handleLike(songid, song.name)} />
-              }
-              {isLogin === true &&
-                !likeSongId.includes(parseInt(songid, 10)) && <Like className=' flex text-center' handleLike={() => handleLike(songid, song.name)} />
-              }
-            </ div>
-
-            <AddPlaylist songid={songid} />
-          </div>
-
-
-          <h2 className="text-gray-100 text-3xl font-bold">Lyrics:</h2>
-
-          <div className="mt-5">
-            {songData ? (
-              <p className="text-gray-300 text-base my-1">{songData?.lyric_data}</p>
-            ) : (
-              <p className="text-gray-300 text-base my-1">
-                Sorry, No lyrics found!
-              </p>
-            )}
-          </div>
-        </div>
         <div className='mt-4 w-1/2 flex flex-col gap-1 mr-10'>
           {relatedSong?.map((song, index) => (
             <TopChartCard
