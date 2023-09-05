@@ -6,11 +6,22 @@ import { useGetPlaylistDetailsQuery } from "../redux/services/CoreApi";
 import { editAction, getPlaylistDetails } from "../redux/services/Api";
 import { Button } from "@material-tailwind/react";
 import { useNavigate } from "react-router-dom";
+const urlToFile = async (url, fileName, mimeType) => {
+  try {
+    const response = await fetch(url);
+    const blob = await response.blob();
+    return new File([blob], fileName, { type: mimeType });
+  } catch (error) {
+    console.error("Error converting URL to File:", error);
+    return null;
+  }
+};
 const EditPlaylist = () => {
   const navigate = useNavigate();
   const { playlistid } = useParams();
   const { username, password } = useSelector((state) => state.player);
   const dispatch = useDispatch();
+  const [responseData, setResponseData] = useState();
 
   const [playlistName, setPlaylistName] = useState("");
  
@@ -23,7 +34,38 @@ const EditPlaylist = () => {
 
   const [uploadedBackground, setUploadedBackground] = useState(null);
   const [uploadedBackgroundPost, setUploadedBackgroundPost] = useState(null);
+  useEffect(() => {
 
+    urlToFile(`http://127.0.0.1:8000${playlist?.background_image}`, "image.jpg", "image/jpeg")
+      .then((file) => {
+        if (file) {
+          // Đã chuyển đổi thành công
+          setUploadedBackgroundPost(file);
+          // Bây giờ bạn có thể sử dụng đối tượng File này
+        } else {
+          // Xử lý lỗi nếu có
+        }
+      });
+
+    urlToFile(`http://127.0.0.1:8000${playlist?.avatar}`, "image.jpg", ".jpeg .jpg .png")
+      .then((file) => {
+        if (file) {
+          // Đã chuyển đổi thành công
+          setUploadedImagePost(file);
+          // Bây giờ bạn có thể sử dụng đối tượng File này
+        } else {
+          // Xử lý lỗi nếu có
+        }
+      });
+
+    
+
+
+    // Gửi formData lên server bằng axios hoặc phương thức khác
+    // await axios.post("your-upload-endpoint", formData);
+
+
+  }, [playlist]);
   
   useEffect(() => {
     
@@ -34,7 +76,7 @@ const EditPlaylist = () => {
       );
       setUploadedImage(`http://127.0.0.1:8000${playlist?.avatar}`);
       setState("state-" + new Date().getTime());
-  }, []);
+  }, [playlist]);
   useEffect(() => {
     
     const fetchData = async () => {
@@ -50,7 +92,7 @@ const EditPlaylist = () => {
 
     }
     fetchData();
-  }, [state]);
+  }, []);
 
   const [isFormValid, setIsFormValid] = useState(true);
 
@@ -70,13 +112,15 @@ const EditPlaylist = () => {
       // setFormData(Data);
       // No need for the X-RapidAPI-Key header for local development
       try {
-        const responseData = editAction(
+        editAction(
           username,
           password,
           playlistid,
           data,
           "playlist"
-        );
+        ).then((response) => {
+          setResponseData(response);
+        })
         // if (responseData.avatar !== null) {
         //   navigate("/upload-song-succesfull");
         // }
@@ -90,7 +134,16 @@ const EditPlaylist = () => {
     }
   };
 
-  
+  useEffect(() => {
+    if (responseData !== undefined) {
+      debugger
+      if (responseData !== null) {
+        navigate("/home");
+      }
+    }
+
+
+  }, [responseData]);
   const handleImageUpload = (imageFile) => {
     if (imageFile) {
       setUploadedImage(URL.createObjectURL(imageFile));
