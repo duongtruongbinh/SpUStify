@@ -1,16 +1,19 @@
 import React from "react";
-import { Link } from "react-router-dom";
-import Na from "../assets/Liu-Grace.jpeg";
 
-import PlayPause from './PlayPause';
-import { useSelector, useDispatch } from 'react-redux';
-import { AiFillEdit } from 'react-icons/ai';
+import PlayPause from "./PlayPause";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
-
-const DetailsHeader = ({ artistId, songData, handlePauseClick, handlePlayClick }) => {
-  const { activeSong, isPlaying, isArtist } = useSelector((state) => state.player);
-  const dispatch = useDispatch();
-
+const DetailsHeader = ({
+  artistId,
+  songData,
+  handlePauseClick,
+  handlePlayClick,
+}) => {
+  const { activeSong, isPlaying, isArtist } = useSelector(
+    (state) => state.player
+  );
+  const navigate = useNavigate();
   return (
     <div className="relative w-full flex flex-col">
       <div
@@ -28,15 +31,16 @@ const DetailsHeader = ({ artistId, songData, handlePauseClick, handlePlayClick }
         />
 
         <div className="ml-5 flex flex-row items-center gap-6">
-          <p className="font-bold sm:text-3xl text-xl text-gray-100">
-            {songData?.name}
-          </p>
-          {/* {!artistId && (
-            <Link to={`/artists/${artistId}`}>
-              <p className="text-base text-gray-300 mt-2">{songData?.name}</p>
-            </Link>
-
-          )} */}
+          <div>
+            <p className="font-bold sm:text-3xl text-xl text-gray-100">
+              {songData?.name}
+            </p>
+            <p
+              onClick={() => navigate(`/artists/${songData?.main_artist.id}`)}
+              className="text-white hover:cursor-pointer">
+              {songData?.main_artist.artist_name}
+            </p>
+          </div>
 
           <PlayPause
             isPlaying={isPlaying}
@@ -45,14 +49,11 @@ const DetailsHeader = ({ artistId, songData, handlePauseClick, handlePlayClick }
             handlePause={handlePauseClick}
             handlePlay={handlePlayClick}
           />
-          <p className="text-base text-gray-300 mt-2">
-            {songData?.main_aritst?.artist_name}
-          </p>
         </div>
       </div>
 
       <div className="w-full sm:h-44 h-24" />
     </div>
   );
-}
+};
 export default DetailsHeader;
