@@ -50,6 +50,13 @@ class Song(models.Model):
             played_song__song=self).filter(liked=True).count()
         super(Song, self).save(*args, **kwargs)
 
+    def delete(self):
+        self.song_file.delete()
+        self.lyric_file.delete()
+        self.avatar.delete()
+        self.background_image.delete()
+        return super().delete()
+
     def __str__(self) -> str:
         return self.name
 
@@ -70,6 +77,11 @@ class Playlist(models.Model):
         upload_to='backgrounds', null=True, blank=True)
     account = models.ForeignKey(
         User, on_delete=models.CASCADE, verbose_name="Playlists of account")
+
+    def delete(self):
+        self.avatar.delete()
+        self.background_image.delete()
+        return super().delete()
 
     def __str__(self) -> str:
         return self.name

@@ -17,7 +17,7 @@ from knox.views import LoginView as KnoxLoginView
 
 from .models import *
 from .serializers import *
-from .permissions import IsAdminGroup, IsArtistGroup, IsUserGroup, IsPlaylistOwner
+from .permissions import *
 import os
 
 
@@ -441,7 +441,8 @@ class CreateSongAPI(APIView):
 
 class EditSongAPI(APIView):
     authentication_classes = [BasicAuthentication]
-    permission_classes = [IsAuthenticated,]  # IsAdminGroup, IsArtistGroup]
+    # IsAdminGroup, IsArtistGroup]
+    permission_classes = [IsAuthenticated, IsSongOwner]
     serializer_class = FeaturesSongSerializer
     parser_classes = [MultiPartParser]
 
@@ -459,14 +460,7 @@ class EditSongAPI(APIView):
 
     def delete(self, request, song_id=None, *args, **kwargs):
         song = get_object_or_404(Song, id=song_id)
-        file_paths = {'song': f'SpUStify/api/media/{str(song.song_file)}',
-                      'lyric': f'SpUStify/api/media/{str(song.lyric_file)}',
-                      'avatar': f'SpUStify/api/media/{str(song.avatar)}',
-                      'background_img': f'SpUStify/api/media/{str(song.background_image)}'}
 
-        for attr in file_paths.keys():
-            if os.path.exists(file_paths[attr]):
-                os.remove(file_paths[attr])
         song.delete()
         return Response('Song was deleted!')
 
@@ -535,7 +529,7 @@ class LikeSongAPI(APIView):
 
 
 class PlaylistsViewAPI(APIView):
-    authentication_classes = [BasicAuthentication]
+    # authentication_classes = [BasicAuthentication]
     permission_classes = [AllowAny]
 
     def get_playlists_list(self, request):
@@ -611,12 +605,7 @@ class EditPlaylistAPI(APIView):
 
     def delete(self, request, playlist_id=None, *args, **kwargs):
         playlist = get_object_or_404(Playlist, id=playlist_id)
-        file_paths = {'avatar': f'SpUStify/api/media/{str(playlist.avatar)}',
-                      'background_img': f'SpUStify/api/media/{str(playlist.background_image)}'}
 
-        for attr in file_paths.keys():
-            if os.path.exists(file_paths[attr]):
-                os.remove(file_paths[attr])
         playlist.delete()
         return Response('Playlist was deleted!')
 
