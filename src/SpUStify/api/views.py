@@ -440,7 +440,7 @@ class CreateSongAPI(APIView):
 
 
 class EditSongAPI(APIView):
-    authentication_classes = [BasicAuthentication]
+    # authentication_classes = [BasicAuthentication]
     # IsAdminGroup, IsArtistGroup]
     permission_classes = [IsAuthenticated, IsSongOwner]
     serializer_class = FeaturesSongSerializer

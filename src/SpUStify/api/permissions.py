@@ -24,7 +24,15 @@ class IsSongOwner(BasePermission):
     """
 
     def has_permission(self, request, view):
-        song = Song.objects.get(pk=view.kwargs['song_id'])
+        song_id = view.kwargs.get('song_id')
+        if not song_id:
+            return True  # No song_id in URL, allow access
+
+        try:
+            song = Song.objects.get(pk=song_id)
+        except Song.DoesNotExist:
+            return True  # Song does not exist, allow access
+
         return request.user == song.main_artist.profile.account
 
 
@@ -34,5 +42,13 @@ class IsPlaylistOwner(BasePermission):
     """
 
     def has_permission(self, request, view):
-        playlist = Playlist.objects.get(pk=view.kwargs['playlist_id'])
+        playlist_id = view.kwargs.get('playlist_id')
+        if not playlist_id:
+            return True  # No playlist_id in URL, allow access
+
+        try:
+            playlist = Playlist.objects.get(pk=playlist_id)
+        except Playlist.DoesNotExist:
+            return True  # Playlist does not exist, allow access
+
         return request.user == playlist.account
