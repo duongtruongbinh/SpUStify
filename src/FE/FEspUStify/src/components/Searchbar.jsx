@@ -5,12 +5,15 @@ import { selectUser } from "../assets";
 import Na from "../assets/Na.jpeg";
 import { useSelector } from "react-redux/es/hooks/useSelector";
 import { Button } from "@material-tailwind/react";
+import { useDispatch } from "react-redux";
+import { setLogout } from "../redux/features/playerSlice";
 
 const Searchbar = () => {
   const { username } = useSelector((state) => state.player);
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
-
+  const [dropdown, setDropdown] = useState(false);
+  const dispatch = useDispatch();
   const handleSubmit = (e) => {
     e.preventDefault();
     //chuyển sang trang chứa kết quả search
@@ -22,7 +25,11 @@ const Searchbar = () => {
   const handleSignUp = () => {
     navigate("/signup");
   };
-
+  const handleLogout = () => {
+    dispatch(setLogout());
+    sessionStorage.clear();
+    navigate("/home");
+  };
   return (
     <div className="flex items-center pl-6 pr-6 pt-4 pb-4 gap-4 bg-[#18181A]">
       <div className="flex items-center gap-6 flex-1  rounded-[20px] bg-[#2A2A2A]">
@@ -45,7 +52,7 @@ const Searchbar = () => {
           </div>
         </form>
       </div>
-      {username === "Admin" && (
+      {!username ? (
         <div className=" flex flex-row gap-1">
           <Button
             onClick={handleSignIn}
@@ -58,22 +65,41 @@ const Searchbar = () => {
             Sign up
           </Button>
         </div>
-      )}
-      {username !== "Admin" && (
-        <div className="w-[180px] relative flex pt-1 pb-1 pl-2 pr-4 items-center gap-2 rounded-[20px] bg-[#2A2A2A]">
-          <img
-            src={Na}
-            className="ml-1 mt-1 mb-1 w-[25px] h-[25px] object-cover rounded-2xl  bg-lightgray bg-center bg-cover bg-no-repeat"
-          />
-          <div className="relative w-[100px] overflow-hidden">
-            <p
-              className="items-center animate-marquee text-gray-100"
-              id="truncate-text">
-              {username}
-            </p>
-          </div>
+      ) : (
+        <div className="flex flex-col">
+          <div className="w-[180px] relative flex pt-1 pb-1 pl-2 pr-4 items-center gap-2 rounded-[20px] bg-[#2A2A2A]">
+            <img
+              src={Na}
+              className="ml-1 mt-1 mb-1 w-[25px] h-[25px] object-cover rounded-2xl  bg-lightgray bg-center bg-cover bg-no-repeat"
+            />
+            <div className="relative w-[100px] overflow-hidden">
+              <p
+                className="items-center animate-marquee text-gray-100"
+                id="truncate-text">
+                {username}
+              </p>
+            </div>
 
-          <img className="absolute right-4" src={selectUser} />
+            <img
+              className="absolute right-4"
+              src={selectUser}
+              onClick={() => {
+                setDropdown(!dropdown);
+              }}
+            />
+          </div>
+          {dropdown ? (
+            <div className="py-2 space-y-2 w-[180px] absolute top-[64px] rounded-lg z-10 bg-[#2A2A2A] text-white">
+              <div className="text-center hover:underline hover:bg-slate-500">
+                Profile
+              </div>
+              <div
+                onClick={handleLogout}
+                className="text-center hover:underline hover:bg-slate-500">
+                Log out
+              </div>
+            </div>
+          ) : null}
         </div>
       )}
     </div>

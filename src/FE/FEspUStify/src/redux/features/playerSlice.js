@@ -9,8 +9,8 @@ const initialState = {
   activeSong: {},
   genreListId: '',
   likedSongsId: [],
-  username: "Admin",
-  password: "Accuaadmin",
+  username: null,
+  password: null,
   isArtist: false,
   isLogin: false,
 };
@@ -77,11 +77,16 @@ const playerSlice = createSlice({
         state.password = action.payload.password,
         state.isArtist = action.payload.isArtist,
         state.isLogin = true
+    },
+    setLogout: (state) => {
+      state.username = null,
+        state.password = null,
+        state.isArtist = false,
+        state.isLogin = false
     }
-
   },
 });
 
-export const { setActiveSong, nextSong, prevSong, playPause, selectGenreListId, setLikeSongId, setRemoveSong, setRegisterLogin } = playerSlice.actions;
+export const { setActiveSong, nextSong, prevSong, playPause, selectGenreListId, setLikeSongId, setRemoveSong, setRegisterLogin, setLogout } = playerSlice.actions;
 
 export default playerSlice.reducer;

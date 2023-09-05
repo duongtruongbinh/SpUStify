@@ -31,16 +31,23 @@ const HomePage = () => {
   const [endIndexPlaylist, setEndIndexPlaylist] = useState(4);
 
   const dispatch = useDispatch();
-  const { activeSong, isPlaying, currentSongs, isLogin } = useSelector((state) => state.player);
-  const [topChartsKey, setTopChartsKey] = useState('top-charts');
- //const { data: currentData, isLoading: isFavouriteLoading, isError: isFavouriteError } = useGetFavouriteSongsQuery();
-  const { data: topChartsData, isFetching: isTopChartsFetching, error: topChartsError } =  useGetHomeQuery({ key: topChartsKey }); // Add this line
+  const { activeSong, isPlaying, currentSongs, isLogin } = useSelector(
+    (state) => state.player
+  );
+  const [topChartsKey, setTopChartsKey] = useState("top-charts");
+  //const { data: currentData, isLoading: isFavouriteLoading, isError: isFavouriteError } = useGetFavouriteSongsQuery();
+  const {
+    data: topChartsData,
+    isFetching: isTopChartsFetching,
+    error: topChartsError,
+  } = useGetHomeQuery({ key: topChartsKey }); // Add this line
 
-  const [setPlaySong, { isLoading: isLoadingSong, response }] = usePlaySongMutation();
+  const [setPlaySong, { isLoading: isLoadingSong, response }] =
+    usePlaySongMutation();
   useEffect(() => {
     // Thay đổi key khi component được mount lại hoặc focus
-   
-    setTopChartsKey('top-charts-' + new Date().getTime());
+
+    setTopChartsKey("top-charts-" + new Date().getTime());
   }, []);
   // useEffect(() => {
   //   if (!isFavouriteLoading && !isFavouriteError && currentData) {
@@ -77,7 +84,7 @@ const HomePage = () => {
     return <Loader title="Loading data..." />;
   }
 
-  if ( topChartsError) {
+  if (topChartsError) {
     return <Error message="Error fetching data." />;
   }
 
@@ -128,10 +135,9 @@ const HomePage = () => {
   return (
     <div className="flex flex-col">
       <div className="w-full flex justify-between items-center sm:flex-row flex-col mt-2 mb-10">
-        <h2 className="text-xl mt-2 text-gray-100 text-left">
+        {/* <h2 className="p-10 text-xl mt-2 text-gray-100 text-left">
           Welcome to SpUStify
-          {/* {genreTitle} */}
-        </h2>
+        </h2> */}
         {/* <select
           //  onChange={(e) => dispatch(selectGenreListId(e.target.value))}
           // value={genreListId || 'pop'}
@@ -169,9 +175,7 @@ const HomePage = () => {
               data={topChartsData}
               index={index}
               handlePauseClick={handlePauseClick}
-              handlePlayClick={() =>
-                handlePlayClick(song, dataSong, index)
-              }
+              handlePlayClick={() => handlePlayClick(song, dataSong, index)}
             />
           ))}
 
@@ -199,25 +203,11 @@ const HomePage = () => {
             />
           ))}
 
-
-<div className='absolute self-center right-[-30px]' >
-{
-  hasNextPageSong && (
-<ButtonNext onClick = {handleNextPagePlaylist}/>
-  )
-}
-</div>
-</div  >
-
-
-
-
-
-
-
-</div>
-
-      
+          <div className="absolute self-center right-[-30px]">
+            {hasNextPageSong && <ButtonNext onClick={handleNextPagePlaylist} />}
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

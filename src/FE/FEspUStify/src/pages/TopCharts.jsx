@@ -22,11 +22,17 @@ import {
   setRemoveSong,
 } from "../redux/features/playerSlice";
 import { bgPlaylist, LiuGrace } from "../assets";
-import { likeAction, getTopChart, getFavouriteSongs, playSong } from "../redux/services/Api";
+import {
+  likeAction,
+  getTopChart,
+  getFavouriteSongs,
+  playSong,
+} from "../redux/services/Api";
 const TopCharts = () => {
   const dispatch = useDispatch();
-  const { activeSong, isPlaying, isLogin, username, password } =
-    useSelector((state) => state.player);
+  const { activeSong, isPlaying, isLogin, username, password } = useSelector(
+    (state) => state.player
+  );
 
   const [likeState, setLikeState] = useState("likestates");
   const [topChartState, setTopChart] = useState("getTopChart");
@@ -38,16 +44,11 @@ const TopCharts = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-
-
-      await getTopChart().then(response => {
+      await getTopChart().then((response) => {
         setGetData(response.data);
         console.log(dataFavo);
-      })
-        ;
-
-    }
-
+      });
+    };
 
     fetchData();
   }, []);
@@ -55,54 +56,34 @@ const TopCharts = () => {
   useEffect(() => {
     if (getData !== undefined && Array.isArray(getData["likes_leaderboard"])) {
       setDataTopChart(getData["likes_leaderboard"]);
-
-
     }
-
-
   }, [getData]);
-
 
   useEffect(() => {
     const fetchData = async () => {
-
-
-      await getFavouriteSongs(username, password).then(response => {
+      await getFavouriteSongs(username, password).then((response) => {
         setDataFav(response.data);
         console.log(dataFavo);
-      })
-        ;
-
-    }
-
+      });
+    };
 
     fetchData();
   }, [likeState]);
 
   useEffect(() => {
-
     if (dataFavo !== undefined && Array.isArray(dataFavo.favourite_songs)) {
       setLikeSdSong(dataFavo.favourite_songs);
-
     }
-
-
   }, [dataFavo]);
   useEffect(() => {
-
     if (likedSong !== null) {
-      likedSong.map((song, index) => setLikeSongId([...likeSongId, song.played_song.id]));
-
+      likedSong.map((song, index) =>
+        setLikeSongId([...likeSongId, song.played_song.id])
+      );
     }
 
-    console.log(likeSongId)
-
-
-
+    console.log(likeSongId);
   }, [likedSong]);
-
-
-
 
   const handleLike = async (songId, songName) => {
     console.log(songId);
@@ -111,16 +92,9 @@ const TopCharts = () => {
       const responseLike = await likeAction(username, password, songId, "song");
 
       setLikeState("likestates-" + new Date().getTime());
-
-
-
     } catch (error) {
       console.log(error);
     }
-
-
-
-
   };
   const handlePauseClick = () => {
     dispatch(playPause(false));
@@ -162,17 +136,25 @@ const TopCharts = () => {
                 isPlaying={isPlaying}
                 activeSong={activeSong}
                 handlePauseClick={handlePauseClick}
-                handlePlayClick={() => handlePlayClick(song, dataTopChart, index)}
+                handlePlayClick={() =>
+                  handlePlayClick(song, dataTopChart, index)
+                }
               />
-              <div className='flex flex-row items-center hover:bg-gray-400/50 py-2 p-4 rounded-2xl cursor-pointer mb-2'>
-
-                {isLogin === true &&
-                  likeSongId.includes(song.id) && <Liked className='mb-2 text-center' handleLike={() => handleLike(song.id, song.name)} />
-                }
-                {isLogin === true &&
-                  !likeSongId.includes(song.id) && <Like className='text-center' handleLike={() => handleLike(song.id, song.name)} />
-                }
-              </ div>
+              {isLogin ? (
+                <div className="flex flex-row items-center hover:bg-gray-400/50 py-2 p-4 rounded-2xl cursor-pointer mb-2">
+                  {likeSongId.includes(song.id) ? (
+                    <Liked
+                      className="mb-2 text-center"
+                      handleLike={() => handleLike(song.id, song.name)}
+                    />
+                  ) : (
+                    <Like
+                      className="text-center"
+                      handleLike={() => handleLike(song.id, song.name)}
+                    />
+                  )}
+                </div>
+              ) : null}
 
               <AddPlaylist songid={song.id} />
             </div>
