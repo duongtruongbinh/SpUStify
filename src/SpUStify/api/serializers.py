@@ -82,6 +82,7 @@ class SongSerializer(ModelSerializer):
 
 class DetailSongSerializer(ModelSerializer):
     lyric_data = SerializerMethodField()
+    main_artist = ArtistSerializer(many=False)
 
     def get_lyric_data(self, song):
         if song.lyric_file:
@@ -93,8 +94,8 @@ class DetailSongSerializer(ModelSerializer):
 
     class Meta:
         model = Song
-        fields = ('avatar', 'background_image',
-                  'name', 'lyric_data', 'song_file')
+        fields = ('avatar', 'background_image', 'name',
+                  'lyric_data', 'song_file', 'main_artist')
 
 
 class FeaturesSongSerializer(serializers.ModelSerializer):

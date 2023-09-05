@@ -45,9 +45,9 @@ const DetailsHeader = ({ artistId, songData, handlePauseClick, handlePlayClick }
             handlePause={handlePauseClick}
             handlePlay={handlePlayClick}
           />
-          {/* <p className="text-base text-gray-300 mt-2">
-        {songData.main_aritst.artist_name}
-        </p> */}
+          <p className="text-base text-gray-300 mt-2">
+            {songData?.main_aritst?.artist_name}
+          </p>
         </div>
       </div>
 

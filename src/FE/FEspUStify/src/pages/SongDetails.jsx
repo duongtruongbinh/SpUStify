@@ -139,12 +139,12 @@ const SongDetails = () => {
     dispatch(playPause(true));
   };
 
-  console.log(responseData)
+
   return (
     <div className="flex flex-col">
 
       <DetailsHeader
-        artistId={songData?.id}
+        // artistId={songData?.id}
         songData={songData}
         handlePauseClick={handlePauseClick}
         handlePlayClick={() => handlePlayClick(songData, relatedSong, relatedSong.length + 1)}
