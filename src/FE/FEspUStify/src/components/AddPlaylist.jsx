@@ -1,15 +1,12 @@
 import { MdOutlinePlaylistAdd } from "react-icons/md";
 import { useState } from "react";
-import { useGetPlaylistsQuery } from "../redux/services/CoreApi";
+// import { useGetPlaylistsQuery } from "../redux/services/CoreApi";
 import { addSongToPlaylist } from "../redux/services/Api";
-import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
+import { getMyPlaylists } from "../redux/services/Api";
 
-
-const Popup = ({ data, songid, onClick }) => {
-  const { activeSong, isPlaying, username, password, likedSongsId } =
-    useSelector((state) => state.player);
+const Popup = ({ username, password, data, songid, onClick }) => {
   const playlistList = data;
   console.log("data add");
   console.log(playlistList);
@@ -65,9 +62,18 @@ const Popup = ({ data, songid, onClick }) => {
 
 const AddPlaylist = ({ songid }) => {
   const [showModal, setShowModal] = useState(false);
-  const { data, isFetching, error } = useGetPlaylistsQuery({ key: showModal });
-  console.log("check ở đây");
-  console.log(songid);
+  const [playlist, setPlaylist] = useState();
+  const { username, password } = useSelector((state) => state.player);
+  // const { data, isFetching, error } = useGetPlaylistsQuery({ key: showModal });
+
+  const fetchData = async () => {
+    await getMyPlaylists(username, password).then((response) => {
+      setPlaylist(response.data);
+      console.log(playlist);
+    });
+  };
+
+  fetchData();
   return (
     <div className="p-4">
       <MdOutlinePlaylistAdd
@@ -78,7 +84,7 @@ const AddPlaylist = ({ songid }) => {
 
       {showModal ? (
         <Popup
-          data={data}
+          data={playlist}
           onClick={() => {
             setShowModal(false);
           }}

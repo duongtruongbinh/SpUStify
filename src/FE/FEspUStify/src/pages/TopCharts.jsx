@@ -46,12 +46,8 @@ const TopCharts = () => {
     const fetchData = async () => {
       await getTopChart().then((response) => {
         setGetData(response.data);
-
-      })
-        ;
-
-    }
-
+      });
+    };
 
     fetchData();
   }, []);
@@ -79,16 +75,14 @@ const TopCharts = () => {
     }
   }, [dataFavo]);
   useEffect(() => {
-
     if (likedSong !== null) {
       setLikeSongId([]);
-      likedSong.map((song, index) => setLikeSongId((prevState) => [...prevState, song.played_song.id]));
-
+      likedSong.map((song, index) =>
+        setLikeSongId((prevState) => [...prevState, song.played_song.id])
+      );
     }
 
-    console.log(likeSongId)
-
-
+    console.log(likeSongId);
 
     console.log(likeSongId);
   }, [likedSong]);
@@ -149,22 +143,23 @@ const TopCharts = () => {
                 }
               />
               {isLogin ? (
-                <div onClick={() => handleLike(song.id, song.name)} className="flex flex-row items-center hover:bg-gray-400/50 py-2 p-4 rounded-2xl cursor-pointer mb-2">
+                <div
+                  onClick={() => handleLike(song.id, song.name)}
+                  className="flex flex-row items-center hover:bg-gray-400/50 py-2 p-4 rounded-2xl cursor-pointer mb-2">
                   {likeSongId.includes(song.id) ? (
                     <Liked
                       className="mb-2 text-center"
-                    // handleLike={() => handleLike(song.id, song.name)}
+                      // handleLike={() => handleLike(song.id, song.name)}
                     />
                   ) : (
                     <Like
                       className="text-center"
-                    // handleLike={() => handleLike(song.id, song.name)}
+                      // handleLike={() => handleLike(song.id, song.name)}
                     />
                   )}
                 </div>
               ) : null}
-
-              <AddPlaylist songid={song.id} />
+              {isLogin ? <AddPlaylist songid={song.id} /> : null}
             </div>
           ))}
         </div>
