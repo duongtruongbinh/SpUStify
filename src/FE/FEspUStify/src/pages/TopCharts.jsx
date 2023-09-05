@@ -130,7 +130,7 @@ const TopCharts = () => {
         </div>
         <div className="bg-gray-900 text-white p-8 rounded-lg shadow-lg">
           <h3 className="text-3xl font-bold leading-tight animate-pulse ">
-            LEADER BOARD
+            LEADERBOARD
           </h3>
         </div>
         <div className="mt-4 flex flex-col gap-1">
@@ -149,16 +149,16 @@ const TopCharts = () => {
                 }
               />
               {isLogin ? (
-                <div className="flex flex-row items-center hover:bg-gray-400/50 py-2 p-4 rounded-2xl cursor-pointer mb-2">
+                <div onClick={() => handleLike(song.id, song.name)} className="flex flex-row items-center hover:bg-gray-400/50 py-2 p-4 rounded-2xl cursor-pointer mb-2">
                   {likeSongId.includes(song.id) ? (
                     <Liked
                       className="mb-2 text-center"
-                      handleLike={() => handleLike(song.id, song.name)}
+                    // handleLike={() => handleLike(song.id, song.name)}
                     />
                   ) : (
                     <Like
                       className="text-center"
-                      handleLike={() => handleLike(song.id, song.name)}
+                    // handleLike={() => handleLike(song.id, song.name)}
                     />
                   )}
                 </div>

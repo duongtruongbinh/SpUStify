@@ -21,7 +21,7 @@ urlpatterns = [
     path('home/', HomeViewAPI.as_view(), name="get_homepage"),
     path('home/<str:feature>/', HomeFeaturesAPI.as_view(),
          name="get_homepage_features"),
-    path('home/favourite/', FavouriteViewAPI.as_view(),
+    path('favourite/', FavouriteViewAPI.as_view(),
          name="get_homepage_features"),
 
     # Profile Page

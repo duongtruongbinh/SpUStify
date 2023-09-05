@@ -57,8 +57,8 @@ const HomePage = () => {
 
   const handlePlayClick = (song, data, index) => {
     try {
-     
-      const  request  = setPlaySong(song.id);
+
+      const request = setPlaySong(song.id);
     } catch (error) {
       console.log(error);
     }
@@ -193,7 +193,7 @@ const HomePage = () => {
           ))}
 
           <div className="absolute self-center right-[-30px]">
-            {hasNextPageSong && <ButtonNext onClick={handleNextPagePlaylist} />}
+            {hasNextPagePlaylist && <ButtonNext onClick={handleNextPagePlaylist} />}
           </div>
         </div>
       </div>

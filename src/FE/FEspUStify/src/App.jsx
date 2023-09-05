@@ -54,7 +54,7 @@ const App = () => {
   const isPlaylistDetailPage =
     currentRoute.startsWith("/playlist/") &&
     /^\d+$/.test(location.pathname.split("/")[2]);
-    const isEditingSong = location.pathname.includes('/song/') && location.pathname.includes('/edit');
+  const isEditingSong = location.pathname.includes('/song/') && location.pathname.includes('/edit');
   const noTopPlay = [
     "/top-charts",
     "/signin",
@@ -74,7 +74,7 @@ const App = () => {
         {!noMusicPlayer.includes(currentRoute) && <Searchbar />}
 
         <div className="h-[calc(100vh-72px)] overflow-y-scroll hide-scrollbar flex xl:flex-row flex-col-reverse bg-[#18181A]">
-          <div className="flex-1 h-fit pb-40">
+          <div className="pl-4 flex-1 h-fit pb-40">
             <Routes>
               <Route path="/" element={<HomePage />} />
               <Route path="/home" element={<HomePage />} />
@@ -107,8 +107,8 @@ const App = () => {
                 path="/playlist/:playlistid/edit"
                 element={<EditPlaylist />}
               />
-              <Route 
-              path="/song/:songid/edit" element = {<EditSong />}/>
+              <Route
+                path="/song/:songid/edit" element={<EditSong />} />
             </Routes>
           </div>
           <div className="xl:sticky relative top-0 h-fit">

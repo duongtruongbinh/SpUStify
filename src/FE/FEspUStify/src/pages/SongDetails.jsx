@@ -36,8 +36,8 @@ const SongDetails = () => {
     // Thay đổi key khi component được mount lại hoặc focus
 
     setState("state-" + new Date().getTime());
-    
-  }, [songid,likeState ]);
+
+  }, [songid, likeState]);
 
 
 
@@ -47,7 +47,7 @@ const SongDetails = () => {
     const fetchData = async () => {
 
 
-      await getSongDetails(username, password,songid ).then(response => {
+      await getSongDetails(username, password, songid).then(response => {
         setresponseData(response.data);
 
       })
@@ -75,20 +75,20 @@ const SongDetails = () => {
     fetchData();
   }, [state]);
   useEffect(() => {
-   
+
     if (dataFavo !== undefined && Array.isArray(dataFavo.favourite_songs)) {
       setLikeSdSong(dataFavo.favourite_songs);
-    
+
     }
 
 
   }, [dataFavo]);
   useEffect(() => {
-   
+
     if (responseData !== undefined && Array.isArray(responseData.related_songs)) {
       setRelativeSong(responseData.related_songs);
       setSongData(responseData.song);
-     
+
     }
 
 
@@ -115,7 +115,7 @@ const SongDetails = () => {
 
       setLikeState("likestates-" + new Date().getTime());
 
-debugger
+      debugger
 
     } catch (error) {
       console.log(error);
@@ -139,7 +139,7 @@ debugger
     dispatch(playPause(true));
   };
 
-
+  console.log(responseData)
   return (
     <div className="flex flex-col">
 
@@ -149,46 +149,55 @@ debugger
         handlePauseClick={handlePauseClick}
         handlePlayClick={() => handlePlayClick(songData, relatedSong, relatedSong.length + 1)}
       />
-      
-       
 
 
-<div className="flex flex-row">
-<div className="mb-10 w-1/2 ">
-  <div className="flex flex-row gap-6 my-4 self-center">
-    <div className="self-center">
-    <Link to =  {`/song/${songid}/edit`}>
-    <AiFillEdit className="text-white "/>
-    </Link>
-    </div>
-  
-  <div className='self-center flex flex-row items-center hover:bg-gray-400/50 py-2 p-4 rounded-2xl cursor-pointer mb-2'>
 
-{isLogin === true  &&
-  likeSongId.includes(parseInt(songid, 10)) && <Liked className='mb-2 self-center text-center' handleLike={() => handleLike(songid)} />
-}
-{isLogin === true  &&
-  !likeSongId.includes(parseInt(songid, 10)) && <Like className='text-center mb2 self-center' handleLike={() => handleLike(songid)} />
-}
-</ div>
-<div className="self-center">
-<AddPlaylist songid={songid} />
-</div>
 
-  </div>
-  <h2 className="text-gray-100 text-3xl font-bold">Lyrics:</h2>
+      <div className="flex flex-row">
+        <div className="mb-10 w-1/2 ">
+          <div className="flex flex-row gap-6 my-4 self-center">
+            <div className="self-center">
+              <Link to={`/song/${songid}/edit`}>
+                <AiFillEdit className="text-white " />
+              </Link>
+            </div>
 
-<div className="mt-5">
-  {songData ? (
-    <p className="text-gray-300 text-base my-1">{songData?.lyric_data}</p>
-  ) : (
-    <p className="text-gray-300 text-base my-1">
-      Sorry, No lyrics found!
-    </p>
-  )}
-</div>
-</div>
-<div className='mt-4 w-1/2 flex flex-col gap-1 mr-10'>
+
+            {isLogin ? (
+              <div onClick={() => handleLike(songid)} className='self-center flex flex-row items-center hover:bg-gray-400/50 py-2 p-4 rounded-2xl cursor-pointer mb-2'>
+                {likeSongId.includes(parseInt(songid, 10)) ? (
+                  <Liked
+                    className='mb-2 self-center text-center'
+
+                  />
+                ) : (
+                  <Like
+                    className='text-center mb2 self-center'
+
+                  />
+                )}
+              </div>
+            ) : null}
+
+
+            <div className="self-center">
+              <AddPlaylist songid={songid} />
+            </div>
+
+          </div>
+          <h2 className="text-gray-100 text-3xl font-bold">Lyrics:</h2>
+
+          <div className="mt-5">
+            {songData ? (
+              <p className="text-gray-300 text-base my-1">{songData?.lyric_data}</p>
+            ) : (
+              <p className="text-gray-300 text-base my-1">
+                Sorry, No lyrics found!
+              </p>
+            )}
+          </div>
+        </div>
+        <div className='mt-4 w-1/2 flex flex-col gap-1 mr-10'>
           {relatedSong?.map((song, index) => (
             <TopChartCard
               key={index}
@@ -202,12 +211,12 @@ debugger
             />
           ))}
         </div>
-</div>
-
-
-
-      
       </div>
+
+
+
+
+    </div >
 
 
   );

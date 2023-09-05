@@ -24,11 +24,11 @@ const EditPlaylist = () => {
   const [responseData, setResponseData] = useState();
 
   const [playlistName, setPlaylistName] = useState("");
- 
+
   const [playlist, setPlaylist] = useState();
   const [state, setState] = useState('state');
 
-  
+
   const [uploadedImage, setUploadedImage] = useState(null);
   const [uploadedImagePost, setUploadedImagePost] = useState(null);
 
@@ -58,7 +58,7 @@ const EditPlaylist = () => {
         }
       });
 
-    
+
 
 
     // Gửi formData lên server bằng axios hoặc phương thức khác
@@ -66,27 +66,27 @@ const EditPlaylist = () => {
 
 
   }, [playlist]);
-  
+
   useEffect(() => {
-    
-    
-      setPlaylistName(playlist?.name);
-      setUploadedBackground(
-        `http://127.0.0.1:8000${playlist?.background_image}`
-      );
-      setUploadedImage(`http://127.0.0.1:8000${playlist?.avatar}`);
-      setState("state-" + new Date().getTime());
+
+
+    setPlaylistName(playlist?.name);
+    setUploadedBackground(
+      `http://127.0.0.1:8000${playlist?.background_image}`
+    );
+    setUploadedImage(`http://127.0.0.1:8000${playlist?.avatar}`);
+    setState("state-" + new Date().getTime());
   }, [playlist]);
   useEffect(() => {
-    
+
     const fetchData = async () => {
-      
+
 
       await getPlaylistDetails(username, password, playlistid).then(response => {
         setPlaylist(response.data);
-        
+
         console.log(playlist);
-   
+
 
       });
 
@@ -149,57 +149,79 @@ const EditPlaylist = () => {
       setUploadedImage(URL.createObjectURL(imageFile));
       setUploadedImagePost(imageFile);
     }
+    else {
+      setUploadedImage(null);
+      setUploadedImagePost("");
+    }
   };
- 
+
   const handleBackgroudUpload = (backgroundFile) => {
     if (backgroundFile) {
       setUploadedBackground(URL.createObjectURL(backgroundFile));
       setUploadedBackgroundPost(backgroundFile);
+    }
+    else {
+      setUploadedBackground(null);
+      setUploadedBackgroundPost("");
     }
   };
 
   return (
     <div className=" bg-grey_bg flex flex-col my-10 mx-5">
       <div className=" text-white flex my-10 justify-center ">
-        Create Playlist
+        Edit Playlist
       </div>
       <form onSubmit={handleSubmit}>
         <div className="flex flex-row h-1/2 my-8 mx-8 justify-center">
-          <div class=" flex flex-row items-center justify-center gap-4 ">
-            <div className="border border-dashed border-gray-300 p-4 h-[250px] w-[250px] flex flex-col items-center justify-center">
-              <label className="cursor-pointer rounded-md py-2 px-2 bg-white">
-                Choose image
-                <input
-                  type="file"
-                  accept=".jpg, .jpeg, .png, .gif"
-                  onChange={(e) => handleImageUpload(e.target.files[0])}
-                  className="hidden"
-                />
-              </label>
-              {uploadedImage && (
+          <div className=" flex flex-row items-center justify-center gap-4 ">
+            <div className="border border-dashed border-gray-300 h-[250px] w-[250px] flex flex-col items-center justify-center">
+              {!uploadedImage ? (
+                <>
+                  <input
+                    type="file"
+                    id="avatar"
+                    className="hidden"
+                    accept=".jpg, .jpeg, .png, .gif"
+                    onChange={(e) => handleImageUpload(e.target.files[0])}
+                  />
+                  <label
+                    htmlFor="avatar"
+                    className="flex flex-col items-center text-white hover:cursor-pointer">
+                    <div className="text-white text-3xl">+</div>
+                    Image
+                  </label>
+                </>
+              ) : (
                 <img
                   src={uploadedImage}
-                  alt="Uploaded"
-                  className="object-cover w-full h-full border border-gray-400"
+                  className="h-full w-full object-cover"
+                  onClick={(e) => handleImageUpload(null)}
                 />
               )}
             </div>
 
-            <div className="border border-dashed border-gray-300 p-4 h-[250px] w-[250px] flex flex-col items-center justify-center">
-              <label className="cursor-pointer rounded-md bg-white py-2 px-2  items-center">
-                Choose background
-                <input
-                  type="file"
-                  accept=".jpg, .jpeg, .png, .gif"
-                  onChange={(e) => handleBackgroudUpload(e.target.files[0])}
-                  className="hidden"
-                />
-              </label>
-              {uploadedBackground && (
+            <div className="border border-dashed border-gray-300 h-[250px] w-[250px] flex flex-col items-center justify-center">
+              {!uploadedBackground ? (
+                <>
+                  <input
+                    type="file"
+                    id="background"
+                    className="hidden"
+                    accept=".jpg, .jpeg, .png, .gif"
+                    onChange={(e) => handleBackgroudUpload(e.target.files[0])}
+                  />
+                  <label
+                    htmlFor="background"
+                    className="flex flex-col items-center text-white hover:cursor-pointer">
+                    <div className="text-white text-3xl">+</div>
+                    Background
+                  </label>
+                </>
+              ) : (
                 <img
                   src={uploadedBackground}
-                  alt="Uploaded"
-                  className="object-cover w-full h-full border border-gray-400"
+                  className="h-full w-full object-cover"
+                  onClick={(e) => handleBackgroudUpload(null)}
                 />
               )}
             </div>
@@ -211,22 +233,25 @@ const EditPlaylist = () => {
 
               <input
                 type="text"
-                className="w-full h-12 text-white rounded bg-near_black focus:outline-none focus:border-blue-500"
+                className="pl-2 text-white w-full h-12 rounded bg-near_black focus:outline-none focus:border-blue-500"
                 value={playlistName}
                 onChange={(e) => setPlaylistName(e.target.value)}
               />
+
             </div>
           </div>
         </div>
 
         <div className="text-white my-10 flex flex-row gap-4 justify-end mr-20">
-          <Button className="bg-cancel_grey  px-8 py-4 my-2 rounded-xl   text-white">
+          <Button
+            onClick={() => navigate("/playlist")}
+            className="bg-cancel_grey hover:bg-gray-500 px-8 py-4 my-2 rounded-xl   text-white">
             Cancel
           </Button>
           <Button
             type="submit"
-            className="bg-submit_blue  px-8 py-4 my-2 rounded-xl   text-white">
-            ENTER
+            className="bg-submit_blue hover:bg-sign_up_blue  px-8 py-4 my-2 rounded-xl   text-white">
+            Submit
           </Button>
         </div>
       </form>

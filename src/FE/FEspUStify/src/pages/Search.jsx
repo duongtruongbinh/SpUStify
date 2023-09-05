@@ -122,7 +122,7 @@ const Search = () => {
           {ArtistSearch?.map((song, index) => (
             <SwiperSlide
               key={index}
-              style={{ width: "50%", height: "auto" }}
+              style={{ width: "100%", height: "auto" }}
               className="shadow-lg rounded-full animate-slideright">
               <Link to={`/artists/${song?.id}`}>
                 <img
