@@ -46,6 +46,7 @@ const App = () => {
   const isPlaylistDetailPage =
     currentRoute.startsWith("/playlist/") &&
     /^\d+$/.test(location.pathname.split("/")[2]);
+    const isEditingSong = location.pathname.includes('/song/') && location.pathname.includes('/edit');
   const noTopPlay = [
     "/top-charts",
     "/signin",
@@ -105,7 +106,7 @@ const App = () => {
           <div className="xl:sticky relative top-0 h-fit">
             {!noTopPlay.includes(currentRoute) &&
               !isSongDetailPage &&
-              !isPlaylistDetailPage && <TopPlay />}
+              !isPlaylistDetailPage && !isEditingSong && <TopPlay />}
           </div>
         </div>
       </div>

@@ -1,15 +1,25 @@
 import { Button } from "@material-tailwind/react";
 import { useNavigate, useParams } from "react-router-dom";
 
-import {  } from "../redux/services/Api";
+import { } from "../redux/services/Api";
 import { useDispatch, useSelector } from "react-redux";
 import { useState, useEffect } from "react";
 import React from "react";
 import { Loader } from "../components";
-import { getSongDetails,editAction } from "../redux/services/Api";
+import { getSongDetails, editAction } from "../redux/services/Api";
+const urlToFile = async (url, fileName, mimeType) => {
+  try {
+    const response = await fetch(url);
+    const blob = await response.blob();
+    return new File([blob], fileName, { type: mimeType });
+  } catch (error) {
+    console.error("Error converting URL to File:", error);
+    return null;
+  }
+};
 const EditSong = () => {
   const navigate = useNavigate();
-  const { songid} = useParams();
+  const { songid } = useParams();
 
   const { username, password } = useSelector((state) => state.player);
   const dispatch = useDispatch();
@@ -37,58 +47,96 @@ const EditSong = () => {
   const [isFormValid, setIsFormValid] = useState(true);
   const [responseData, setResponseData] = useState();
   const [songData, setSongData] = useState();
-  
+
   useEffect(() => {
-    
-    
-    setSongName(songData?.name);
+
+    urlToFile(`http://127.0.0.1:8000${songData?.song.background_image}`, "image.jpg", "image/jpeg")
+      .then((file) => {
+        if (file) {
+          // Đã chuyển đổi thành công
+          setUploadedBackgroundPost(file);
+          // Bây giờ bạn có thể sử dụng đối tượng File này
+        } else {
+          // Xử lý lỗi nếu có
+        }
+      });
+
+    urlToFile(`http://127.0.0.1:8000${songData?.song.avatar}`, "image.jpg", ".jpeg .jpg .png")
+      .then((file) => {
+        if (file) {
+          // Đã chuyển đổi thành công
+          setUploadedImagePost(file);
+          // Bây giờ bạn có thể sử dụng đối tượng File này
+        } else {
+          // Xử lý lỗi nếu có
+        }
+      });
+
+    urlToFile(`http://127.0.0.1:8000${songData?.song.song_file}`, "audio.mp3", "audio/mp3")
+      .then((file) => {
+        if (file) {
+          // Đã chuyển đổi thành công
+          setFilePost(file);
+          // Bây giờ bạn có thể sử dụng đối tượng File này
+        } else {
+          // Xử lý lỗi nếu có
+        }
+      });
+    urlToFile(`http://127.0.0.1:8000${songData?.song.lyric_data}`, "LYRIC.txt", ".txt")
+      .then((file) => {
+        if (file) {
+          // Đã chuyển đổi thành công
+          setLyricPost(file);
+          // Bây giờ bạn có thể sử dụng đối tượng File này
+        } else {
+          // Xử lý lỗi nếu có
+        }
+      });
+
+
+    // Gửi formData lên server bằng axios hoặc phương thức khác
+    // await axios.post("your-upload-endpoint", formData);
+
+
+  }, [songData]);
+
+  useEffect(() => {
+
+
+    setSongName(songData?.song.name);
     setUploadedBackground(
-      `http://127.0.0.1:8000${songData?.songs.background_image}`
+      `http://127.0.0.1:8000${songData?.song.background_image}`
     );
-    setUploadedImage(`http://127.0.0.1:8000${songData?.songs.avatar}`);
-    setFile( `http://127.0.0.1:8000${songData?.songs.song_file}`);
+
+    setUploadedImage(`http://127.0.0.1:8000${songData?.song.avatar}`);
+
+    setFile(`http://127.0.0.1:8000${songData?.song.song_file}`);
+
     setState("state-" + new Date().getTime());
-}, []);
-useEffect(() => {
-    
+  }, [songData]);
+  useEffect(() => {
+
     const fetchData = async () => {
-      
+
 
       await getSongDetails(username, password, songid).then(response => {
         setSongData(response.data);
-        
-        console.log(playlist);
-   
+
+
+
 
       });
 
     }
     fetchData();
-  }, [state]);
-   
-   
+  }, []);
+
+
   const handleSubmit = async (event) => {
     //  event.preventDefault();
     event.preventDefault();
 
-    if (songName === "") {
-      setSongNameError("Song name is required");
-      setIsFormValid(false);
-    } else {
-      setSongNameError("");
-    }
-    if (songFilePost === "") {
-      setFileError("File song is required");
-      setIsFormValid(false);
-    } else {
-      setFileError("");
-    }
-    if (songLyricPost === "") {
-      setLyricError("Lyric of the song is required");
-      setIsFormValid(false);
-    } else {
-      setLyricError("");
-    }
+
     if (isFormValid) {
       const data = new FormData();
       data.append("avatar", uploadedImagePost);
@@ -103,7 +151,7 @@ useEffect(() => {
       // No need for the X-RapidAPI-Key header for local development
 
       try {
-        editAction(username, password,songid, data, "song").then((response) => {
+        editAction(username, password, songid, data, "song").then((response) => {
           setResponseData(response.data);
         })
 
@@ -111,7 +159,7 @@ useEffect(() => {
         console.log(error);
       }
 
-     
+
     }
   };
   useEffect(() => {
