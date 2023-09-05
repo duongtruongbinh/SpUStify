@@ -58,7 +58,7 @@ const FavorutieSong = () => {
 
 
     fetchData();
-  }, [likeState, dataFavo]);
+  }, [likeState]);
   useEffect(() => {
     if (dataFavo !== undefined && Array.isArray(dataFavo.favourite_songs)) {
       setLikeSdSong(dataFavo.favourite_songs);

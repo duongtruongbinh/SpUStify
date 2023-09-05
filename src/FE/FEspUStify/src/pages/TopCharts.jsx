@@ -46,9 +46,12 @@ const TopCharts = () => {
     const fetchData = async () => {
       await getTopChart().then((response) => {
         setGetData(response.data);
-        console.log(dataFavo);
-      });
-    };
+
+      })
+        ;
+
+    }
+
 
     fetchData();
   }, []);
@@ -76,11 +79,16 @@ const TopCharts = () => {
     }
   }, [dataFavo]);
   useEffect(() => {
+
     if (likedSong !== null) {
-      likedSong.map((song, index) =>
-        setLikeSongId([...likeSongId, song.played_song.id])
-      );
+      setLikeSongId([]);
+      likedSong.map((song, index) => setLikeSongId((prevState) => [...prevState, song.played_song.id]));
+
     }
+
+    console.log(likeSongId)
+
+
 
     console.log(likeSongId);
   }, [likedSong]);

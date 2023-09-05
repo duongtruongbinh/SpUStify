@@ -3,34 +3,95 @@ import { useParams } from "react-router-dom";
 
 import { useSelector, useDispatch } from "react-redux";
 import { useGetPlaylistDetailsQuery } from "../redux/services/CoreApi";
-import { editAction } from "../redux/services/Api";
+import { editAction, getPlaylistDetails } from "../redux/services/Api";
 import { Button } from "@material-tailwind/react";
 import { useNavigate } from "react-router-dom";
+const urlToFile = async (url, fileName, mimeType) => {
+  try {
+    const response = await fetch(url);
+    const blob = await response.blob();
+    return new File([blob], fileName, { type: mimeType });
+  } catch (error) {
+    console.error("Error converting URL to File:", error);
+    return null;
+  }
+};
 const EditPlaylist = () => {
   const navigate = useNavigate();
   const { playlistid } = useParams();
   const { username, password } = useSelector((state) => state.player);
   const dispatch = useDispatch();
+  const [responseData, setResponseData] = useState();
 
   const [playlistName, setPlaylistName] = useState("");
+ 
+  const [playlist, setPlaylist] = useState();
+  const [state, setState] = useState('state');
 
-  const { data: songData, isFetching: isFetchingSongDetails } =
-    useGetPlaylistDetailsQuery({ playlistid });
+  
   const [uploadedImage, setUploadedImage] = useState(null);
   const [uploadedImagePost, setUploadedImagePost] = useState(null);
 
   const [uploadedBackground, setUploadedBackground] = useState(null);
   const [uploadedBackgroundPost, setUploadedBackgroundPost] = useState(null);
-
-  if (isFetchingSongDetails) return <Loader title="Searching song details" />;
   useEffect(() => {
-    if (songData) {
-      setPlaylistName(songData.name);
+
+    urlToFile(`http://127.0.0.1:8000${playlist?.background_image}`, "image.jpg", "image/jpeg")
+      .then((file) => {
+        if (file) {
+          // Đã chuyển đổi thành công
+          setUploadedBackgroundPost(file);
+          // Bây giờ bạn có thể sử dụng đối tượng File này
+        } else {
+          // Xử lý lỗi nếu có
+        }
+      });
+
+    urlToFile(`http://127.0.0.1:8000${playlist?.avatar}`, "image.jpg", ".jpeg .jpg .png")
+      .then((file) => {
+        if (file) {
+          // Đã chuyển đổi thành công
+          setUploadedImagePost(file);
+          // Bây giờ bạn có thể sử dụng đối tượng File này
+        } else {
+          // Xử lý lỗi nếu có
+        }
+      });
+
+    
+
+
+    // Gửi formData lên server bằng axios hoặc phương thức khác
+    // await axios.post("your-upload-endpoint", formData);
+
+
+  }, [playlist]);
+  
+  useEffect(() => {
+    
+    
+      setPlaylistName(playlist?.name);
       setUploadedBackground(
-        `http://127.0.0.1:8000${songData.background_image}`
+        `http://127.0.0.1:8000${playlist?.background_image}`
       );
-      setUploadedImage(`http://127.0.0.1:8000${songData.avatar}`);
+      setUploadedImage(`http://127.0.0.1:8000${playlist?.avatar}`);
+      setState("state-" + new Date().getTime());
+  }, [playlist]);
+  useEffect(() => {
+    
+    const fetchData = async () => {
+      
+
+      await getPlaylistDetails(username, password, playlistid).then(response => {
+        setPlaylist(response.data);
+        
+        console.log(playlist);
+   
+
+      });
+
     }
+    fetchData();
   }, []);
 
   const [isFormValid, setIsFormValid] = useState(true);
@@ -51,13 +112,15 @@ const EditPlaylist = () => {
       // setFormData(Data);
       // No need for the X-RapidAPI-Key header for local development
       try {
-        const responseData = editAction(
+        editAction(
           username,
           password,
           playlistid,
           data,
           "playlist"
-        );
+        ).then((response) => {
+          setResponseData(response);
+        })
         // if (responseData.avatar !== null) {
         //   navigate("/upload-song-succesfull");
         // }
@@ -71,14 +134,23 @@ const EditPlaylist = () => {
     }
   };
 
-  debugger;
+  useEffect(() => {
+    if (responseData !== undefined) {
+      debugger
+      if (responseData !== null) {
+        navigate("/home");
+      }
+    }
+
+
+  }, [responseData]);
   const handleImageUpload = (imageFile) => {
     if (imageFile) {
       setUploadedImage(URL.createObjectURL(imageFile));
       setUploadedImagePost(imageFile);
     }
   };
-  debugger;
+ 
   const handleBackgroudUpload = (backgroundFile) => {
     if (backgroundFile) {
       setUploadedBackground(URL.createObjectURL(backgroundFile));

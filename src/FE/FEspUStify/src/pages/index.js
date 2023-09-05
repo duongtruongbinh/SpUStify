@@ -14,6 +14,7 @@ import Profile from './Profile';
 import Playlist from './Playlist';
 import PlaylistDetails from './PlaylistDetails';
 import EditPlaylist from './EditPlaylist';
+import EditSong from './EditSong'
 export {
   HomePage,
   Search,
@@ -30,5 +31,6 @@ export {
   Profile,
   Playlist,
   PlaylistDetails,
-  EditPlaylist
+  EditPlaylist,
+  EditSong
 };
