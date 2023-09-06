@@ -19,6 +19,7 @@ from .models import *
 from .serializers import *
 from .permissions import *
 import os
+from SpUStify.settings import MEDIA_ROOT
 
 
 class RegisterAPI(generics.GenericAPIView):
@@ -440,7 +441,7 @@ class CreateSongAPI(APIView):
 
 
 class EditSongAPI(APIView):
-    # authentication_classes = [BasicAuthentication]
+    authentication_classes = [BasicAuthentication]
     # IsAdminGroup, IsArtistGroup]
     permission_classes = [IsAuthenticated, IsSongOwner]
     serializer_class = FeaturesSongSerializer
@@ -450,11 +451,27 @@ class EditSongAPI(APIView):
         profile = Profile.objects.get(account=request.user)
         main_artist = Artist.objects.get(profile=profile)
         song = get_object_or_404(Song, id=song_id, main_artist=main_artist)
+        field_to_old_value = {}
+        for field in Song._meta.fields:
+            if isinstance(field, models.FileField):
+                field_name = field.name
+                field_to_old_value[field_name] = getattr(song, field_name)
 
         serializer = FeaturesSongSerializer(
             song, data=request.data.copy(), partial=True)
         serializer.is_valid(raise_exception=True)
         serializer.save()
+
+        for field_name, old_value in field_to_old_value.items():
+            new_value = request.data.get(field_name, None)
+            print(new_value)
+            if new_value:
+                if old_value:
+                    old_file_path = os.path.join(MEDIA_ROOT, str(old_value))
+                    print(old_file_path)
+                    if os.path.exists(old_file_path):
+                        print(True)
+                        os.remove(old_file_path)
 
         return Response(serializer.data)
 
