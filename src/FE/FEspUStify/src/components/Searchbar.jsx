@@ -55,11 +55,13 @@ const Searchbar = () => {
       {!username ? (
         <div className=" flex flex-row gap-1">
           <Button
+            id="signinOutside"
             onClick={handleSignIn}
             className="border border-blue-500 bg-blue-500 py-2 ">
             Sign in
           </Button>
           <Button
+            id="signupOutside"
             onClick={handleSignUp}
             className="border border-blue-500 bg-blue-500 py-2  ">
             Sign up
