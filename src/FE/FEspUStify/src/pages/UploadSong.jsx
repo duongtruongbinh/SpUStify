@@ -196,6 +196,7 @@ const UploadSong = () => {
               <label className="text-white block mb-2">Song file</label>
               <div className="flex flex-row">
                 <input
+                  required
                   id="songfile"
                   type="file"
                   accept="audio/mp3"
@@ -217,6 +218,7 @@ const UploadSong = () => {
               <label className="text-white block mb-2">Lyric's file</label>
               <div className="flex flex-col">
                 <input
+
                   id="lyricfile"
                   type="file"
                   accept=".txt, .pdf"

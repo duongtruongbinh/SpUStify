@@ -35,23 +35,23 @@ const MusicPlayer = () => {
   const handleNextSong = () => {
     dispatch(playPause(false));
 
-    if (!shuffle ) {
-      if(currentIndex > currentSongs.length){
-        dispatch(nextSong((0) ));
-      } else if ( currentIndex === currentSongs.length ){
-        dispatch(nextSong((0) ));
+    if (!shuffle) {
+
+      if (currentIndex === currentSongs.length - 1) {
+        dispatch(nextSong((0)));
       }
-        else {
-        dispatch(nextSong((currentIndex + 1) ));
+      else {
+        dispatch(nextSong((currentIndex + 1)));
       }
-     
-    } 
+
+    }
+
   };
 
   const handlePrevSong = () => {
     if (currentIndex === 0) {
-      dispatch(prevSong(currentSongs.length -  1));
-    } else if (currentIndex === currentSongs.length){
+      dispatch(prevSong(currentSongs.length - 1));
+    } else if (currentIndex === currentSongs.length) {
       dispatch(prevSong(0));
     }
     else if (shuffle) {
