@@ -42,18 +42,14 @@ const SignIn = () => {
     }
 
     const userData = {
-      "username": username,
-      "password": password,
+      username: username,
+      password: password,
     };
-
-
 
     const response = await Signin(userData, username, password);
     console.log(response.data);
 
     // Gọi API đăng ký và unwrap kết quả
-
-
 
     if (response) {
       const useForSlice = {
@@ -94,29 +90,26 @@ const SignIn = () => {
               <label className="text-white block mb-2">User Name</label>
 
               <input
+                id="usernameSignIn"
                 type="text"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 className="p-2 border text-white border-input_blue bg-form_sign_up rounded-md h-10 w-full "
               />
-              {usernameError && (
-                <p className="text-red-500">{usernameError}</p>
-              )}
+              {usernameError && <p className="text-red-500">{usernameError}</p>}
             </div>
 
             <div>
               <label className="text-white block mb-2">Password</label>
 
               <input
+                id="passwordSignIn"
                 type="text"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="p-2 border text-white border-input_blue bg-form_sign_up rounded-md h-10 w-full "
-
               />
-              {passwordError && (
-                <p className="text-red-500">{passwordError}</p>
-              )}
+              {passwordError && <p className="text-red-500">{passwordError}</p>}
             </div>
           </div>
 
@@ -128,9 +121,10 @@ const SignIn = () => {
             </Button>
           </div>
         </form>
-        {error && <p className="text-red-500">{error}</p>} {/* Hiển thị thông báo lỗi */}
-      </div >
-    </div >
+        {error && <p className="text-red-500">{error}</p>}{" "}
+        {/* Hiển thị thông báo lỗi */}
+      </div>
+    </div>
   );
 };
 export default SignIn;
