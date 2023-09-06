@@ -1,5 +1,5 @@
 import { MdOutlinePlaylistAdd } from "react-icons/md";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 // import { useGetPlaylistsQuery } from "../redux/services/CoreApi";
 import { addSongToPlaylist } from "../redux/services/Api";
 import "react-toastify/dist/ReactToastify.css";
@@ -66,14 +66,16 @@ const AddPlaylist = ({ songid }) => {
   const { username, password } = useSelector((state) => state.player);
   // const { data, isFetching, error } = useGetPlaylistsQuery({ key: showModal });
 
-  const fetchData = async () => {
-    await getMyPlaylists(username, password).then((response) => {
-      setPlaylist(response.data);
-      console.log(playlist);
-    });
-  };
+  useEffect(() => {
+    const fetchData = async () => {
+      await getMyPlaylists(username, password).then((response) => {
+        setPlaylist(response.data);
+        console.log(playlist);
+      });
+    };
 
-  fetchData();
+    fetchData();
+  }, []);
   return (
     <div className="p-4">
       <MdOutlinePlaylistAdd
