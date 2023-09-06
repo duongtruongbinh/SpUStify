@@ -66,20 +66,22 @@ const AddPlaylist = ({ songid }) => {
   const { username, password } = useSelector((state) => state.player);
   // const { data, isFetching, error } = useGetPlaylistsQuery({ key: showModal });
 
-  useEffect(() => {
-    const fetchData = async () => {
-      await getMyPlaylists(username, password).then((response) => {
-        setPlaylist(response.data);
-        console.log(playlist);
-      });
-    };
+  const fetchData = async () => {
+    await getMyPlaylists(username, password).then((response) => {
+      setPlaylist(response.data);
+    });
+  };
+
+  const handlePopUp = () => {
+    setShowModal(true);
 
     fetchData();
-  }, []);
+  };
+
   return (
     <div className="p-4">
       <MdOutlinePlaylistAdd
-        onClick={() => setShowModal(true)}
+        onClick={handlePopUp}
         className="hover:cursor-pointer"
         size={30}
         style={{ color: "white" }}></MdOutlinePlaylistAdd>
