@@ -457,11 +457,6 @@ class EditSongAPI(APIView):
                 field_name = field.name
                 field_to_old_value[field_name] = getattr(song, field_name)
 
-        serializer = FeaturesSongSerializer(
-            song, data=request.data.copy(), partial=True)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-
         for field_name, old_value in field_to_old_value.items():
             new_value = request.data.get(field_name, None)
             print(new_value)
@@ -472,6 +467,13 @@ class EditSongAPI(APIView):
                     if os.path.exists(old_file_path):
                         print(True)
                         os.remove(old_file_path)
+            else:
+                request.data[field_name] = old_value
+
+        serializer = FeaturesSongSerializer(
+            song, data=request.data.copy(), partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
 
         return Response(serializer.data)
 

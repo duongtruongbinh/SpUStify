@@ -199,7 +199,7 @@ const EditSong = () => {
 
   return (
     <div className=" bg-grey_bg flex flex-col my-10 mx-5">
-      <div className=" text-white flex my-10 justify-center ">Upload Song</div>
+      <div className=" text-white flex my-10 justify-center ">Edit Song</div>
       <form onSubmit={handleSubmit}>
         <div className="flex flex-row h-1/2 my-8 mx-8 justify-center">
           <div class=" flex flex-row items-center justify-center gap-4 ">
