@@ -135,14 +135,13 @@ const SongDetails = () => {
 
       <div className="flex flex-row">
         <div className="mb-10 w-1/2 ">
-          <div className="flex flex-row gap-6 my-4 self-center">
-            <div className="self-center">
-              <Link to={`/song/${songid}/edit`}>
-                <AiFillEdit id={`edit${songid}`} className="text-white " />
-              </Link>
-            </div>
-
-            {isLogin ? (
+          {isLogin ? (
+            <div className="flex flex-row gap-6 my-4 self-center">
+              <div className="self-center">
+                <Link to={`/song/${songid}/edit`}>
+                  <AiFillEdit id={`edit${songid}`} className="text-white " />
+                </Link>
+              </div>
               <div
                 id={`song${songid}`}
                 onClick={() => handleLike(songid)}
@@ -153,12 +152,12 @@ const SongDetails = () => {
                   <Like className="text-center mb2 self-center" />
                 )}
               </div>
-            ) : null}
-
-            <div className="self-center">
-              <AddPlaylist songid={songid} />
+              <div className="self-center">
+                <AddPlaylist songid={songid} />
+              </div>
             </div>
-          </div>
+          ) : null}
+
           <h2 className="text-gray-100 text-3xl font-bold">Lyrics:</h2>
 
           <div className="mt-5">
