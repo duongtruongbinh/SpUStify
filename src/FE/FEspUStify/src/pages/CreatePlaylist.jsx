@@ -125,8 +125,9 @@ const CreatePlaylist = () => {
               {!uploadedBackground ? (
                 <>
                   <input
-                    type="file"
                     id="background"
+                    type="file"
+                 
                     className="hidden"
                     accept=".jpg, .jpeg, .png, .gif"
                     onChange={(e) => handleBackgroudUpload(e.target.files[0])}
@@ -153,6 +154,7 @@ const CreatePlaylist = () => {
               <label className="text-white block mb-2">Playlist name</label>
 
               <input
+               id="playlistName"
                 type="text"
                 className="pl-2 text-white w-full h-12 rounded bg-near_black focus:outline-none focus:border-blue-500"
                 value={playlistName}
@@ -172,6 +174,7 @@ const CreatePlaylist = () => {
             Cancel
           </Button>
           <Button
+          id="submitEditPlaylist"
             type="submit"
             className="bg-submit_blue hover:bg-sign_up_blue  px-8 py-4 my-2 rounded-xl   text-white">
             Submit

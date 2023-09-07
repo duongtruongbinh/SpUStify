@@ -24,6 +24,7 @@ const EditPlaylist = () => {
   const [responseData, setResponseData] = useState();
 
   const [playlistName, setPlaylistName] = useState("");
+  const [PlaylistNameError, setPlaylistNameError] = useState("");
 
   const [playlist, setPlaylist] = useState();
   const [state, setState] = useState('state');
@@ -99,6 +100,10 @@ const EditPlaylist = () => {
   const handleSubmit = async (event) => {
     //  event.preventDefault();
     event.preventDefault();
+    if (playlistName === "") {
+      setPlaylistNameError("Playlist name is required");
+      setIsFormValid(false);
+    } 
 
     if (isFormValid) {
       const data = new FormData();
@@ -232,12 +237,15 @@ const EditPlaylist = () => {
               <label className="text-white block mb-2">Playlist name</label>
 
               <input
+              id="playlistName"
                 type="text"
                 className="pl-2 text-white w-full h-12 rounded bg-near_black focus:outline-none focus:border-blue-500"
                 value={playlistName}
                 onChange={(e) => setPlaylistName(e.target.value)}
               />
-
+ {PlaylistNameError && (
+                <p className="text-red-500">{PlaylistNameError}</p>
+              )}
             </div>
           </div>
         </div>
@@ -249,6 +257,7 @@ const EditPlaylist = () => {
             Cancel
           </Button>
           <Button
+          id="submitEditPlaylist"
             type="submit"
             className="bg-submit_blue hover:bg-sign_up_blue  px-8 py-4 my-2 rounded-xl   text-white">
             Submit

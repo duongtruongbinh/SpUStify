@@ -21,9 +21,9 @@ const PlaylistCard = ({ song, isPlaying, activeSong, index, data }) => {
         />
       </div>
 
-      <div className="   w-full h-[80px] mb-0 flex flex-col relative    ">
-        <p className="ml-2 mt-4 font-bold z-100 text-lg text-gray-100 truncate">
-          <Link to={`/playlist/${song.id}`}>{song.name}</Link>
+      <div id="PlaylistItemDiv"  className="   w-full h-[80px] mb-0 flex flex-col relative    ">
+        <p  id="PlaylistItemP" className="  ml-2 mt-4 font-bold z-100 text-lg text-gray-100 truncate">
+          <Link id="PlaylistItemLink"  to={`/playlist/${song.id}`}>{song.name}</Link>
         </p>
         {/* <p className=' text-xs truncate text-gray-300 '>
           <Link to={song.song_artists
