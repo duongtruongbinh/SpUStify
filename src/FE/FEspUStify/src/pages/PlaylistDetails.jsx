@@ -131,8 +131,12 @@ const PlaylistDetails = () => {
         <div className=" flex flex-col   mb-10 w-1/2 ">
           <div className="flex pl-40 flex-row">
             <p className="text-white pr-2  mb-4 flex "> {playlist ? playlist.name : ''}</p>
-            <Link className="pt-1" to={`/playlist/${playlist ? playlist.id : ''}/edit`}>
-              <AiFillEdit className="text-white " />
+            <Link  className="pt-1" to={`/playlist/${playlist ? playlist.id : ''}/edit`}>
+            <div id="EditPlaylist">
+            
+              <AiFillEdit id= "EditPlaylistButton" className="text-white " />
+           
+            </div>
             </Link>
 
           </div>

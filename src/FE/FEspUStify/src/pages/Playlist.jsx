@@ -81,13 +81,13 @@ const Playlist = () => {
           <Link
             className="flex flex-col items-center justify-center"
             to={"/create-playlist"}>
-            <div className="text-white text-5xl">+</div>
-            <p className="text-white">Create Playlist</p>
+            <div  id= "DivcreatePlaylist" className="text-white text-5xl">+</div>
+            <p id= "PcreatePlaylist"className="text-white">Create Playlist</p>
           </Link>
         </div>
       </div>
       <div className="flex flex-col items-center">
-        <div className=" relative flex flex-wrap sm:justify-start justify-center gap-8">
+        <div className="  relative flex flex-wrap sm:justify-start justify-center gap-8">
           {playlist?.map((song, index) => (
             <PlaylistCard
               key={song.id}

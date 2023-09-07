@@ -16,7 +16,7 @@ const { isArtist, isLogin } = useSelector((state) => state.player);
 
 return (
 
-  <div className="mt-10">
+  <div id="sideBarItem" className="mt-10">
     {links.map((item) => {
 
 if (isArtist === true && (item.name === 'Upload Song'  ) ) {
