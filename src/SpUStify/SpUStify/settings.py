@@ -109,7 +109,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'SPUSTIFY',
         'USER': 'postgres',
-        'PASSWORD': '3107',
+        'PASSWORD': '11112003',
         'HOST': 'localhost',
         'PORT': '5432',
     }
