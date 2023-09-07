@@ -38,9 +38,8 @@ const SongDetails = () => {
   const [songData, setSongData] = useState();
   const [relatedSong, setRelativeSong] = useState([]);
 
-  const { activeSong, isPlaying, username, password, isLogin } = useSelector(
-    (state) => state.player
-  );
+  const { activeSong, isPlaying, username, password, isLogin, isArtist } =
+    useSelector((state) => state.player);
 
   useEffect(() => {
     // Thay đổi key khi component được mount lại hoặc focus
@@ -137,11 +136,13 @@ const SongDetails = () => {
         <div className="mb-10 w-1/2 ">
           {isLogin ? (
             <div className="flex flex-row gap-6 my-4 self-center">
-              <div className="self-center">
-                <Link to={`/song/${songid}/edit`}>
-                  <AiFillEdit id={`edit${songid}`} className="text-white " />
-                </Link>
-              </div>
+              {isArtist ? (
+                <div className="self-center">
+                  <Link to={`/song/${songid}/edit`}>
+                    <AiFillEdit id={`edit${songid}`} className="text-white " />
+                  </Link>
+                </div>
+              ) : null}
               <div
                 id={`song${songid}`}
                 onClick={() => handleLike(songid)}
