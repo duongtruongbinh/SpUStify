@@ -138,7 +138,7 @@ const SongDetails = () => {
           <div className="flex flex-row gap-6 my-4 self-center">
             <div className="self-center">
               <Link to={`/song/${songid}/edit`}>
-                <AiFillEdit className="text-white " />
+                <AiFillEdit id={`edit${songid}`} className="text-white " />
               </Link>
             </div>
 
