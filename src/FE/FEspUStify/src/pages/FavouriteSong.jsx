@@ -10,7 +10,6 @@ import { bgPlaylist, LiuGrace } from "../assets";
 import {
   useGetFavouriteSongsQuery,
   usePlaySongMutation,
-
 } from "../redux/services/CoreApi";
 import {
   Error,
@@ -21,19 +20,14 @@ import {
   Liked,
 } from "../components";
 
-import {
-  playPause,
-  setActiveSong,
-
-} from "../redux/features/playerSlice";
+import { playPause, setActiveSong } from "../redux/features/playerSlice";
 
 import { likeAction, getFavouriteSongs, playSong } from "../redux/services/Api";
 
 const FavorutieSong = () => {
-
-
-  const { activeSong, isPlaying, username, password } =
-    useSelector((state) => state.player);
+  const { activeSong, isPlaying, username, password } = useSelector(
+    (state) => state.player
+  );
 
   const dispatch = useDispatch();
   const [dataFavo, setDataFav] = useState();
@@ -42,20 +36,13 @@ const FavorutieSong = () => {
   //const [setLikeSongName, { isLoading }] = useLikeSongMutation();
   //const { data, isFetching, error } = useGetFavouriteSongsQuery({key: likeState});
 
-
-
   useEffect(() => {
     const fetchData = async () => {
-
-
-      await getFavouriteSongs(username, password).then(response => {
+      await getFavouriteSongs(username, password).then((response) => {
         setDataFav(response.data);
         console.log(dataFavo);
-      })
-        ;
-
-    }
-
+      });
+    };
 
     fetchData();
   }, [likeState]);
@@ -66,13 +53,10 @@ const FavorutieSong = () => {
       console.log("check top chart");
       console.log(likedSong);
     }
-  }
-  )
+  });
   useEffect(() => {
     // Thay đổi key khi component được mount lại hoặc focus
-
   }, [dataFavo]);
-
 
   const handleLike = async (songId, songName) => {
     console.log(songId);
@@ -81,8 +65,6 @@ const FavorutieSong = () => {
       const responseLike = await likeAction(username, password, songId, "song");
 
       setLikeState("likestates-" + new Date().getTime());
-
-
     } catch (error) {
       console.log(error);
     }
@@ -128,15 +110,17 @@ const FavorutieSong = () => {
                 }
               />
 
-              <div onClick={() =>
-                handleLike(song.played_song.id, song.played_song.name)
-              }
+              <div
+                id={`song${song.played_song.id}`}
+                onClick={() =>
+                  handleLike(song.played_song.id, song.played_song.name)
+                }
                 className="flex flex-row items-center hover:bg-gray-400/50 py-2 p-4 rounded-2xl cursor-pointer mb-2">
                 <Liked
                   className="mb-2 text-center"
-                // handleLike={() =>
-                //   handleLike(song.played_song.id, song.played_song.name)
-                // }
+                  // handleLike={() =>
+                  //   handleLike(song.played_song.id, song.played_song.name)
+                  // }
                 />
               </div>
 

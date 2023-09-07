@@ -144,6 +144,7 @@ const TopCharts = () => {
               />
               {isLogin ? (
                 <div
+                  id={`song${song.id}`}
                   onClick={() => handleLike(song.id, song.name)}
                   className="flex flex-row items-center hover:bg-gray-400/50 py-2 p-4 rounded-2xl cursor-pointer mb-2">
                   {likeSongId.includes(song.id) ? (
