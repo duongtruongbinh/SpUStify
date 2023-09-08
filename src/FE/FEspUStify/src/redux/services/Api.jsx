@@ -191,13 +191,8 @@ const Signin = async (data, username, password) => {
   try {
     const response = await axios.post(
       "http://localhost:8000/api/login/",
-      data,
-      {
-        auth: {
-          username: username,
-          password: password,
-        },
-      }
+      data
+      
     );
     return response;
   } catch (error) {

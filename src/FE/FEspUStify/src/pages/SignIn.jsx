@@ -42,8 +42,8 @@ const SignIn = () => {
     }
 
     const userData = {
-      username: username,
-      password: password,
+      "username": username,
+      "password": password,
     };
 
     const response = await Signin(userData, username, password);
@@ -54,7 +54,7 @@ const SignIn = () => {
     if (response) {
       const useForSlice = {
         ...userData,
-        isArtist: response.data.is_artist,
+        isArtist: response.data?.is_artist,
         isLogin: true,
       };
 
