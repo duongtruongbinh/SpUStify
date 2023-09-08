@@ -21,6 +21,8 @@ pip install django django-cors-headers psycopg2 django-rest-knox djangorestframe
 ```
 
 ## Getting Started
+
+
 1. Navigate to the project directory:
 ```bash
 cd ./src/SpUStify/
@@ -32,6 +34,9 @@ cd ./src/SpUStify/
 To set up the back-end of the project, you will need to have PostgreSQL installed and running on your system. If you don't have PostgreSQL installed, you can download and install it from PostgreSQL Official Website.
 
 1. Create a database named "SPUSTIFY" in PostgreSQL.
+
+Open the settings.py file in the SpUStify directory and change the database settings to match your PostgreSQL database settings (database name, username, password, etc.)
+
 2. Navigate to the backend directory:
 ```bash
 cd ./src/SpUStify/
