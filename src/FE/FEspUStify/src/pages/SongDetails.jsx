@@ -38,9 +38,8 @@ const SongDetails = () => {
   const [songData, setSongData] = useState();
   const [relatedSong, setRelativeSong] = useState([]);
 
-  const { activeSong, isPlaying, username, password, isLogin } = useSelector(
-    (state) => state.player
-  );
+  const { activeSong, isPlaying, username, password, isLogin, isArtist } =
+    useSelector((state) => state.player);
 
   useEffect(() => {
     // Thay đổi key khi component được mount lại hoặc focus
@@ -135,16 +134,17 @@ const SongDetails = () => {
 
       <div className="flex flex-row">
         <div className="mb-10 w-1/2 ">
-          <div className="flex flex-row gap-6 my-4 self-center">
-            <div className="self-center">
-              <Link to={`/song/${songid}/edit`}>
-                <AiFillEdit className="text-white " />
-              </Link>
-            </div>
-
-            {isLogin ? (
+          {isLogin ? (
+            <div className="flex flex-row gap-6 my-4 self-center">
+              {isArtist ? (
+                <div className="self-center">
+                  <Link to={`/song/${songid}/edit`}>
+                    <AiFillEdit id={`edit${songid}`} className="text-white " />
+                  </Link>
+                </div>
+              ) : null}
               <div
-                id={`likeSong${songid}`}
+                id={`song${songid}`}
                 onClick={() => handleLike(songid)}
                 className="self-center flex flex-row items-center hover:bg-gray-400/50 py-2 p-4 rounded-2xl cursor-pointer mb-2">
                 {likeSongId.includes(parseInt(songid, 10)) ? (
@@ -153,12 +153,12 @@ const SongDetails = () => {
                   <Like className="text-center mb2 self-center" />
                 )}
               </div>
-            ) : null}
-
-            <div className="self-center">
-              <AddPlaylist songid={songid} />
+              <div className="self-center">
+                <AddPlaylist songid={songid} />
+              </div>
             </div>
-          </div>
+          ) : null}
+
           <h2 className="text-gray-100 text-3xl font-bold">Lyrics:</h2>
 
           <div className="mt-5">

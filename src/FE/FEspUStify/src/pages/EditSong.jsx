@@ -1,7 +1,7 @@
 import { Button } from "@material-tailwind/react";
 import { useNavigate, useParams } from "react-router-dom";
 
-import { } from "../redux/services/Api";
+import {} from "../redux/services/Api";
 import { useDispatch, useSelector } from "react-redux";
 import { useState, useEffect } from "react";
 import React from "react";
@@ -42,67 +42,73 @@ const EditSong = () => {
   const [uploadedBackgroundPost, setUploadedBackgroundPost] = useState(null);
 
   const [isUploaded, setIsUploaded] = useState(false);
-  const [state, setState] = useState('state');
+  const [state, setState] = useState("state");
 
   const [isFormValid, setIsFormValid] = useState(true);
   const [responseData, setResponseData] = useState();
   const [songData, setSongData] = useState();
 
   useEffect(() => {
+    urlToFile(
+      `http://127.0.0.1:8000${songData?.song.background_image}`,
+      "image.jpg",
+      "image/jpeg"
+    ).then((file) => {
+      if (file) {
+        // Đã chuyển đổi thành công
+        setUploadedBackgroundPost(file);
+        // Bây giờ bạn có thể sử dụng đối tượng File này
+      } else {
+        // Xử lý lỗi nếu có
+      }
+    });
 
-    urlToFile(`http://127.0.0.1:8000${songData?.song.background_image}`, "image.jpg", "image/jpeg")
-      .then((file) => {
-        if (file) {
-          // Đã chuyển đổi thành công
-          setUploadedBackgroundPost(file);
-          // Bây giờ bạn có thể sử dụng đối tượng File này
-        } else {
-          // Xử lý lỗi nếu có
-        }
-      });
+    urlToFile(
+      `http://127.0.0.1:8000${songData?.song.avatar}`,
+      "image.jpg",
+      ".jpeg .jpg .png"
+    ).then((file) => {
+      if (file) {
+        // Đã chuyển đổi thành công
+        setUploadedImagePost(file);
+        // Bây giờ bạn có thể sử dụng đối tượng File này
+      } else {
+        // Xử lý lỗi nếu có
+      }
+    });
 
-    urlToFile(`http://127.0.0.1:8000${songData?.song.avatar}`, "image.jpg", ".jpeg .jpg .png")
-      .then((file) => {
-        if (file) {
-          // Đã chuyển đổi thành công
-          setUploadedImagePost(file);
-          // Bây giờ bạn có thể sử dụng đối tượng File này
-        } else {
-          // Xử lý lỗi nếu có
-        }
-      });
-
-    urlToFile(`http://127.0.0.1:8000${songData?.song.song_file}`, "audio.mp3", "audio/mp3")
-      .then((file) => {
-        if (file) {
-          // Đã chuyển đổi thành công
-          setFilePost(file);
-          // Bây giờ bạn có thể sử dụng đối tượng File này
-        } else {
-          // Xử lý lỗi nếu có
-        }
-      });
-    urlToFile(`http://127.0.0.1:8000${songData?.song.lyric_data}`, "LYRIC.txt", ".txt")
-      .then((file) => {
-        if (file) {
-          // Đã chuyển đổi thành công
-          setLyricPost(file);
-          // Bây giờ bạn có thể sử dụng đối tượng File này
-        } else {
-          // Xử lý lỗi nếu có
-        }
-      });
-
+    urlToFile(
+      `http://127.0.0.1:8000${songData?.song.song_file}`,
+      "audio.mp3",
+      "audio/mp3"
+    ).then((file) => {
+      if (file) {
+        // Đã chuyển đổi thành công
+        setFilePost(file);
+        // Bây giờ bạn có thể sử dụng đối tượng File này
+      } else {
+        // Xử lý lỗi nếu có
+      }
+    });
+    urlToFile(
+      `http://127.0.0.1:8000${songData?.song.lyric_data}`,
+      "LYRIC.txt",
+      ".txt"
+    ).then((file) => {
+      if (file) {
+        // Đã chuyển đổi thành công
+        setLyricPost(file);
+        // Bây giờ bạn có thể sử dụng đối tượng File này
+      } else {
+        // Xử lý lỗi nếu có
+      }
+    });
 
     // Gửi formData lên server bằng axios hoặc phương thức khác
     // await axios.post("your-upload-endpoint", formData);
-
-
   }, [songData]);
 
   useEffect(() => {
-
-
     setSongName(songData?.song.name);
     setUploadedBackground(
       `http://127.0.0.1:8000${songData?.song.background_image}`
@@ -115,27 +121,17 @@ const EditSong = () => {
     setState("state-" + new Date().getTime());
   }, [songData]);
   useEffect(() => {
-
     const fetchData = async () => {
-
-
-      await getSongDetails(username, password, songid).then(response => {
+      await getSongDetails(username, password, songid).then((response) => {
         setSongData(response.data);
-
-
-
-
       });
-
-    }
+    };
     fetchData();
   }, []);
-
 
   const handleSubmit = async (event) => {
     //  event.preventDefault();
     event.preventDefault();
-
 
     if (isFormValid) {
       const data = new FormData();
@@ -151,26 +147,23 @@ const EditSong = () => {
       // No need for the X-RapidAPI-Key header for local development
 
       try {
-        editAction(username, password, songid, data, "song").then((response) => {
-          setResponseData(response.data);
-        })
-
+        editAction(username, password, songid, data, "song").then(
+          (response) => {
+            setResponseData(response.data);
+          }
+        );
       } catch (error) {
         console.log(error);
       }
-
-
     }
   };
   useEffect(() => {
     if (responseData !== undefined) {
-      debugger
+      debugger;
       if (responseData.avatar !== null) {
         navigate("/home");
       }
     }
-
-
   }, [responseData]);
   const handleFileUploadAudio = (file) => {
     if (file) {
@@ -248,7 +241,7 @@ const EditSong = () => {
 
               <input
                 type="text"
-                className="w-full h-12 rounded bg-near_black focus:outline-none focus:border-blue-500"
+                className="w-full text-white h-12 rounded bg-near_black focus:outline-none focus:border-blue-500"
                 value={songName}
                 onChange={(e) => setSongName(e.target.value)}
               />
@@ -261,7 +254,7 @@ const EditSong = () => {
                 <input
                   type="file"
                   accept="audio/mp3"
-                  className="w-full h-12 bg-near_black rounded focus:outline-none focus:border-blue-500"
+                  className="w-full text-white h-12 bg-near_black rounded focus:outline-none focus:border-blue-500"
                   onChange={(e) => handleFileUploadAudio(e.target.files[0])}
                 />
                 {songFileError && (
@@ -276,7 +269,7 @@ const EditSong = () => {
                 <input
                   type="file"
                   accept=".txt, .pdf"
-                  className="w-full h-12 bg-near_black rounded focus:outline-none focus:border-blue-500"
+                  className="w-full text-white h-12 bg-near_black rounded focus:outline-none focus:border-blue-500"
                   onChange={(e) => handleFileUploadLyric(e.target.files[0])}
                 />
                 {songLyricError && (
