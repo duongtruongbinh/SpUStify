@@ -35,7 +35,7 @@ To set up the back-end of the project, you will need to have PostgreSQL installe
 
 1. Create a database named "SPUSTIFY" in PostgreSQL.
 
-Open the settings.py file in the SpUStify directory and change the database settings to match your PostgreSQL database settings (database name, username, password, etc.)
+Open the ./src/SpUStify/SpUStify/settings.py file in the SpUStify directory and change the password in line 112 to match your postgreSQL password.
 
 2. Navigate to the backend directory:
 ```bash
